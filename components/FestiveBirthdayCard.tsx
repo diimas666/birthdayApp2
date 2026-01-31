@@ -10,19 +10,20 @@ interface FestiveBirthdayCardProps {
   onPress?: () => void;
 }
 
-const openWhatsApp = (phone: string) => {
+const openWhatsApp = (phone: string, errorMsg: string) => {
   const cleaned = phone.replace(/\D/g, '');
   const url = `https://wa.me/${cleaned}`;
-  Linking.openURL(url).catch(() => Alert.alert('', 'Не вдалося відкрити WhatsApp'));
+  Linking.openURL(url).catch(() => Alert.alert('', errorMsg));
 };
 
-const openCall = (phone: string) => {
+const openCall = (phone: string, errorMsg: string) => {
   const url = `tel:${phone.trim()}`;
-  Linking.openURL(url).catch(() => Alert.alert('', 'Не вдалося відкрити дзвінок'));
+  Linking.openURL(url).catch(() => Alert.alert('', errorMsg));
 };
 
-const openGiftSearch = () => {
-  Linking.openURL('https://www.google.com/search?q=ідеї+подарунків').catch(() => {});
+const openGiftSearch = (searchQuery: string) => {
+  const q = encodeURIComponent(searchQuery);
+  Linking.openURL(`https://www.google.com/search?q=${q}`).catch(() => {});
 };
 
 export const FestiveBirthdayCard: React.FC<FestiveBirthdayCardProps> = ({ birthday, onPress }) => {
@@ -77,7 +78,7 @@ export const FestiveBirthdayCard: React.FC<FestiveBirthdayCardProps> = ({ birthd
 
           <TouchableOpacity
             style={styles.actionButton}
-            onPress={() => hasPhone && openWhatsApp(birthday.phone!)}
+            onPress={() => hasPhone && openWhatsApp(birthday.phone!, t('openWhatsAppFailed'))}
             disabled={!hasPhone}
           >
             <View style={[styles.actionIcon, { backgroundColor: '#25D366', opacity: hasPhone ? 1 : 0.5 }]}>
@@ -86,7 +87,7 @@ export const FestiveBirthdayCard: React.FC<FestiveBirthdayCardProps> = ({ birthd
             <Text style={styles.actionLabel}>{t('whatsApp')}</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.actionButton} onPress={openGiftSearch}>
+          <TouchableOpacity style={styles.actionButton} onPress={() => openGiftSearch(t('giftSearchQuery'))}>
             <View style={[styles.actionIcon, { backgroundColor: '#8b5cf6' }]}>
               <Text style={styles.actionIconText}>🎁</Text>
             </View>
@@ -95,7 +96,7 @@ export const FestiveBirthdayCard: React.FC<FestiveBirthdayCardProps> = ({ birthd
 
           <TouchableOpacity
             style={styles.actionButton}
-            onPress={() => hasPhone && openCall(birthday.phone!)}
+            onPress={() => hasPhone && openCall(birthday.phone!, t('openCallFailed'))}
             disabled={!hasPhone}
           >
             <View style={[styles.actionIcon, { backgroundColor: '#0084FF', opacity: hasPhone ? 1 : 0.5 }]}>

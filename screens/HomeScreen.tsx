@@ -150,7 +150,7 @@ export const HomeScreen: React.FC = () => {
         {/* <View style={styles.headerTop}>
           <View>
             <Text style={[styles.greeting, { color: textColor }]}>
-              {t("greeting")}
+              {t("homeGreeting")}
             </Text>
             <Text style={[styles.greetingSubtext, { color: secondaryText }]}>
               {t("greetingSubtext")}

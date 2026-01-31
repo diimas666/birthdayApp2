@@ -67,7 +67,7 @@ export const uk = {
   sortByAge: 'За віком',
 
   // Home screen extra
-  greeting: 'Привіт,',
+  homeGreeting: 'Привіт,',
   greetingSubtext: 'Ось оновлення на сьогодні:',
   sectionBirthdays: 'Дні народження',
   noResults: 'Нічого не знайдено',
@@ -91,6 +91,7 @@ export const uk = {
   // Card actions
   whatsApp: 'WhatsApp',
   sendGift: 'Надіслати подарунок',
+  giftSearchQuery: 'ідеї подарунків',
   messenger: 'Messenger',
   call: 'Дзвінок',
   greeting: 'Привітання',
@@ -143,6 +144,14 @@ export const uk = {
   exportSuccess: 'Дані експортовано',
   importSuccess: 'Дані імпортовано',
   importError: 'Не вдалося імпортувати файл',
+  importCount: (imported: number, total: number) => `Імпортовано: ${imported}, всього: ${total}`,
+  openEmailFailed: 'Не вдалося відкрити пошту',
+  shareFailed: 'Не вдалося відкрити поширення',
+  addPhoneToContact: 'Додайте номер телефону в картку контакту',
+  selectContact: 'Оберіть контакт',
+  openWhatsAppFailed: 'Не вдалося відкрити WhatsApp',
+  openSmsFailed: 'Не вдалося відкрити SMS',
+  openCallFailed: 'Не вдалося відкрити дзвінок',
 
   // Statistics
   statistics: 'Статистика',
@@ -175,6 +184,11 @@ export const uk = {
   quietHoursHint: 'Не надсилати нагадування вночі',
   quietHoursFrom: 'З (год)',
   quietHoursTo: 'До (год)',
+
+  // Language
+  language: 'Мова',
+  languageUk: 'Українська',
+  languageEn: 'English',
 
   // Notifications
   notificationTitle3Days: 'Нагадування про день народження 🎉',

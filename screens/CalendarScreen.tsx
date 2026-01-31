@@ -15,13 +15,12 @@ import { getBirthdays } from '../utils/storage';
 import { getBirthdaysOnDate, enrichBirthday } from '../utils/dateHelpers';
 import { useTranslation } from '../hooks/useTranslation';
 import { useTheme } from '../contexts/ThemeContext';
-import { uk } from '../locales/uk';
 
 const DAYS_IN_WEEK = 7;
 const CELL_SIZE = Math.floor((Dimensions.get('window').width - 40) / 7) - 4;
 
 export const CalendarScreen: React.FC = () => {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const { isDark } = useTheme();
   const [birthdays, setBirthdays] = useState<Birthday[]>([]);
   const [currentYear, setCurrentYear] = useState(() => new Date().getFullYear());
@@ -91,7 +90,7 @@ export const CalendarScreen: React.FC = () => {
     setSelectedDate(null);
   };
 
-  const monthTitle = `${uk.monthNames[currentMonth]} ${currentYear}`;
+  const monthTitle = `${locale.monthNames[currentMonth]} ${currentYear}`;
   const bg = isDark ? '#0a0a14' : '#F5F5F5';
   const cardBg = isDark ? '#2a2a3e' : '#fff';
   const textColor = isDark ? '#fff' : '#000';
@@ -112,7 +111,7 @@ export const CalendarScreen: React.FC = () => {
           </TouchableOpacity>
         </View>
         <View style={styles.weekdayRow}>
-          {uk.dayNamesShort.map((name) => (
+          {locale.dayNamesShort.map((name) => (
             <Text key={name} style={[styles.weekdayCell, { color: mutedColor }]}>
               {name}
             </Text>
@@ -166,7 +165,7 @@ export const CalendarScreen: React.FC = () => {
           <View style={[styles.modalContent, { backgroundColor: cardBg }]}>
             <Text style={[styles.modalTitle, { color: textColor }]}>
               {selectedDate != null
-                ? `${selectedDate} ${uk.monthNamesShort[currentMonth]}`
+                ? `${selectedDate} ${locale.monthNamesShort[currentMonth]}`
                 : ''}
             </Text>
             {enrichedOnSelected.length === 0 ? (
@@ -176,7 +175,7 @@ export const CalendarScreen: React.FC = () => {
             ) : (
               <ScrollView style={styles.modalList} showsVerticalScrollIndicator={false}>
                 {enrichedOnSelected.map((b) => {
-                  const dateStr = `${b.dateOfBirth.getDate()} ${uk.monthNamesShort[b.dateOfBirth.getMonth()]}`;
+                  const dateStr = `${b.dateOfBirth.getDate()} ${locale.monthNamesShort[b.dateOfBirth.getMonth()]}`;
                   const ageWord = (t('yearWord', b.age) as string);
                   return (
                     <View key={b.id} style={[styles.modalCard, { backgroundColor: isDark ? '#1e1e2e' : '#f5f0ff', borderColor: secondaryColor }]}>

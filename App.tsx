@@ -5,6 +5,7 @@ import { StatusBar, StyleSheet, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { ThemeProvider } from "./contexts/ThemeContext";
+import { LanguageProvider } from "./contexts/LanguageContext";
 import { HomeScreen } from "./screens/HomeScreen";
 import { ListScreen } from "./screens/ListScreen";
 import { CalendarScreen } from "./screens/CalendarScreen";
@@ -96,9 +97,11 @@ export default function App() {
   if (onboardingDone === null) {
     return (
       <ThemeProvider>
-        <GestureHandlerRootView style={styles.root}>
-          <View style={[styles.root, { backgroundColor: "#1a0a2e" }]} />
-        </GestureHandlerRootView>
+        <LanguageProvider>
+          <GestureHandlerRootView style={styles.root}>
+            <View style={[styles.root, { backgroundColor: "#1a0a2e" }]} />
+          </GestureHandlerRootView>
+        </LanguageProvider>
       </ThemeProvider>
     );
   }
@@ -106,21 +109,25 @@ export default function App() {
   if (onboardingDone === false) {
     return (
       <ThemeProvider>
-        <GestureHandlerRootView style={styles.root}>
-          <OnboardingScreen onComplete={() => setOnboardingDoneState(true)} />
-        </GestureHandlerRootView>
+        <LanguageProvider>
+          <GestureHandlerRootView style={styles.root}>
+            <OnboardingScreen onComplete={() => setOnboardingDoneState(true)} />
+          </GestureHandlerRootView>
+        </LanguageProvider>
       </ThemeProvider>
     );
   }
 
   return (
     <ThemeProvider>
-      <GestureHandlerRootView style={styles.root}>
-        <StatusBar barStyle="light-content" backgroundColor="#1a0a2e" />
-        <NavigationContainer>
-          <AppTabs />
-        </NavigationContainer>
-      </GestureHandlerRootView>
+      <LanguageProvider>
+        <GestureHandlerRootView style={styles.root}>
+          <StatusBar barStyle="light-content" backgroundColor="#1a0a2e" />
+          <NavigationContainer>
+            <AppTabs />
+          </NavigationContainer>
+        </GestureHandlerRootView>
+      </LanguageProvider>
     </ThemeProvider>
   );
 }

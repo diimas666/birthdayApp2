@@ -2,9 +2,12 @@ import notifee, { AndroidImportance, TriggerType, TimestampTrigger } from '@noti
 import { Platform } from 'react-native';
 import { Birthday } from '../types';
 import { uk } from '../locales/uk';
-import { getNotificationHour, getQuietHoursFrom, getQuietHoursTo } from './settingsStorage';
+import { en } from '../locales/en';
+import { getNotificationHour, getQuietHoursFrom, getQuietHoursTo, getLanguage } from './settingsStorage';
 
 const ANDROID_CHANNEL_ID = 'birthday-reminders';
+
+const locales = { uk, en };
 
 /** Returns an hour that falls outside quiet time (e.g. 22–8 → use 8 if hour is in 22,23,0..7). */
 function getAllowedHour(hour: number, quietFrom: number, quietTo: number): number {
@@ -17,10 +20,13 @@ function getAllowedHour(hour: number, quietFrom: number, quietTo: number): numbe
 }
 
 export const requestPermissions = async (): Promise<boolean> => {
+  const lang = await getLanguage();
+  const locale = locales[lang];
+  const channelName = lang === 'en' ? 'Birthday reminders' : 'Дні народження';
   if (Platform.OS === 'android') {
     await notifee.createChannel({
       id: ANDROID_CHANNEL_ID,
-      name: 'Дні народження',
+      name: channelName,
       importance: AndroidImportance.HIGH,
       sound: 'default',
     });
@@ -51,9 +57,12 @@ export const scheduleBirthdayNotifications = async (birthday: Birthday, hour?: n
 
   await cancelBirthdayNotifications(birthday.id);
 
+  const lang = await getLanguage();
+  const locale = locales[lang];
+
   const baseNotification = {
-    title: uk.notificationTitleToday,
-    body: uk.notificationBodyToday(birthday.name),
+    title: locale.notificationTitleToday,
+    body: locale.notificationBodyToday(birthday.name),
     data: { birthdayId: birthday.id },
     android: {
       channelId: ANDROID_CHANNEL_ID,
@@ -72,8 +81,8 @@ export const scheduleBirthdayNotifications = async (birthday: Birthday, hour?: n
     await notifee.createTriggerNotification(
       {
         ...baseNotification,
-        title: uk.notificationTitle3Days,
-        body: uk.notificationBody3Days(birthday.name),
+        title: locale.notificationTitle3Days,
+        body: locale.notificationBody3Days(birthday.name),
         id: `birthday-${birthday.id}-3d`,
       },
       trigger
@@ -91,8 +100,8 @@ export const scheduleBirthdayNotifications = async (birthday: Birthday, hour?: n
     await notifee.createTriggerNotification(
       {
         ...baseNotification,
-        title: uk.notificationTitle1Day,
-        body: uk.notificationBody1Day(birthday.name),
+        title: locale.notificationTitle1Day,
+        body: locale.notificationBody1Day(birthday.name),
         id: `birthday-${birthday.id}-1d`,
       },
       trigger

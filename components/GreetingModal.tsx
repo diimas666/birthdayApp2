@@ -53,18 +53,16 @@ interface GreetingModalProps {
   onClose: () => void;
 }
 
-const openWhatsAppWithText = (phone: string, text: string) => {
+const openWhatsAppWithText = (phone: string, text: string, errorMsg: string) => {
   const cleaned = phone.replace(/\D/g, "");
   const encoded = encodeURIComponent(text);
   const url = `https://wa.me/${cleaned}?text=${encoded}`;
-  Linking.openURL(url).catch(() =>
-    Alert.alert("", "Не вдалося відкрити WhatsApp")
-  );
+  Linking.openURL(url).catch(() => Alert.alert("", errorMsg));
 };
 
-const openSmsWithBody = (phone: string, body: string) => {
+const openSmsWithBody = (phone: string, body: string, errorMsg: string) => {
   const url = `sms:${phone.trim()}?body=${encodeURIComponent(body)}`;
-  Linking.openURL(url).catch(() => Alert.alert("", "Не вдалося відкрити SMS"));
+  Linking.openURL(url).catch(() => Alert.alert("", errorMsg));
 };
 
 const pickNewGreeting = (
@@ -107,20 +105,20 @@ export const GreetingModal: React.FC<GreetingModalProps> = ({
         title: t("generateGreeting"),
       });
     } catch {
-      Alert.alert(t("error"), "Не вдалося відкрити поширення");
+      Alert.alert(t("error"), t("shareFailed"));
     }
   };
 
   const handleWhatsApp = () => {
     if (hasPhone && birthday?.phone)
-      openWhatsAppWithText(birthday.phone, editableText);
-    else Alert.alert("", "Додайте номер телефону в картку контакту");
+      openWhatsAppWithText(birthday.phone, editableText, t("openWhatsAppFailed"));
+    else Alert.alert("", t("addPhoneToContact"));
   };
 
   const handleSms = () => {
     if (hasPhone && birthday?.phone)
-      openSmsWithBody(birthday.phone, editableText);
-    else Alert.alert("", "Додайте номер телефону в картку контакту");
+      openSmsWithBody(birthday.phone, editableText, t("openSmsFailed"));
+    else Alert.alert("", t("addPhoneToContact"));
   };
 
   if (!visible) return null;
@@ -210,7 +208,7 @@ export const GreetingModal: React.FC<GreetingModalProps> = ({
               editable={true}
               multiline
               numberOfLines={4}
-              placeholder={name ? "" : "Оберіть контакт"}
+              placeholder={name ? "" : t("selectContact")}
               placeholderTextColor="#888"
             />
             <TouchableOpacity

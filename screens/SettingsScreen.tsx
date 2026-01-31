@@ -13,8 +13,9 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "../contexts/ThemeContext";
+import { useLanguage } from "../contexts/LanguageContext";
 import { useTranslation } from "../hooks/useTranslation";
-import { ThemeMode } from "../utils/settingsStorage";
+import { ThemeMode, LanguageCode } from "../utils/settingsStorage";
 import {
   getNotificationHour,
   setNotificationHour,
@@ -36,6 +37,7 @@ const HOURS = Array.from({ length: 24 }, (_, i) => i);
 export const SettingsScreen: React.FC = () => {
   const { t } = useTranslation();
   const { theme, setThemeMode, isDark } = useTheme();
+  const { language, setLanguageCode } = useLanguage();
   const [notificationHour, setNotificationHourState] = useState(9);
   const [quietFrom, setQuietFromState] = useState(22);
   const [quietTo, setQuietToState] = useState(8);
@@ -97,8 +99,12 @@ export const SettingsScreen: React.FC = () => {
 
   const handleWriteToSupport = () => {
     Linking.openURL("mailto:uu36548@gmail.com").catch(() =>
-      Alert.alert(t("error"), "Не вдалося відкрити пошту")
+      Alert.alert(t("error"), t("openEmailFailed"))
     );
+  };
+
+  const handleLanguageChange = async (code: LanguageCode) => {
+    await setLanguageCode(code);
   };
 
   const handleImport = async () => {
@@ -118,7 +124,7 @@ export const SettingsScreen: React.FC = () => {
       await rescheduleAllNotifications(birthdays);
       Alert.alert(
         t("importSuccess"),
-        `Імпортовано: ${imported}, всього: ${total}`
+        t("importCount", imported, total)
       );
     } catch (e) {
       Alert.alert(t("importError"), String(e));
@@ -139,6 +145,46 @@ export const SettingsScreen: React.FC = () => {
         <Text style={[styles.title, { color: textColor }]}>
           {t("settings")}
         </Text>
+
+        <View style={[styles.section, { backgroundColor: cardBg }]}>
+          <Text style={[styles.sectionTitle, { color: secondaryColor }]}>
+            {t("language")}
+          </Text>
+          <View style={styles.row}>
+            <TouchableOpacity
+              style={[
+                styles.optionButton,
+                language === "uk" && { backgroundColor: secondaryColor },
+              ]}
+              onPress={() => handleLanguageChange("uk")}
+            >
+              <Text
+                style={[
+                  styles.optionText,
+                  language === "uk" && styles.optionTextActive,
+                ]}
+              >
+                {t("languageUk")}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.optionButton,
+                language === "en" && { backgroundColor: secondaryColor },
+              ]}
+              onPress={() => handleLanguageChange("en")}
+            >
+              <Text
+                style={[
+                  styles.optionText,
+                  language === "en" && styles.optionTextActive,
+                ]}
+              >
+                {t("languageEn")}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
 
         <View style={[styles.section, { backgroundColor: cardBg }]}>
           <Text style={[styles.sectionTitle, { color: secondaryColor }]}>

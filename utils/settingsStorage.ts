@@ -6,8 +6,23 @@ const KEY_LAST_CONFETTI_DATE = '@birthday_app:lastConfettiDate';
 const KEY_ONBOARDING_DONE = '@birthday_app:onboardingDone';
 const KEY_QUIET_HOURS_FROM = '@birthday_app:quietHoursFrom';
 const KEY_QUIET_HOURS_TO = '@birthday_app:quietHoursTo';
+const KEY_LANGUAGE = '@birthday_app:language';
 
 export type ThemeMode = 'light' | 'dark';
+export type LanguageCode = 'uk' | 'en';
+
+export const getLanguage = async (): Promise<LanguageCode> => {
+  try {
+    const v = await AsyncStorage.getItem(KEY_LANGUAGE);
+    return (v === 'en' ? 'en' : 'uk') as LanguageCode;
+  } catch {
+    return 'uk';
+  }
+};
+
+export const setLanguage = async (code: LanguageCode): Promise<void> => {
+  await AsyncStorage.setItem(KEY_LANGUAGE, code);
+};
 
 export const getTheme = async (): Promise<ThemeMode> => {
   try {
