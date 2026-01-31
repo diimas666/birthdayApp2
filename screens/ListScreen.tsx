@@ -93,6 +93,8 @@ export const ListScreen: React.FC = () => {
     await loadBirthdays();
     const allBirthdays = await getBirthdays();
     await rescheduleAllNotifications(allBirthdays);
+    setModalVisible(false);
+    setEditingBirthday(null);
   };
 
   const renderRightActions = (progress: Animated.AnimatedInterpolation<number>, dragX: Animated.AnimatedInterpolation<number>, item: BirthdayWithAge) => {

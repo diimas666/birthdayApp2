@@ -87,10 +87,10 @@ export const HomeScreen: React.FC = () => {
       id: Date.now().toString(),
       createdAt: new Date(),
     };
-    
     await saveBirthday(newBirthday);
     await rescheduleAllNotifications([...birthdays, newBirthday]);
     await loadBirthdays();
+    setModalVisible(false);
   };
 
   const renderBirthdayCard = ({ item }: { item: BirthdayWithAge }) => {

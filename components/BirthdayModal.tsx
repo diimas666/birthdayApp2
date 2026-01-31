@@ -239,7 +239,7 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 40,
     paddingHorizontal: 20,
-    maxHeight: '90%',
+    height: '80%',
     borderWidth: 1,
     borderColor: '#8b5cf6',
   },
@@ -267,7 +267,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-  contentScroll: { maxHeight: 400 },
+  contentScroll: { flex: 1 },
   content: {
     gap: 20,
     paddingBottom: 20,
