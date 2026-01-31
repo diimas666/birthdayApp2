@@ -12,7 +12,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import { Birthday } from '../types';
 import { getBirthdays } from '../utils/storage';
-import { getBirthdaysOnDate } from '../utils/dateHelpers';
+import { getBirthdaysOnDate, enrichBirthday } from '../utils/dateHelpers';
 import { useTranslation } from '../hooks/useTranslation';
 import { useTheme } from '../contexts/ThemeContext';
 import { uk } from '../locales/uk';
@@ -65,6 +65,11 @@ export const CalendarScreen: React.FC = () => {
     if (selectedDate === null) return [];
     return getBirthdaysOnDate(birthdays, currentMonth, selectedDate);
   }, [birthdays, currentMonth, selectedDate]);
+
+  const enrichedOnSelected = useMemo(
+    () => birthdaysOnSelected.map(enrichBirthday),
+    [birthdaysOnSelected]
+  );
 
   const goPrev = () => {
     if (currentMonth === 0) {
@@ -121,33 +126,26 @@ export const CalendarScreen: React.FC = () => {
             if (day === null) {
               return <View key={`empty-${index}`} style={styles.cell} />;
             }
-            const hasDot = hasBirthday(day);
+            const hasBday = hasBirthday(day);
             const isSelected = selectedDate === day;
+            const isPurple = hasBday || isSelected;
             return (
               <TouchableOpacity
                 key={day}
                 style={[
                   styles.cell,
-                  isSelected && { backgroundColor: secondaryColor },
+                  isPurple && { backgroundColor: secondaryColor },
                 ]}
                 onPress={() => setSelectedDate(day)}
               >
                 <Text
                   style={[
                     styles.cellDay,
-                    { color: isSelected ? '#fff' : textColor },
+                    { color: isPurple ? '#fff' : textColor },
                   ]}
                 >
                   {day}
                 </Text>
-                {hasDot && (
-                  <View
-                    style={[
-                      styles.dot,
-                      { backgroundColor: isSelected ? '#fff' : secondaryColor },
-                    ]}
-                  />
-                )}
               </TouchableOpacity>
             );
           })}
@@ -171,17 +169,28 @@ export const CalendarScreen: React.FC = () => {
                 ? `${selectedDate} ${uk.monthNamesShort[currentMonth]}`
                 : ''}
             </Text>
-            {birthdaysOnSelected.length === 0 ? (
+            {enrichedOnSelected.length === 0 ? (
               <Text style={[styles.modalEmpty, { color: mutedColor }]}>
                 {t('noBirthdaysOnDate')}
               </Text>
             ) : (
-              <ScrollView style={styles.modalList}>
-                {birthdaysOnSelected.map((b) => (
-                  <Text key={b.id} style={[styles.modalName, { color: textColor }]}>
-                    🎂 {b.name}
-                  </Text>
-                ))}
+              <ScrollView style={styles.modalList} showsVerticalScrollIndicator={false}>
+                {enrichedOnSelected.map((b) => {
+                  const dateStr = `${b.dateOfBirth.getDate()} ${uk.monthNamesShort[b.dateOfBirth.getMonth()]}`;
+                  const ageWord = (t('yearWord', b.age) as string);
+                  return (
+                    <View key={b.id} style={[styles.modalCard, { backgroundColor: isDark ? '#1e1e2e' : '#f5f0ff', borderColor: secondaryColor }]}>
+                      <Text style={[styles.modalName, { color: textColor }]}>🎂 {b.name}</Text>
+                      <Text style={[styles.modalDetail, { color: mutedColor }]}>{dateStr}</Text>
+                      <Text style={[styles.modalDetail, { color: textColor }]}>
+                        {t('turns', b.age)} {ageWord}
+                      </Text>
+                      {b.note?.trim() ? (
+                        <Text style={[styles.modalNote, { color: mutedColor }]}>{b.note}</Text>
+                      ) : null}
+                    </View>
+                  );
+                })}
               </ScrollView>
             )}
             <TouchableOpacity
@@ -236,13 +245,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   cellDay: { fontSize: 14, fontWeight: '600' },
-  dot: {
-    position: 'absolute',
-    bottom: 4,
-    width: 5,
-    height: 5,
-    borderRadius: 3,
-  },
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.5)',
@@ -256,8 +258,16 @@ const styles = StyleSheet.create({
   },
   modalTitle: { fontSize: 20, fontWeight: '700', marginBottom: 16 },
   modalEmpty: { fontSize: 15, marginBottom: 20 },
-  modalList: { maxHeight: 200, marginBottom: 16 },
-  modalName: { fontSize: 16, marginBottom: 8 },
+  modalList: { maxHeight: 320, marginBottom: 16 },
+  modalCard: {
+    padding: 14,
+    borderRadius: 12,
+    borderWidth: 1,
+    marginBottom: 12,
+  },
+  modalName: { fontSize: 17, fontWeight: '700', marginBottom: 4 },
+  modalDetail: { fontSize: 14, marginBottom: 2 },
+  modalNote: { fontSize: 13, marginTop: 6, fontStyle: 'italic' },
   modalClose: {
     paddingVertical: 14,
     borderRadius: 12,
