@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { StatusBar, StyleSheet, Text, View } from 'react-native';
+import { StatusBar, StyleSheet, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { HomeScreen } from './screens/HomeScreen';
 import { ListScreen } from './screens/ListScreen';
@@ -33,7 +34,7 @@ function AppTabs() {
         name="Home"
         component={HomeScreen}
         options={{
-          tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 24 }}>🏠</Text>,
+          tabBarIcon: ({ color, size }) => <Ionicons name="home" size={size ?? 24} color={color} />,
           tabBarLabel: t('home'),
         }}
       />
@@ -41,7 +42,7 @@ function AppTabs() {
         name="List"
         component={ListScreen}
         options={{
-          tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 24 }}>📋</Text>,
+          tabBarIcon: ({ color, size }) => <Ionicons name="list" size={size ?? 24} color={color} />,
           tabBarLabel: t('allBirthdays'),
         }}
       />
@@ -49,7 +50,7 @@ function AppTabs() {
         name="Calendar"
         component={CalendarScreen}
         options={{
-          tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 24 }}>📅</Text>,
+          tabBarIcon: ({ color, size }) => <Ionicons name="calendar" size={size ?? 24} color={color} />,
           tabBarLabel: t('calendar'),
         }}
       />
@@ -57,7 +58,7 @@ function AppTabs() {
         name="Settings"
         component={SettingsScreen}
         options={{
-          tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 24 }}>⚙️</Text>,
+          tabBarIcon: ({ color, size }) => <Ionicons name="settings" size={size ?? 24} color={color} />,
           tabBarLabel: t('settings'),
         }}
       />

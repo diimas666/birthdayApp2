@@ -11,6 +11,7 @@
 		761780ED2CA45674006654EE /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.mm */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		A1B2C3D42CA45674006654E1 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D32CA45674006654E1 /* main.m */; };
+		A1B2C3D52CA45674006654E2 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D62CA45674006654E3 /* Ionicons.ttf */; };
 		F8F084005C3741EDF5FBC241 /* Pods_BirthdayApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 54729D48336A324CB42323EC /* Pods_BirthdayApp.framework */; };
 /* End PBXBuildFile section */
 
@@ -24,6 +25,7 @@
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = BirthdayApp/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A1B2C3D12CA45674006654E1 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = BirthdayApp/AppDelegate.h; sourceTree = "<group>"; };
 		A1B2C3D32CA45674006654E1 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = main.m; path = BirthdayApp/main.m; sourceTree = "<group>"; };
+		A1B2C3D62CA45674006654E3 /* Ionicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Ionicons.ttf; path = Ionicons.ttf; sourceTree = "<group>"; };
 		C1277BE0649A52A598281F11 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = BirthdayApp/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -45,12 +47,22 @@
 			children = (
 				A1B2C3D12CA45674006654E1 /* AppDelegate.h */,
 				761780EC2CA45674006654EE /* AppDelegate.mm */,
+				A1B2C3D72CA45674006654E4 /* Fonts */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				A1B2C3D32CA45674006654E1 /* main.m */,
 				C1277BE0649A52A598281F11 /* PrivacyInfo.xcprivacy */,
 			);
 			name = BirthdayApp;
+			sourceTree = "<group>";
+		};
+		A1B2C3D72CA45674006654E4 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D62CA45674006654E3 /* Ionicons.ttf */,
+			);
+			name = Fonts;
+			path = BirthdayApp/Fonts;
 			sourceTree = "<group>";
 		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
@@ -162,6 +174,7 @@
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				4F0E38829230765E486F9DDB /* PrivacyInfo.xcprivacy in Resources */,
+				A1B2C3D52CA45674006654E2 /* Ionicons.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

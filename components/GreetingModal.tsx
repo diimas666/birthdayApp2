@@ -11,6 +11,7 @@ import {
   Share,
   Alert,
 } from "react-native";
+import Ionicons from "react-native-vector-icons/Ionicons";
 import { useTheme } from "../contexts/ThemeContext";
 import { useTranslation } from "../hooks/useTranslation";
 import {
@@ -216,6 +217,7 @@ export const GreetingModal: React.FC<GreetingModalProps> = ({
               style={[styles.refreshBtn, { backgroundColor: secondaryColor }]}
               onPress={refreshGreeting}
             >
+              <Ionicons name="refresh" size={22} color="#fff" style={styles.refreshIcon} />
               <Text style={styles.refreshBtnText}>{t("greetingRefresh")}</Text>
             </TouchableOpacity>
             {/* кнопки для копіювання, відправлення в WhatsApp, відправлення SMS */}
@@ -298,8 +300,12 @@ const styles = StyleSheet.create({
     marginTop: 12,
     paddingVertical: 10,
     borderRadius: 12,
+    flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
   },
+  refreshIcon: {},
   refreshBtnText: { color: "#fff", fontWeight: "600", fontSize: 15 },
   actions: { flexDirection: "row", flexWrap: "wrap", gap: 10, marginTop: 20 },
   primaryBtn: {

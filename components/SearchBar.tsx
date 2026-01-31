@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, TextInput, StyleSheet, Text } from 'react-native';
+import { View, TextInput, StyleSheet } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useTheme } from '../contexts/ThemeContext';
 
 interface SearchBarProps {
@@ -13,9 +14,12 @@ export const SearchBar: React.FC<SearchBarProps> = ({ value, onChangeText, place
   const bg = isDark ? '#2a2a3e' : '#fff';
   const textColor = isDark ? '#fff' : '#000';
   const placeholderColor = isDark ? '#999' : '#999';
+  const iconColor = isDark ? '#999' : '#666';
   return (
     <View style={[styles.container, { backgroundColor: bg, borderColor: '#8b5cf6' }]}>
-      <Text style={styles.searchIcon}>🔍</Text>
+      <View style={styles.searchIconWrap}>
+        <Ionicons name="search" size={22} color={iconColor} />
+      </View>
       <TextInput
         style={[styles.input, { color: textColor }]}
         value={value}
@@ -37,11 +41,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     position: 'relative',
   },
-  searchIcon: {
+  searchIconWrap: {
     position: 'absolute',
-    right: 16,
-    top: 12,
-    fontSize: 20,
+    right: 14,
+    top: 0,
+    bottom: 0,
+    justifyContent: 'center',
     zIndex: 1,
   },
   input: {
