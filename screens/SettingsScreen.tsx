@@ -24,7 +24,9 @@ import {
 } from "../utils/settingsStorage";
 import {
   exportBirthdaysJson,
+  exportBirthdaysCsv,
   importBirthdaysFromJson,
+  importBirthdaysFromCsv,
   getBirthdays,
 } from "../utils/storage";
 import { rescheduleAllNotifications } from "../utils/notifications";
@@ -67,7 +69,20 @@ export const SettingsScreen: React.FC = () => {
     await rescheduleAllNotifications(birthdays);
   };
 
-  const handleExport = async () => {
+  const handleExportCsv = async () => {
+    try {
+      const csv = await exportBirthdaysCsv();
+      await Share.share({
+        message: csv,
+        title: "birthdays_list.csv",
+      });
+      Alert.alert(t("exportSuccess"), "");
+    } catch (e) {
+      Alert.alert(t("error"), String(e));
+    }
+  };
+
+  const handleExportJson = async () => {
     try {
       const json = await exportBirthdaysJson();
       await Share.share({
@@ -87,14 +102,16 @@ export const SettingsScreen: React.FC = () => {
   };
 
   const handleImport = async () => {
-    if (!importJson.trim()) {
-      Alert.alert(t("validationError"), "Вставте JSON");
+    const raw = importJson.trim();
+    if (!raw) {
+      Alert.alert(t("validationError"), t("importPlaceholder"));
       return;
     }
     try {
-      const { imported, total } = await importBirthdaysFromJson(
-        importJson.trim()
-      );
+      const isJson = raw.startsWith("[");
+      const { imported, total } = isJson
+        ? await importBirthdaysFromJson(raw)
+        : await importBirthdaysFromCsv(raw);
       setImportModalVisible(false);
       setImportJson("");
       const birthdays = await getBirthdays();
@@ -260,9 +277,18 @@ export const SettingsScreen: React.FC = () => {
         </View>
 
         <View style={[styles.section, { backgroundColor: cardBg }]}>
-          <TouchableOpacity style={styles.menuRow} onPress={handleExport}>
+          <Text style={[styles.sectionTitle, { color: secondaryColor }]}>
+            {t("exportData")}
+          </Text>
+          <TouchableOpacity style={styles.menuRow} onPress={handleExportCsv}>
             <Text style={[styles.menuRowText, { color: textColor }]}>
-              {t("exportData")}
+              {t("exportDataList")}
+            </Text>
+            <Text style={styles.menuRowArrow}>→</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.menuRow} onPress={handleExportJson}>
+            <Text style={[styles.menuRowText, { color: textColor }]}>
+              {t("exportDataFull")}
             </Text>
             <Text style={styles.menuRowArrow}>→</Text>
           </TouchableOpacity>
@@ -314,7 +340,7 @@ export const SettingsScreen: React.FC = () => {
               ]}
               value={importJson}
               onChangeText={setImportJson}
-              placeholder="Вставте JSON..."
+              placeholder={t("importPlaceholder")}
               placeholderTextColor="#666"
               multiline
               numberOfLines={8}
