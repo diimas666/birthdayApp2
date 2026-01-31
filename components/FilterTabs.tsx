@@ -1,24 +1,27 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { useTranslation } from '../hooks/useTranslation';
-import { useTheme } from '../contexts/ThemeContext';
+import React from "react";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { useTranslation } from "../hooks/useTranslation";
+import { useTheme } from "../contexts/ThemeContext";
 
-type FilterType = 'today' | 'week' | 'month' | 'year';
+type FilterType = "today" | "week" | "month" | "year";
 
 interface FilterTabsProps {
   activeFilter: FilterType;
   onFilterChange: (filter: FilterType) => void;
 }
 
-export const FilterTabs: React.FC<FilterTabsProps> = ({ activeFilter, onFilterChange }) => {
+export const FilterTabs: React.FC<FilterTabsProps> = ({
+  activeFilter,
+  onFilterChange,
+}) => {
   const { t } = useTranslation();
   const { isDark } = useTheme();
-  const tabTextColor = isDark ? '#fff' : '#000';
+  const tabTextColor = isDark ? "#fff" : "#000";
   const tabs: { key: FilterType; label: string }[] = [
-    { key: 'today', label: t('filterToday') },
-    { key: 'week', label: t('filterWeek') },
-    { key: 'month', label: t('filterMonth') },
-    { key: 'year', label: t('filterYear') },
+    { key: "today", label: t("filterToday") },
+    { key: "week", label: t("filterWeek") },
+    { key: "month", label: t("filterMonth") },
+    { key: "year", label: t("filterYear") },
   ];
 
   return (
@@ -29,7 +32,13 @@ export const FilterTabs: React.FC<FilterTabsProps> = ({ activeFilter, onFilterCh
           style={[styles.tab, activeFilter === tab.key && styles.activeTab]}
           onPress={() => onFilterChange(tab.key)}
         >
-          <Text style={[styles.tabText, { color: tabTextColor }, activeFilter === tab.key && styles.activeTabText]}>
+          <Text
+            style={[
+              styles.tabText,
+              { color: tabTextColor },
+              activeFilter === tab.key && styles.activeTabText,
+            ]}
+          >
             {tab.label}
           </Text>
         </TouchableOpacity>
@@ -40,7 +49,7 @@ export const FilterTabs: React.FC<FilterTabsProps> = ({ activeFilter, onFilterCh
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
+    flexDirection: "row",
     paddingHorizontal: 20,
     marginBottom: 16,
     gap: 8,
@@ -48,18 +57,22 @@ const styles = StyleSheet.create({
   tab: {
     paddingHorizontal: 16,
     paddingVertical: 8,
-    borderRadius: 20,
+    borderRadius: 10,
+    backgroundColor: "#f3f3f3",
+    minWidth: 70,
+    alignItems: "center",
+    justifyContent: "center",
   },
   activeTab: {
-    backgroundColor: '#8b5cf6',
+    backgroundColor: "#8b5cf6",
   },
   tabText: {
     fontSize: 14,
-    color: '#000',
-    fontWeight: '500',
+    color: "#000",
+    fontWeight: "500",
   },
   activeTabText: {
-    color: '#fff',
-    fontWeight: '600',
+    color: "#fff",
+    fontWeight: "600",
   },
 });
