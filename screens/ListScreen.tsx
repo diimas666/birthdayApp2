@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Alert,
   Animated,
+  StatusBar,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
@@ -147,7 +148,7 @@ export const ListScreen: React.FC = () => {
             </View>
             <View style={styles.listItemRight}>
               <View style={[styles.daysBadge, item.daysUntil === 0 && styles.daysBadgeToday]}>
-                <Text style={styles.daysBadgeText}>{getDaysText()}</Text>
+                <Text style={[styles.daysBadgeText, item.daysUntil === 0 && styles.daysBadgeTextToday]}>{getDaysText()}</Text>
               </View>
             </View>
           </View>
@@ -159,6 +160,7 @@ export const ListScreen: React.FC = () => {
   if (birthdays.length === 0) {
     return (
       <SafeAreaView style={styles.container} edges={['top']}>
+        <StatusBar barStyle="dark-content" backgroundColor="#F5F5F5" translucent={false} />
         <EmptyState message={t('noBirthdaysYet')} emoji="🎂" />
         <TouchableOpacity style={styles.fab} onPress={() => setModalVisible(true)}>
           <Text style={styles.fabText}>🎂</Text>
@@ -178,6 +180,7 @@ export const ListScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
+      <StatusBar barStyle="dark-content" backgroundColor="#F5F5F5" translucent={false} />
       <View style={styles.sortRow}>
         <Text style={styles.sortLabel}>{t('sortBy')}:</Text>
         <View style={styles.sortTabs}>
@@ -220,7 +223,7 @@ export const ListScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0a0a14',
+    backgroundColor: '#F5F5F5',
   },
   sortRow: {
     flexDirection: 'row',
@@ -228,18 +231,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     gap: 8,
+    backgroundColor: '#fff',
   },
-  sortLabel: { fontSize: 14, color: '#999' },
+  sortLabel: { fontSize: 14, color: '#666' },
   sortTabs: { flexDirection: 'row', gap: 8 },
   sortTab: {
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 12,
-    backgroundColor: '#2a2a3e',
+    backgroundColor: '#eee',
   },
   sortTabActive: { backgroundColor: '#8b5cf6' },
-  sortTabText: { fontSize: 12, color: '#fff' },
-  sortTabTextActive: { fontWeight: '600' },
+  sortTabText: { fontSize: 12, color: '#333' },
+  sortTabTextActive: { fontWeight: '600', color: '#fff' },
   list: {
     padding: 16,
     paddingBottom: 80,
@@ -262,11 +266,11 @@ const styles = StyleSheet.create({
   },
   fabText: { fontSize: 32 },
   listItem: {
-    backgroundColor: '#2a2a3e',
+    backgroundColor: '#fff',
     borderRadius: 16,
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: '#3a3a4e',
+    borderColor: '#e8e8e8',
     overflow: 'hidden',
   },
   listItemContent: {
@@ -280,12 +284,12 @@ const styles = StyleSheet.create({
   listItemName: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#000',
     marginBottom: 4,
   },
   listItemDetails: {
     fontSize: 14,
-    color: '#a78bfa',
+    color: '#8b5cf6',
     marginBottom: 4,
   },
   listItemNote: {
@@ -298,7 +302,7 @@ const styles = StyleSheet.create({
     marginLeft: 16,
   },
   daysBadge: {
-    backgroundColor: '#3a3a4e',
+    backgroundColor: '#f0e6ff',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 12,
@@ -307,9 +311,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#8b5cf6',
   },
   daysBadgeText: {
-    color: '#fff',
+    color: '#333',
     fontSize: 12,
     fontWeight: '600',
+  },
+  daysBadgeTextToday: {
+    color: '#fff',
   },
   rightAction: {
     flex: 1,

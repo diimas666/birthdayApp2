@@ -89,7 +89,7 @@ export const BirthdayModal: React.FC<BirthdayModalProps> = ({
         tags: tags.length > 0 ? tags : undefined,
       });
       resetForm();
-      onClose();
+      setTimeout(() => onClose(), 0);
     } catch (error) {
       Alert.alert(t('error'), t('failedToSave'));
       console.error(error);
@@ -100,7 +100,8 @@ export const BirthdayModal: React.FC<BirthdayModalProps> = ({
 
   const handleClose = () => {
     resetForm();
-    onClose();
+    // Defer close so the tap is not passed through to the list/FAB underneath
+    setTimeout(() => onClose(), 0);
   };
 
   return (
