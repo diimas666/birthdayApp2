@@ -1,38 +1,4 @@
 {
-  "expo": {
-    "name": "Birthday Reminder",
-    "slug": "birthday-app",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "userInterfaceStyle": "dark",
-    "splash": {
-      "resizeMode": "contain",
-      "backgroundColor": "#1a0a2e"
-    },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.birthdayapp.reminder"
-    },
-    "android": {
-      "adaptiveIcon": {
-        "backgroundColor": "#1a0a2e"
-      },
-      "package": "com.birthdayapp.reminder",
-      "permissions": [
-        "RECEIVE_BOOT_COMPLETED"
-      ]
-    },
-    "web": {},
-    "plugins": [
-      [
-        "expo-notifications",
-        {
-          "color": "#8b5cf6"
-        }
-      ]
-    ]
-  }
+  "name": "BirthdayApp",
+  "displayName": "Birthday Reminder"
 }

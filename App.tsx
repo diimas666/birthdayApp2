@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text } from 'react-native';
+import { StatusBar, StyleSheet, Text } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { HomeScreen } from './screens/HomeScreen';
 import { ListScreen } from './screens/ListScreen';
@@ -15,24 +14,20 @@ const Tab = createBottomTabNavigator();
 
 export default function App() {
   const { t } = useTranslation();
-  
+
   useEffect(() => {
-    // Request notification permissions on app start
     requestPermissions();
-    
-    // Reschedule all notifications on app start
     const initializeNotifications = async () => {
       const birthdays = await getBirthdays();
       await rescheduleAllNotifications(birthdays);
     };
-    
     initializeNotifications();
   }, []);
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView style={styles.root}>
+      <StatusBar barStyle="light-content" backgroundColor="#1a0a2e" />
       <NavigationContainer>
-        <StatusBar style="light" />
         <Tab.Navigator
           screenOptions={{
             headerShown: false,
@@ -65,6 +60,7 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
+  root: { flex: 1 },
   tabBar: {
     backgroundColor: '#1a0a2e',
     borderTopWidth: 0,

@@ -1,109 +1,130 @@
 # Birthday Reminder App 🎉
 
-A beautiful mobile application built with React Native (Expo) to help you remember and celebrate birthdays with push notifications.
+Мобильное приложение на **React Native 0.78** (CLI, новая архитектура) для напоминаний о днях рождения с локальными уведомлениями.
 
-## Features
+## Стек
 
-- ✅ **Add Birthdays**: Easy-to-use modal with name, date of birth, and optional notes
-- 🔔 **Smart Notifications**: Automatic push notifications 3 days before, 1 day before, and on the birthday
-- 🎨 **Modern UI**: Beautiful purple/violet gradient design with dark theme
-- 📱 **Home Screen**: Carousel showing upcoming birthdays (next 7 days) with special highlighting for today
-- 📋 **List Screen**: Full list of all birthdays, sorted by nearest date, with swipe-to-delete and tap-to-edit
-- 🎊 **Confetti Animation**: Celebratory confetti when viewing birthdays on the actual day
-- 📳 **Haptic Feedback**: Tactile feedback when saving birthdays
-- 💾 **Local Storage**: All data stored locally using AsyncStorage
+- **React Native 0.78** (CLI, New Architecture)
+- **React 19**
+- **TypeScript**
+- **@notifee/react-native** — локальные уведомления
+- **React Navigation** — навигация
+- **react-native-gesture-handler** — свайпы
+- **react-native-reanimated** — анимации
+- **react-native-haptic-feedback** — тактильная отдача
 
-## Tech Stack
+## Запуск (Android и iOS)
 
-- **React Native** with **Expo** (~50.0.0)
-- **TypeScript** for type safety
-- **AsyncStorage** for local data persistence
-- **Expo Notifications** for push notifications
-- **React Navigation** for navigation
-- **React Native Gesture Handler** for swipe actions
-- **React Native Reanimated** for smooth animations
-- **Expo Haptics** for tactile feedback
-- **React Native Confetti Cannon** for celebrations
+### 1. Установка зависимостей (обязательно перед `pod install`)
 
-## Installation
+Без установленных зависимостей команда `pod install` в папке `ios` выдаст ошибку вида: *"Cannot find module '@react-native-community/cli'"*. Сначала установи пакеты:
 
-1. **Install dependencies:**
+```bash
+npm install
+# или
+yarn install
+```
+
+Убедись, что в `node_modules/@react-native-community/` есть папки `cli` и `cli-platform-ios`.
+
+### 2. Нативные папки ios и android
+
+Если папок `ios` и `android` нет или сборка падает, создайте новый проект и скопируйте нативные папки:
+
+```bash
+cd ..
+npx @react-native-community/cli@latest init BirthdayApp --version 0.78.0 --skip-git-init
+cp -R BirthdayApp/ios birthdayApp2/
+cp -R BirthdayApp/android birthdayApp2/
+# Удалите временный проект: rm -rf BirthdayApp
+```
+
+В `ios/Podfile` и в Xcode-проекте убедитесь, что имя таргета и бандл-ид совпадают с вашим приложением (например, `BirthdayApp`, `com.birthdayapp`).
+
+### 3. iOS
+
+**Важно:** всегда открывай **`ios/BirthdayApp.xcworkspace`** (не `BirthdayApp.xcodeproj`). Иначе появится ошибка **"Library 'DoubleConversion' not found"** — линкер не видит Pods. В селекторе схем выбери **BirthdayApp** (не Tests и не другой таргет).
+
+Если в логе Xcode видишь **"BirthdayReminder"** или **".dylib"** — ты собрал другой проект или схему. Открой именно этот репозиторий: `birthdayApp2/ios/BirthdayApp.xcworkspace`, схема **BirthdayApp**.
+
+Если при `pod install` появляется **"Could not automatically select an Xcode project"**, в папке `ios` нет файла `BirthdayApp.xcodeproj`. Скопируй полную папку `ios` из нового проекта (см. шаг 2), включая `BirthdayApp.xcodeproj`.
+
+```bash
+cd ios
+pod install
+cd ..
+# Открой в Xcode: open ios/BirthdayApp.xcworkspace
+npm run ios
+```
+
+**Если при сборке iOS падают ошибки RNScreens** (типы вроде `RNSBottomTabsScreen`, `RNSSplitViewHost` в namespace `facebook::react`):
+
+1. В проекте зафиксирована версия **react-native-screens 4.10.0** (совместима со старой архитектурой).
+2. Выполни у себя: `npm install` (если была ошибка кэша npm: `sudo chown -R $(whoami) ~/.npm`).
+3. Полная переустановка подов и очистка кэша Xcode:
    ```bash
-   npm install
+   cd ios
+   rm -rf Pods Podfile.lock build
+   pod install
    ```
+   Очисти кэш Xcode: удали папку `~/Library/Developer/Xcode/DerivedData/BirthdayApp-*` или в Xcode: **Product → Clean Build Folder** (⇧⌘K).
+4. Собери снова из **BirthdayApp.xcworkspace**, схема **BirthdayApp**.
 
-2. **Start the Expo development server:**
-   ```bash
-   npm start
-   ```
+### 4. Android
 
-3. **Run on your device:**
-   - Scan the QR code with Expo Go app (iOS/Android)
-   - Or press `i` for iOS simulator / `a` for Android emulator
+```bash
+npm run android
+```
 
-## Project Structure
+Для первой сборки Android нужен Gradle Wrapper. Если в `android/` нет `gradlew`, выполните в корне:
+
+```bash
+npx @react-native-community/cli init TempApp --version 0.78.0 --skip-git-init
+cp TempApp/android/gradlew birthdayApp2/android/
+cp TempApp/android/gradlew.bat birthdayApp2/android/
+cp -R TempApp/android/gradle birthdayApp2/android/
+# при необходимости скопируйте остальные файлы из TempApp/android
+```
+
+### 5. Metro
+
+```bash
+npm start
+```
+
+В другом терминале: `npm run ios` или `npm run android`.
+
+## Структура проекта
 
 ```
-birthdayApp/
-├── App.tsx                 # Main app entry with navigation
+birthdayApp2/
+├── App.tsx
+├── index.js              # Точка входа (React Native CLI)
+├── app.json              # name, displayName для CLI
+├── metro.config.js
+├── babel.config.js
 ├── components/
-│   ├── BirthdayCard.tsx    # Birthday card component for carousel
-│   ├── BirthdayModal.tsx   # Add/Edit birthday modal
-│   └── EmptyState.tsx      # Empty state component
 ├── screens/
-│   ├── HomeScreen.tsx      # Main home screen with carousel
-│   └── ListScreen.tsx      # Full list of birthdays
+├── hooks/
+├── locales/
 ├── types/
-│   └── index.ts            # TypeScript type definitions
 ├── utils/
-│   ├── dateHelpers.ts      # Date calculation utilities
-│   ├── notifications.ts    # Notification scheduling logic
-│   └── storage.ts          # AsyncStorage operations
-└── package.json
+├── ios/                  # Нативный iOS-проект
+└── android/              # Нативный Android-проект
 ```
 
-## Key Features Explained
+## Уведомления
 
-### Notifications
-- Notifications are scheduled automatically when birthdays are added/updated
-- They repeat every year automatically
-- Notifications are rescheduled on app start to ensure accuracy
+- Используется **@notifee/react-native** (вместо Expo Notifications).
+- Напоминания: за 3 дня, за 1 день и в день рождения.
+- При запуске приложения все уведомления пересоздаются по текущему списку дней рождения.
 
-### Date Calculations
-- Automatically calculates age and next birthday
-- Shows days until next birthday
-- Handles year transitions correctly
+## Разрешения
 
-### Data Persistence
-- All birthdays are stored locally using AsyncStorage
-- Data persists across app restarts
-- No internet connection required
+- **Android**: INTERNET, RECEIVE_BOOT_COMPLETED, VIBRATE, POST_NOTIFICATIONS.
+- **iOS**: запрос разрешения на уведомления при первом запуске.
 
-## Design
+## Заметки
 
-The app features a modern, dark-themed UI with:
-- **Primary Colors**: Purple/Violet gradients (#8b5cf6, #a78bfa)
-- **Background**: Dark gray/black (#0a0a14, #1a0a2e)
-- **Cards**: Rounded corners with soft shadows and glow effects
-- **Typography**: Clean, elegant fonts with proper hierarchy
-
-## Permissions
-
-The app requires notification permissions to send birthday reminders. These are requested automatically on first launch.
-
-## Notes
-
-- Asset files (icon.png, splash.png, etc.) referenced in `app.json` need to be created or use Expo's default assets
-- For production builds, configure app icons and splash screens in the `assets/` folder
-- Notifications work best when the app has been opened at least once after installation
-
-## Development
-
-- The app uses TypeScript for type safety
-- All components are functional components with hooks
-- State management is handled locally with React hooks
-- No external state management library required
-
-## License
-
-Private project - All rights reserved
+- Для стабильной сборки Android/iOS предпочтительно один раз сгенерировать проект через `npx @react-native-community/cli init ...` и скопировать папки `ios` и `android` в этот репозиторий.
+- Если в npm возникают ошибки кэша, выполните: `sudo chown -R $(whoami) ~/.npm` (macOS/Linux).

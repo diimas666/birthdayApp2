@@ -10,7 +10,7 @@ import {
   Alert,
 } from 'react-native';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
-import * as Haptics from 'expo-haptics';
+import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import { Birthday } from '../types';
 import { useTranslation } from '../hooks/useTranslation';
 
@@ -64,7 +64,7 @@ export const BirthdayModal: React.FC<BirthdayModalProps> = ({
 
     setIsSaving(true);
     try {
-      await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+      ReactNativeHapticFeedback.trigger('impactMedium', { enableVibrateFallback: true });
       await onSave({
         name: name.trim(),
         dateOfBirth,
