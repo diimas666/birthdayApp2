@@ -117,6 +117,7 @@ export const uk = {
   about: 'Про додаток',
   aboutText: 'Дні народження — ніколи не забудь особливий день.',
   version: 'Версія',
+  writeToSupport: 'Написати в підтримку',
   exportSuccess: 'Дані експортовано',
   importSuccess: 'Дані імпортовано',
   importError: 'Не вдалося імпортувати файл',
