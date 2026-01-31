@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, TextInput, StyleSheet, Text } from 'react-native';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface SearchBarProps {
   value: string;
@@ -8,15 +9,19 @@ interface SearchBarProps {
 }
 
 export const SearchBar: React.FC<SearchBarProps> = ({ value, onChangeText, placeholder = 'Пошук дня народження' }) => {
+  const { isDark } = useTheme();
+  const bg = isDark ? '#2a2a3e' : '#fff';
+  const textColor = isDark ? '#fff' : '#000';
+  const placeholderColor = isDark ? '#999' : '#999';
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: bg, borderColor: '#8b5cf6' }]}>
       <Text style={styles.searchIcon}>🔍</Text>
       <TextInput
-        style={styles.input}
+        style={[styles.input, { color: textColor }]}
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder}
-        placeholderTextColor="#999"
+        placeholderTextColor={placeholderColor}
       />
     </View>
   );

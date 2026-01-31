@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useTranslation } from '../hooks/useTranslation';
+import { useTheme } from '../contexts/ThemeContext';
 
 type FilterType = 'today' | 'week' | 'month' | 'year';
 
@@ -11,6 +12,8 @@ interface FilterTabsProps {
 
 export const FilterTabs: React.FC<FilterTabsProps> = ({ activeFilter, onFilterChange }) => {
   const { t } = useTranslation();
+  const { isDark } = useTheme();
+  const tabTextColor = isDark ? '#fff' : '#000';
   const tabs: { key: FilterType; label: string }[] = [
     { key: 'today', label: t('filterToday') },
     { key: 'week', label: t('filterWeek') },
@@ -26,7 +29,7 @@ export const FilterTabs: React.FC<FilterTabsProps> = ({ activeFilter, onFilterCh
           style={[styles.tab, activeFilter === tab.key && styles.activeTab]}
           onPress={() => onFilterChange(tab.key)}
         >
-          <Text style={[styles.tabText, activeFilter === tab.key && styles.activeTabText]}>
+          <Text style={[styles.tabText, { color: tabTextColor }, activeFilter === tab.key && styles.activeTabText]}>
             {tab.label}
           </Text>
         </TouchableOpacity>

@@ -4,13 +4,14 @@ import { View, Text, StyleSheet } from 'react-native';
 interface EmptyStateProps {
   message: string;
   emoji?: string;
+  textColor?: string;
 }
 
-export const EmptyState: React.FC<EmptyStateProps> = ({ message, emoji = '🎈' }) => {
+export const EmptyState: React.FC<EmptyStateProps> = ({ message, emoji = '🎈', textColor }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.emoji}>{emoji}</Text>
-      <Text style={styles.message}>{message}</Text>
+      <Text style={[styles.message, textColor ? { color: textColor } : undefined]}>{message}</Text>
     </View>
   );
 };

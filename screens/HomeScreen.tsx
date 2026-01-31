@@ -23,11 +23,21 @@ import { FilterTabs } from '../components/FilterTabs';
 import { BirthdayModal } from '../components/BirthdayModal';
 import { EmptyState } from '../components/EmptyState';
 import { useTranslation } from '../hooks/useTranslation';
+import { useTheme } from '../contexts/ThemeContext';
 
 const { width } = Dimensions.get('window');
 
 export const HomeScreen: React.FC = () => {
   const { t } = useTranslation();
+  const { isDark } = useTheme();
+  const bg = isDark ? '#0a0a14' : '#F5F5F5';
+  const cardBg = isDark ? '#2a2a3e' : '#fff';
+  const textColor = isDark ? '#fff' : '#000';
+  const secondaryText = isDark ? '#a78bfa' : '#666';
+  const chipBg = isDark ? '#2a2a3e' : '#eee';
+  const chipText = isDark ? '#fff' : '#333';
+  const statsBg = isDark ? '#2a2a5e' : '#f0e6ff';
+  const statsBorder = isDark ? '#8b5cf6' : '#8b5cf6';
   const [birthdays, setBirthdays] = useState<Birthday[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState<'today' | 'week' | 'month' | 'year'>('today');
@@ -98,8 +108,8 @@ export const HomeScreen: React.FC = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
-      <StatusBar barStyle="dark-content" backgroundColor="#F5F5F5" translucent={false} />
+    <SafeAreaView style={[styles.container, { backgroundColor: bg }]} edges={['top']}>
+      <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} backgroundColor={bg} translucent={false} />
       {showConfetti && (
         <ConfettiCannon
           count={200}
@@ -107,12 +117,12 @@ export const HomeScreen: React.FC = () => {
           fadeOut={true}
         />
       )}
-      
-      <View style={styles.header}>
+
+      <View style={[styles.header, { backgroundColor: cardBg }]}>
         <View style={styles.headerTop}>
           <View>
-            <Text style={styles.greeting}>{t('greeting')}</Text>
-            <Text style={styles.greetingSubtext}>{t('greetingSubtext')}</Text>
+            <Text style={[styles.greeting, { color: textColor }]}>{t('greeting')}</Text>
+            <Text style={[styles.greetingSubtext, { color: secondaryText }]}>{t('greetingSubtext')}</Text>
           </View>
         </View>
 
@@ -120,42 +130,42 @@ export const HomeScreen: React.FC = () => {
         <FilterTabs activeFilter={activeFilter} onFilterChange={setActiveFilter} />
         <View style={styles.tagRow}>
           <TouchableOpacity
-            style={[styles.tagChip, !selectedTag && styles.tagChipActive]}
+            style={[styles.tagChip, { backgroundColor: chipBg }, !selectedTag && styles.tagChipActive]}
             onPress={() => setSelectedTag(null)}
           >
-            <Text style={[styles.tagChipText, !selectedTag && styles.tagChipTextActive]}>{t('allTags')}</Text>
+            <Text style={[styles.tagChipText, { color: chipText }, !selectedTag && styles.tagChipTextActive]}>{t('allTags')}</Text>
           </TouchableOpacity>
           {[t('tagFamily'), t('tagFriends'), t('tagWork'), t('tagOther')].map(tag => (
             <TouchableOpacity
               key={tag}
-              style={[styles.tagChip, selectedTag === tag && styles.tagChipActive]}
+              style={[styles.tagChip, { backgroundColor: chipBg }, selectedTag === tag && styles.tagChipActive]}
               onPress={() => setSelectedTag(selectedTag === tag ? null : tag)}
             >
-              <Text style={[styles.tagChipText, selectedTag === tag && styles.tagChipTextActive]}>{tag}</Text>
+              <Text style={[styles.tagChipText, { color: chipText }, selectedTag === tag && styles.tagChipTextActive]}>{tag}</Text>
             </TouchableOpacity>
           ))}
         </View>
-        <Text style={styles.dateText}>{currentDate}</Text>
+        <Text style={[styles.dateText, { color: textColor }]}>{currentDate}</Text>
 
-        <View style={styles.statsBlock}>
-          <Text style={styles.statsTitle}>{t('statistics')}</Text>
+        <View style={[styles.statsBlock, { backgroundColor: statsBg, borderColor: statsBorder }]}>
+          <Text style={[styles.statsTitle, { color: statsBorder }]}>{t('statistics')}</Text>
           <View style={styles.statsRow}>
-            <Text style={styles.statsLabel}>{t('statsThisYear')}:</Text>
-            <Text style={styles.statsValue}>{stats.countThisYear}</Text>
+            <Text style={[styles.statsLabel, { color: secondaryText }]}>{t('statsThisYear')}:</Text>
+            <Text style={[styles.statsValue, { color: textColor }]}>{stats.countThisYear}</Text>
           </View>
           {stats.nearest && (
             <View style={styles.statsRow}>
-              <Text style={styles.statsLabel}>{t('statsNearest')}:</Text>
-              <Text style={styles.statsValue}>{stats.nearest.name} — {stats.nearest.daysUntil === 0 ? t('todayShort') : stats.nearest.daysUntil === 1 ? t('tomorrow') : t('inDays', stats.nearest.daysUntil)}</Text>
+              <Text style={[styles.statsLabel, { color: secondaryText }]}>{t('statsNearest')}:</Text>
+              <Text style={[styles.statsValue, { color: textColor }]}>{stats.nearest.name} — {stats.nearest.daysUntil === 0 ? t('todayShort') : stats.nearest.daysUntil === 1 ? t('tomorrow') : t('inDays', stats.nearest.daysUntil)}</Text>
             </View>
           )}
         </View>
       </View>
 
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+      <ScrollView style={[styles.content, { backgroundColor: bg }]} showsVerticalScrollIndicator={false}>
         {filteredBirthdays.length > 0 ? (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>
+            <Text style={[styles.sectionTitle, { color: textColor }]}>
               {activeFilter === 'today' ? t('todaysBirthdays') : t('sectionBirthdays')}
             </Text>
             {filteredBirthdays.map((item) => (
@@ -167,6 +177,7 @@ export const HomeScreen: React.FC = () => {
             <EmptyState
               message={searchQuery ? t('noResults') : t('noBirthdaysInPeriod')}
               emoji="🎂"
+              textColor={secondaryText}
             />
           </View>
         )}

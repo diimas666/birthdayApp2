@@ -24,11 +24,22 @@ import { rescheduleAllNotifications } from '../utils/notifications';
 import { BirthdayModal } from '../components/BirthdayModal';
 import { EmptyState } from '../components/EmptyState';
 import { useTranslation } from '../hooks/useTranslation';
+import { useTheme } from '../contexts/ThemeContext';
 
 type SortType = 'date' | 'name' | 'age';
 
 export const ListScreen: React.FC = () => {
   const { t } = useTranslation();
+  const { isDark } = useTheme();
+  const bg = isDark ? '#0a0a14' : '#F5F5F5';
+  const cardBg = isDark ? '#2a2a3e' : '#fff';
+  const textColor = isDark ? '#fff' : '#000';
+  const secondaryText = isDark ? '#a78bfa' : '#666';
+  const sortTabBg = isDark ? '#2a2a3e' : '#eee';
+  const listItemBg = isDark ? '#2a2a3e' : '#fff';
+  const listItemBorder = isDark ? '#3a3a4e' : '#e8e8e8';
+  const daysBadgeBg = isDark ? '#3a3a4e' : '#f0e6ff';
+  const daysBadgeTextColor = isDark ? '#fff' : '#333';
   const [birthdays, setBirthdays] = useState<BirthdayWithAge[]>([]);
   const [sortBy, setSortBy] = useState<SortType>('date');
   const [modalVisible, setModalVisible] = useState(false);
@@ -132,14 +143,14 @@ export const ListScreen: React.FC = () => {
         overshootRight={false}
       >
         <TouchableOpacity
-          style={styles.listItem}
+          style={[styles.listItem, { backgroundColor: listItemBg, borderColor: listItemBorder }]}
           onPress={() => handleEdit(item)}
           activeOpacity={0.7}
         >
           <View style={styles.listItemContent}>
             <View style={styles.listItemLeft}>
-              <Text style={styles.listItemName}>{item.name}</Text>
-              <Text style={styles.listItemDetails}>
+              <Text style={[styles.listItemName, { color: textColor }]}>{item.name}</Text>
+              <Text style={[styles.listItemDetails, { color: secondaryText }]}>
                 {t('turns', item.age + 1)} • {formatDate(item.nextBirthday)}
               </Text>
               {item.note && (
@@ -147,8 +158,8 @@ export const ListScreen: React.FC = () => {
               )}
             </View>
             <View style={styles.listItemRight}>
-              <View style={[styles.daysBadge, item.daysUntil === 0 && styles.daysBadgeToday]}>
-                <Text style={[styles.daysBadgeText, item.daysUntil === 0 && styles.daysBadgeTextToday]}>{getDaysText()}</Text>
+              <View style={[styles.daysBadge, { backgroundColor: item.daysUntil === 0 ? undefined : daysBadgeBg }, item.daysUntil === 0 && styles.daysBadgeToday]}>
+                <Text style={[styles.daysBadgeText, { color: item.daysUntil === 0 ? '#fff' : daysBadgeTextColor }, item.daysUntil === 0 && styles.daysBadgeTextToday]}>{getDaysText()}</Text>
               </View>
             </View>
           </View>
@@ -159,9 +170,9 @@ export const ListScreen: React.FC = () => {
 
   if (birthdays.length === 0) {
     return (
-      <SafeAreaView style={styles.container} edges={['top']}>
-        <StatusBar barStyle="dark-content" backgroundColor="#F5F5F5" translucent={false} />
-        <EmptyState message={t('noBirthdaysYet')} emoji="🎂" />
+      <SafeAreaView style={[styles.container, { backgroundColor: bg }]} edges={['top']}>
+        <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} backgroundColor={bg} translucent={false} />
+        <EmptyState message={t('noBirthdaysYet')} emoji="🎂" textColor={secondaryText} />
         <TouchableOpacity style={styles.fab} onPress={() => setModalVisible(true)}>
           <Text style={styles.fabText}>🎂</Text>
         </TouchableOpacity>
@@ -179,18 +190,18 @@ export const ListScreen: React.FC = () => {
   }
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
-      <StatusBar barStyle="dark-content" backgroundColor="#F5F5F5" translucent={false} />
-      <View style={styles.sortRow}>
-        <Text style={styles.sortLabel}>{t('sortBy')}:</Text>
+    <SafeAreaView style={[styles.container, { backgroundColor: bg }]} edges={['top']}>
+      <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} backgroundColor={bg} translucent={false} />
+      <View style={[styles.sortRow, { backgroundColor: cardBg }]}>
+        <Text style={[styles.sortLabel, { color: secondaryText }]}>{t('sortBy')}:</Text>
         <View style={styles.sortTabs}>
           {(['date', 'name', 'age'] as const).map(key => (
             <TouchableOpacity
               key={key}
-              style={[styles.sortTab, sortBy === key && styles.sortTabActive]}
+              style={[styles.sortTab, { backgroundColor: sortTabBg }, sortBy === key && styles.sortTabActive]}
               onPress={() => setSortBy(key)}
             >
-              <Text style={[styles.sortTabText, sortBy === key && styles.sortTabTextActive]}>
+              <Text style={[styles.sortTabText, { color: daysBadgeTextColor }, sortBy === key && styles.sortTabTextActive]}>
                 {key === 'date' ? t('sortByDate') : key === 'name' ? t('sortByName') : t('sortByAge')}
               </Text>
             </TouchableOpacity>
