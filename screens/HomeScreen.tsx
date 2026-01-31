@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   FlatList,
   Dimensions,
+  StatusBar,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
@@ -91,6 +92,7 @@ export const HomeScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
+      <StatusBar barStyle="dark-content" backgroundColor="#F5F5F5" translucent={false} />
       {showConfetti && (
         <ConfettiCannon
           count={200}
