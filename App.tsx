@@ -1,20 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { StatusBar, StyleSheet, View } from 'react-native';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import { ThemeProvider } from './contexts/ThemeContext';
-import { HomeScreen } from './screens/HomeScreen';
-import { ListScreen } from './screens/ListScreen';
-import { CalendarScreen } from './screens/CalendarScreen';
-import { SettingsScreen } from './screens/SettingsScreen';
-import { OnboardingScreen } from './screens/OnboardingScreen';
-import { requestPermissions } from './utils/notifications';
-import { getBirthdays } from './utils/storage';
-import { rescheduleAllNotifications } from './utils/notifications';
-import { getOnboardingDone } from './utils/settingsStorage';
-import { useTranslation } from './hooks/useTranslation';
+import React, { useEffect, useState } from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { StatusBar, StyleSheet, View } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import { ThemeProvider } from "./contexts/ThemeContext";
+import { HomeScreen } from "./screens/HomeScreen";
+import { ListScreen } from "./screens/ListScreen";
+import { CalendarScreen } from "./screens/CalendarScreen";
+import { SettingsScreen } from "./screens/SettingsScreen";
+import { OnboardingScreen } from "./screens/OnboardingScreen";
+import { requestPermissions } from "./utils/notifications";
+import { getBirthdays } from "./utils/storage";
+import { rescheduleAllNotifications } from "./utils/notifications";
+import { getOnboardingDone } from "./utils/settingsStorage";
+import { useTranslation } from "./hooks/useTranslation";
 
 const Tab = createBottomTabNavigator();
 
@@ -25,8 +25,8 @@ function AppTabs() {
       screenOptions={{
         headerShown: false,
         tabBarStyle: styles.tabBar,
-        tabBarActiveTintColor: '#8b5cf6',
-        tabBarInactiveTintColor: '#666',
+        tabBarActiveTintColor: "#8b5cf6",
+        tabBarInactiveTintColor: "#666",
         tabBarLabelStyle: styles.tabBarLabel,
       }}
     >
@@ -34,32 +34,40 @@ function AppTabs() {
         name="Home"
         component={HomeScreen}
         options={{
-          tabBarIcon: ({ color, size }) => <Ionicons name="home" size={size ?? 24} color={color} />,
-          tabBarLabel: t('home'),
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="home" size={size ?? 24} color={color} />
+          ),
+          tabBarLabel: t("home"),
         }}
       />
       <Tab.Screen
         name="List"
         component={ListScreen}
         options={{
-          tabBarIcon: ({ color, size }) => <Ionicons name="list" size={size ?? 24} color={color} />,
-          tabBarLabel: t('allBirthdays'),
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="list" size={size ?? 24} color={color} />
+          ),
+          tabBarLabel: t("allBirthdays"),
         }}
       />
       <Tab.Screen
         name="Calendar"
         component={CalendarScreen}
         options={{
-          tabBarIcon: ({ color, size }) => <Ionicons name="calendar" size={size ?? 24} color={color} />,
-          tabBarLabel: t('calendar'),
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="calendar" size={size ?? 24} color={color} />
+          ),
+          tabBarLabel: t("calendar"),
         }}
       />
       <Tab.Screen
         name="Settings"
         component={SettingsScreen}
         options={{
-          tabBarIcon: ({ color, size }) => <Ionicons name="settings" size={size ?? 24} color={color} />,
-          tabBarLabel: t('settings'),
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="settings" size={size ?? 24} color={color} />
+          ),
+          tabBarLabel: t("settings"),
         }}
       />
     </Tab.Navigator>
@@ -67,7 +75,9 @@ function AppTabs() {
 }
 
 export default function App() {
-  const [onboardingDone, setOnboardingDoneState] = useState<boolean | null>(null);
+  const [onboardingDone, setOnboardingDoneState] = useState<boolean | null>(
+    null
+  );
 
   useEffect(() => {
     getOnboardingDone().then(setOnboardingDoneState);
@@ -87,7 +97,7 @@ export default function App() {
     return (
       <ThemeProvider>
         <GestureHandlerRootView style={styles.root}>
-          <View style={[styles.root, { backgroundColor: '#1a0a2e' }]} />
+          <View style={[styles.root, { backgroundColor: "#1a0a2e" }]} />
         </GestureHandlerRootView>
       </ThemeProvider>
     );
@@ -118,19 +128,22 @@ export default function App() {
 const styles = StyleSheet.create({
   root: { flex: 1 },
   tabBar: {
-    backgroundColor: '#1a0a2e',
+    backgroundColor: "#1a0a2e",
     borderTopWidth: 0,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
     elevation: 10,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: -2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    height: 60,
-    paddingBottom: 8,
-    paddingTop: 8,
+    height: 72,
+    paddingBottom: 10,
+    paddingTop: 10,
+    overflow: "hidden",
   },
   tabBarLabel: {
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: "600",
   },
 });
