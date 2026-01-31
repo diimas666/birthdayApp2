@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { useTranslation } from '../hooks/useTranslation';
 
 type FilterType = 'today' | 'week' | 'month' | 'year';
 
@@ -9,11 +10,12 @@ interface FilterTabsProps {
 }
 
 export const FilterTabs: React.FC<FilterTabsProps> = ({ activeFilter, onFilterChange }) => {
+  const { t } = useTranslation();
   const tabs: { key: FilterType; label: string }[] = [
-    { key: 'today', label: 'Сьогодні' },
-    { key: 'week', label: 'Тиждень' },
-    { key: 'month', label: 'Місяць' },
-    { key: 'year', label: 'Рік' },
+    { key: 'today', label: t('filterToday') },
+    { key: 'week', label: t('filterWeek') },
+    { key: 'month', label: t('filterMonth') },
+    { key: 'year', label: t('filterYear') },
   ];
 
   return (

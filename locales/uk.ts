@@ -61,7 +61,80 @@ export const uk = {
   cancel: 'Скасувати',
   delete: 'Видалити',
   noBirthdaysYet: 'Днів народження ще немає. Додайте одне, щоб почати! 🎂',
-  
+  sortBy: 'Сортувати',
+  sortByDate: 'За датою',
+  sortByName: 'За ім\'ям',
+  sortByAge: 'За віком',
+
+  // Home screen extra
+  greeting: 'Привіт,',
+  greetingSubtext: 'Ось оновлення на сьогодні:',
+  sectionBirthdays: 'Дні народження',
+  noResults: 'Нічого не знайдено',
+  noBirthdaysInPeriod: 'У цей період немає днів народження',
+  searchPlaceholder: 'Пошук дня народження',
+  filterToday: 'Сьогодні',
+  filterWeek: 'Тиждень',
+  filterMonth: 'Місяць',
+  filterYear: 'Рік',
+  dayNames: ['Неділя', 'Понеділок', 'Вівторок', 'Середа', 'Четвер', 'П\'ятниця', 'Субота'],
+  monthNamesShort: ['січня', 'лютого', 'березня', 'квітня', 'травня', 'червня', 'липня', 'серпня', 'вересня', 'жовтня', 'листопада', 'грудня'],
+  currentDateFormatted: () => {
+    const d = new Date();
+    return `${d.getDate()}.${uk.monthNamesShort[d.getMonth()]} ${uk.dayNames[d.getDay()]}`;
+  },
+
+  // Card actions
+  whatsApp: 'WhatsApp',
+  sendGift: 'Надіслати подарунок',
+  messenger: 'Messenger',
+  call: 'Дзвінок',
+  ageLabel: 'Вік',
+  yearWord: (n: number) => {
+    const d = n % 10, t = n % 100;
+    if (t >= 11 && t <= 19) return 'років';
+    if (d === 1) return 'рік';
+    if (d >= 2 && d <= 4) return 'роки';
+    return 'років';
+  },
+
+  // Modal extra
+  phone: 'Телефон (необов\'язково)',
+  phonePlaceholder: '+380...',
+  tags: 'Теги',
+  addPhoto: 'Додати фото',
+  changePhoto: 'Змінити фото',
+  removePhoto: 'Прибрати фото',
+
+  // Settings
+  settings: 'Налаштування',
+  theme: 'Тема',
+  themeLight: 'Світла',
+  themeDark: 'Темна',
+  notificationTime: 'Час нагадувань',
+  exportData: 'Експорт даних',
+  importData: 'Імпорт даних',
+  about: 'Про додаток',
+  aboutText: 'Дні народження — ніколи не забудь особливий день.',
+  version: 'Версія',
+  exportSuccess: 'Дані експортовано',
+  importSuccess: 'Дані імпортовано',
+  importError: 'Не вдалося імпортувати файл',
+
+  // Statistics
+  statistics: 'Статистика',
+  statsThisYear: 'Днів народження цього року',
+  statsNearest: 'Найближчий ДН',
+  statsByMonth: 'По місяцях',
+
+  // Tags
+  tagFamily: 'Сім\'я',
+  tagFriends: 'Друзі',
+  tagWork: 'Робота',
+  tagOther: 'Інше',
+  filterByTag: 'Фільтр по тегу',
+  allTags: 'Всі',
+
   // Notifications
   notificationTitle3Days: 'Нагадування про день народження 🎉',
   notificationBody3Days: (name: string) => `Через 3 дні день народження ${name} 🎉`,

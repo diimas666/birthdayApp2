@@ -3,8 +3,10 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { StatusBar, StyleSheet, Text } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { ThemeProvider } from './contexts/ThemeContext';
 import { HomeScreen } from './screens/HomeScreen';
 import { ListScreen } from './screens/ListScreen';
+import { SettingsScreen } from './screens/SettingsScreen';
 import { requestPermissions } from './utils/notifications';
 import { getBirthdays } from './utils/storage';
 import { rescheduleAllNotifications } from './utils/notifications';
@@ -12,9 +14,47 @@ import { useTranslation } from './hooks/useTranslation';
 
 const Tab = createBottomTabNavigator();
 
-export default function App() {
+function AppTabs() {
   const { t } = useTranslation();
+  return (
+    <Tab.Navigator
+      screenOptions={{
+        headerShown: false,
+        tabBarStyle: styles.tabBar,
+        tabBarActiveTintColor: '#8b5cf6',
+        tabBarInactiveTintColor: '#666',
+        tabBarLabelStyle: styles.tabBarLabel,
+      }}
+    >
+      <Tab.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{
+          tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 24 }}>🏠</Text>,
+          tabBarLabel: t('home'),
+        }}
+      />
+      <Tab.Screen
+        name="List"
+        component={ListScreen}
+        options={{
+          tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 24 }}>📋</Text>,
+          tabBarLabel: t('allBirthdays'),
+        }}
+      />
+      <Tab.Screen
+        name="Settings"
+        component={SettingsScreen}
+        options={{
+          tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 24 }}>⚙️</Text>,
+          tabBarLabel: t('settings'),
+        }}
+      />
+    </Tab.Navigator>
+  );
+}
 
+export default function App() {
   useEffect(() => {
     requestPermissions();
     const initializeNotifications = async () => {
@@ -25,37 +65,14 @@ export default function App() {
   }, []);
 
   return (
-    <GestureHandlerRootView style={styles.root}>
-      <StatusBar barStyle="light-content" backgroundColor="#1a0a2e" />
-      <NavigationContainer>
-        <Tab.Navigator
-          screenOptions={{
-            headerShown: false,
-            tabBarStyle: styles.tabBar,
-            tabBarActiveTintColor: '#8b5cf6',
-            tabBarInactiveTintColor: '#666',
-            tabBarLabelStyle: styles.tabBarLabel,
-          }}
-        >
-          <Tab.Screen
-            name="Home"
-            component={HomeScreen}
-            options={{
-              tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 24 }}>🏠</Text>,
-              tabBarLabel: t('home'),
-            }}
-          />
-          <Tab.Screen
-            name="List"
-            component={ListScreen}
-            options={{
-              tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 24 }}>📋</Text>,
-              tabBarLabel: t('allBirthdays'),
-            }}
-          />
-        </Tab.Navigator>
-      </NavigationContainer>
-    </GestureHandlerRootView>
+    <ThemeProvider>
+      <GestureHandlerRootView style={styles.root}>
+        <StatusBar barStyle="light-content" backgroundColor="#1a0a2e" />
+        <NavigationContainer>
+          <AppTabs />
+        </NavigationContainer>
+      </GestureHandlerRootView>
+    </ThemeProvider>
   );
 }
 

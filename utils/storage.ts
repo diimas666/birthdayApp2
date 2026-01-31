@@ -3,6 +3,11 @@ import { Birthday } from '../types';
 
 const STORAGE_KEY = '@birthday_app:birthdays';
 
+export type BirthdayExport = Omit<Birthday, 'dateOfBirth' | 'createdAt'> & {
+  dateOfBirth: string;
+  createdAt: string;
+};
+
 export const saveBirthday = async (birthday: Birthday): Promise<void> => {
   try {
     const birthdays = await getBirthdays();
@@ -54,4 +59,43 @@ export const deleteBirthday = async (id: string): Promise<void> => {
     console.error('Error deleting birthday:', error);
     throw error;
   }
+};
+
+export const exportBirthdaysJson = async (): Promise<string> => {
+  const birthdays = await getBirthdays();
+  const exportData = birthdays.map(b => ({
+    ...b,
+    dateOfBirth: b.dateOfBirth.toISOString(),
+    createdAt: b.createdAt.toISOString(),
+  }));
+  return JSON.stringify(exportData, null, 2);
+};
+
+export const importBirthdaysFromJson = async (jsonString: string): Promise<{ imported: number; total: number }> => {
+  const parsed = JSON.parse(jsonString) as BirthdayExport[];
+  if (!Array.isArray(parsed)) throw new Error('Invalid format');
+  const existing = await getBirthdays();
+  const existingKeys = new Set(existing.map(b => `${b.name}-${new Date(b.dateOfBirth).getTime()}`));
+  let imported = 0;
+  for (const item of parsed) {
+    const dateOfBirth = new Date(item.dateOfBirth);
+    const createdAt = item.createdAt ? new Date(item.createdAt) : new Date();
+    const key = `${item.name}-${dateOfBirth.getTime()}`;
+    if (existingKeys.has(key)) continue;
+    const birthday: Birthday = {
+      id: item.id || Date.now().toString() + Math.random(),
+      name: item.name,
+      dateOfBirth,
+      note: item.note,
+      phone: item.phone,
+      photoUri: item.photoUri,
+      tags: item.tags,
+      createdAt,
+    };
+    existing.push(birthday);
+    existingKeys.add(key);
+    imported++;
+  }
+  await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(existing));
+  return { imported, total: existing.length };
 };

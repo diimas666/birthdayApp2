@@ -16,6 +16,7 @@ import {
   getBirthdays,
   deleteBirthday,
   updateBirthday,
+  saveBirthday,
 } from '../utils/storage';
 import { enrichBirthday, formatDate } from '../utils/dateHelpers';
 import { rescheduleAllNotifications } from '../utils/notifications';
@@ -23,19 +24,29 @@ import { BirthdayModal } from '../components/BirthdayModal';
 import { EmptyState } from '../components/EmptyState';
 import { useTranslation } from '../hooks/useTranslation';
 
+type SortType = 'date' | 'name' | 'age';
+
 export const ListScreen: React.FC = () => {
   const { t } = useTranslation();
   const [birthdays, setBirthdays] = useState<BirthdayWithAge[]>([]);
+  const [sortBy, setSortBy] = useState<SortType>('date');
   const [modalVisible, setModalVisible] = useState(false);
   const [editingBirthday, setEditingBirthday] = useState<Birthday | null>(null);
 
   const loadBirthdays = async () => {
     const loaded = await getBirthdays();
     const enriched = loaded.map(enrichBirthday);
-    // Sort by nearest date
     enriched.sort((a, b) => a.daysUntil - b.daysUntil);
     setBirthdays(enriched);
   };
+
+  const sortedBirthdays = React.useMemo(() => {
+    const list = [...birthdays];
+    if (sortBy === 'date') list.sort((a, b) => a.daysUntil - b.daysUntil);
+    else if (sortBy === 'name') list.sort((a, b) => a.name.localeCompare(b.name));
+    else if (sortBy === 'age') list.sort((a, b) => b.age - a.age);
+    return list;
+  }, [birthdays, sortBy]);
 
   useFocusEffect(
     useCallback(() => {
@@ -71,11 +82,17 @@ export const ListScreen: React.FC = () => {
   const handleSave = async (birthdayData: Omit<Birthday, 'id' | 'createdAt'>) => {
     if (editingBirthday) {
       await updateBirthday(editingBirthday.id, birthdayData);
-      await loadBirthdays();
-      const allBirthdays = await getBirthdays();
-      await rescheduleAllNotifications(allBirthdays);
+    } else {
+      const newBirthday: Birthday = {
+        ...birthdayData,
+        id: Date.now().toString(),
+        createdAt: new Date(),
+      };
+      await saveBirthday(newBirthday);
     }
-    setEditingBirthday(null);
+    await loadBirthdays();
+    const allBirthdays = await getBirthdays();
+    await rescheduleAllNotifications(allBirthdays);
   };
 
   const renderRightActions = (progress: Animated.AnimatedInterpolation<number>, dragX: Animated.AnimatedInterpolation<number>, item: BirthdayWithAge) => {
@@ -141,6 +158,9 @@ export const ListScreen: React.FC = () => {
     return (
       <SafeAreaView style={styles.container} edges={['top']}>
         <EmptyState message={t('noBirthdaysYet')} emoji="🎂" />
+        <TouchableOpacity style={styles.fab} onPress={() => setModalVisible(true)}>
+          <Text style={styles.fabText}>🎂</Text>
+        </TouchableOpacity>
         <BirthdayModal
           visible={modalVisible}
           onClose={() => {
@@ -156,13 +176,32 @@ export const ListScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
+      <View style={styles.sortRow}>
+        <Text style={styles.sortLabel}>{t('sortBy')}:</Text>
+        <View style={styles.sortTabs}>
+          {(['date', 'name', 'age'] as const).map(key => (
+            <TouchableOpacity
+              key={key}
+              style={[styles.sortTab, sortBy === key && styles.sortTabActive]}
+              onPress={() => setSortBy(key)}
+            >
+              <Text style={[styles.sortTabText, sortBy === key && styles.sortTabTextActive]}>
+                {key === 'date' ? t('sortByDate') : key === 'name' ? t('sortByName') : t('sortByAge')}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
       <FlatList
-        data={birthdays}
+        data={sortedBirthdays}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.list}
         showsVerticalScrollIndicator={false}
       />
+      <TouchableOpacity style={styles.fab} onPress={() => { setEditingBirthday(null); setModalVisible(true); }}>
+        <Text style={styles.fabText}>🎂</Text>
+      </TouchableOpacity>
       <BirthdayModal
         visible={modalVisible}
         onClose={() => {
@@ -181,9 +220,45 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#0a0a14',
   },
+  sortRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    gap: 8,
+  },
+  sortLabel: { fontSize: 14, color: '#999' },
+  sortTabs: { flexDirection: 'row', gap: 8 },
+  sortTab: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
+    backgroundColor: '#2a2a3e',
+  },
+  sortTabActive: { backgroundColor: '#8b5cf6' },
+  sortTabText: { fontSize: 12, color: '#fff' },
+  sortTabTextActive: { fontWeight: '600' },
   list: {
     padding: 16,
+    paddingBottom: 80,
   },
+  fab: {
+    position: 'absolute',
+    right: 20,
+    bottom: 30,
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: '#8b5cf6',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#8b5cf6',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 12,
+    elevation: 10,
+  },
+  fabText: { fontSize: 32 },
   listItem: {
     backgroundColor: '#2a2a3e',
     borderRadius: 16,

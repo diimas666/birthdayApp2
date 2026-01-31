@@ -8,6 +8,7 @@ import {
   StyleSheet,
   Platform,
   Alert,
+  ScrollView,
 } from 'react-native';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
@@ -28,9 +29,13 @@ export const BirthdayModal: React.FC<BirthdayModalProps> = ({
   editingBirthday,
 }) => {
   const { t } = useTranslation();
+  const PRESET_TAGS = [t('tagFamily'), t('tagFriends'), t('tagWork'), t('tagOther')];
   const [name, setName] = useState('');
   const [dateOfBirth, setDateOfBirth] = useState(new Date());
   const [note, setNote] = useState('');
+  const [phone, setPhone] = useState('');
+  const [photoUri, setPhotoUri] = useState<string | undefined>();
+  const [tags, setTags] = useState<string[]>([]);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -38,7 +43,14 @@ export const BirthdayModal: React.FC<BirthdayModalProps> = ({
     setName('');
     setDateOfBirth(new Date());
     setNote('');
+    setPhone('');
+    setPhotoUri(undefined);
+    setTags([]);
     setShowDatePicker(false);
+  };
+
+  const toggleTag = (tag: string) => {
+    setTags(prev => prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]);
   };
 
   useEffect(() => {
@@ -46,6 +58,9 @@ export const BirthdayModal: React.FC<BirthdayModalProps> = ({
       setName(editingBirthday.name);
       setDateOfBirth(new Date(editingBirthday.dateOfBirth));
       setNote(editingBirthday.note || '');
+      setPhone(editingBirthday.phone || '');
+      setPhotoUri(editingBirthday.photoUri);
+      setTags(editingBirthday.tags || []);
     } else {
       resetForm();
     }
@@ -69,6 +84,9 @@ export const BirthdayModal: React.FC<BirthdayModalProps> = ({
         name: name.trim(),
         dateOfBirth,
         note: note.trim() || undefined,
+        phone: phone.trim() || undefined,
+        photoUri,
+        tags: tags.length > 0 ? tags : undefined,
       });
       resetForm();
       onClose();
@@ -103,7 +121,7 @@ export const BirthdayModal: React.FC<BirthdayModalProps> = ({
             </TouchableOpacity>
           </View>
 
-          <View style={styles.content}>
+          <ScrollView style={styles.contentScroll} contentContainerStyle={styles.content}>
             <View style={styles.inputGroup}>
               <Text style={styles.label}>{t('personName')}</Text>
               <TextInput
@@ -113,6 +131,33 @@ export const BirthdayModal: React.FC<BirthdayModalProps> = ({
                 placeholder={t('enterName')}
                 placeholderTextColor="#666"
               />
+            </View>
+
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>{t('phone')}</Text>
+              <TextInput
+                style={styles.input}
+                value={phone}
+                onChangeText={setPhone}
+                placeholder={t('phonePlaceholder')}
+                placeholderTextColor="#666"
+                keyboardType="phone-pad"
+              />
+            </View>
+
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>{t('tags')}</Text>
+              <View style={styles.tagsRow}>
+                {PRESET_TAGS.map(tag => (
+                  <TouchableOpacity
+                    key={tag}
+                    style={[styles.tagChip, tags.includes(tag) && styles.tagChipActive]}
+                    onPress={() => toggleTag(tag)}
+                  >
+                    <Text style={[styles.tagChipText, tags.includes(tag) && styles.tagChipTextActive]}>{tag}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
             </View>
 
             <View style={styles.inputGroup}>
@@ -174,7 +219,7 @@ export const BirthdayModal: React.FC<BirthdayModalProps> = ({
                 {isSaving ? t('saving') : t('save')}
               </Text>
             </TouchableOpacity>
-          </View>
+          </ScrollView>
         </View>
       </View>
     </Modal>
@@ -222,9 +267,29 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
+  contentScroll: { maxHeight: 400 },
   content: {
     gap: 20,
+    paddingBottom: 20,
   },
+  tagsRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  tagChip: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 16,
+    backgroundColor: '#eee',
+    borderWidth: 1,
+    borderColor: '#8b5cf6',
+  },
+  tagChipActive: {
+    backgroundColor: '#8b5cf6',
+  },
+  tagChipText: { fontSize: 14, color: '#333' },
+  tagChipTextActive: { color: '#fff', fontWeight: '600' },
   inputGroup: {
     gap: 8,
   },

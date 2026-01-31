@@ -2,6 +2,7 @@ import notifee, { AndroidImportance, TriggerType, TimestampTrigger } from '@noti
 import { Platform } from 'react-native';
 import { Birthday } from '../types';
 import { uk } from '../locales/uk';
+import { getNotificationHour } from './settingsStorage';
 
 const ANDROID_CHANNEL_ID = 'birthday-reminders';
 
@@ -18,12 +19,14 @@ export const requestPermissions = async (): Promise<boolean> => {
   return settings.authorizationStatus >= 1;
 };
 
-export const scheduleBirthdayNotifications = async (birthday: Birthday): Promise<void> => {
+export const scheduleBirthdayNotifications = async (birthday: Birthday, hour?: number): Promise<void> => {
   const hasPermission = await requestPermissions();
   if (!hasPermission) {
     console.warn('Notification permissions not granted');
     return;
   }
+
+  const notificationHour = hour ?? await getNotificationHour();
 
   const today = new Date();
   const thisYear = today.getFullYear();
@@ -48,7 +51,7 @@ export const scheduleBirthdayNotifications = async (birthday: Birthday): Promise
 
   const threeDaysBefore = new Date(nextBirthday);
   threeDaysBefore.setDate(threeDaysBefore.getDate() - 3);
-  threeDaysBefore.setHours(9, 0, 0, 0);
+  threeDaysBefore.setHours(notificationHour, 0, 0, 0);
   if (threeDaysBefore > today) {
     const trigger: TimestampTrigger = {
       type: TriggerType.TIMESTAMP,
@@ -67,7 +70,7 @@ export const scheduleBirthdayNotifications = async (birthday: Birthday): Promise
 
   const oneDayBefore = new Date(nextBirthday);
   oneDayBefore.setDate(oneDayBefore.getDate() - 1);
-  oneDayBefore.setHours(9, 0, 0, 0);
+  oneDayBefore.setHours(notificationHour, 0, 0, 0);
   if (oneDayBefore > today) {
     const trigger: TimestampTrigger = {
       type: TriggerType.TIMESTAMP,
@@ -85,7 +88,7 @@ export const scheduleBirthdayNotifications = async (birthday: Birthday): Promise
   }
 
   const dayOf = new Date(nextBirthday);
-  dayOf.setHours(9, 0, 0, 0);
+  dayOf.setHours(notificationHour, 0, 0, 0);
   if (dayOf > today) {
     const trigger: TimestampTrigger = {
       type: TriggerType.TIMESTAMP,
@@ -112,9 +115,10 @@ export const cancelBirthdayNotifications = async (birthdayId: string): Promise<v
   }
 };
 
-export const rescheduleAllNotifications = async (birthdays: Birthday[]): Promise<void> => {
+export const rescheduleAllNotifications = async (birthdays: Birthday[], hour?: number): Promise<void> => {
   await notifee.cancelTriggerNotifications();
+  const h = hour ?? await getNotificationHour();
   for (const birthday of birthdays) {
-    await scheduleBirthdayNotifications(birthday);
+    await scheduleBirthdayNotifications(birthday, h);
   }
 };

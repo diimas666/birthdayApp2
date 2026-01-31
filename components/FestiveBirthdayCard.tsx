@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Linking, Alert } from 'react-native';
 import { BirthdayWithAge } from '../types';
 import { formatDate } from '../utils/dateHelpers';
 import { useTranslation } from '../hooks/useTranslation';
@@ -9,33 +9,32 @@ interface FestiveBirthdayCardProps {
   onPress?: () => void;
 }
 
+const openWhatsApp = (phone: string) => {
+  const cleaned = phone.replace(/\D/g, '');
+  const url = `https://wa.me/${cleaned}`;
+  Linking.openURL(url).catch(() => Alert.alert('', 'Не вдалося відкрити WhatsApp'));
+};
+
+const openCall = (phone: string) => {
+  const url = `tel:${phone.trim()}`;
+  Linking.openURL(url).catch(() => Alert.alert('', 'Не вдалося відкрити дзвінок'));
+};
+
+const openGiftSearch = () => {
+  Linking.openURL('https://www.google.com/search?q=ідеї+подарунків').catch(() => {});
+};
+
 export const FestiveBirthdayCard: React.FC<FestiveBirthdayCardProps> = ({ birthday, onPress }) => {
   const { t } = useTranslation();
-  
+  const hasPhone = Boolean(birthday.phone?.trim());
+
   const getDaysText = () => {
-    if (birthday.daysUntil === 0) return { text: '0', label: 'Today' };
-    if (birthday.daysUntil === 1) return { text: '1', label: 'Tomorrow' };
+    if (birthday.daysUntil === 0) return { text: '0', label: t('todayShort') };
+    if (birthday.daysUntil === 1) return { text: '1', label: t('tomorrow') };
     return { text: birthday.daysUntil.toString(), label: t('inDays', birthday.daysUntil) };
   };
 
-  const getAgeWord = (age: number): string => {
-    const lastDigit = age % 10;
-    const lastTwoDigits = age % 100;
-    
-    if (lastTwoDigits >= 11 && lastTwoDigits <= 19) {
-      return 'років';
-    }
-    
-    if (lastDigit === 1) {
-      return 'рік';
-    }
-    
-    if (lastDigit >= 2 && lastDigit <= 4) {
-      return 'роки';
-    }
-    
-    return 'років';
-  };
+  const ageWord = t('yearWord', birthday.age) as string;
 
   const daysInfo = getDaysText();
 
@@ -54,14 +53,7 @@ export const FestiveBirthdayCard: React.FC<FestiveBirthdayCardProps> = ({ birthd
           <View style={styles.nameSection}>
             <Text style={styles.name}>{birthday.name}</Text>
             <Text style={styles.date}>{formatDate(birthday.nextBirthday)}</Text>
-            <Text style={styles.age}>Вік: {birthday.age} {(() => {
-              const lastDigit = birthday.age % 10;
-              const lastTwoDigits = birthday.age % 100;
-              if (lastTwoDigits >= 11 && lastTwoDigits <= 19) return 'років';
-              if (lastDigit === 1) return 'рік';
-              if (lastDigit >= 2 && lastDigit <= 4) return 'роки';
-              return 'років';
-            })()}</Text>
+            <Text style={styles.age}>{t('ageLabel')}: {birthday.age} {ageWord}</Text>
           </View>
           <View style={styles.daysBadge}>
             <Text style={styles.daysNumber}>{daysInfo.text}</Text>
@@ -71,25 +63,33 @@ export const FestiveBirthdayCard: React.FC<FestiveBirthdayCardProps> = ({ birthd
 
         {/* Action buttons */}
         <View style={styles.actions}>
-          <TouchableOpacity style={styles.actionButton}>
-            <View style={[styles.actionIcon, { backgroundColor: '#25D366' }]}>
+          <TouchableOpacity
+            style={styles.actionButton}
+            onPress={() => hasPhone && openWhatsApp(birthday.phone!)}
+            disabled={!hasPhone}
+          >
+            <View style={[styles.actionIcon, { backgroundColor: '#25D366', opacity: hasPhone ? 1 : 0.5 }]}>
               <Text style={styles.actionIconText}>💬</Text>
             </View>
-            <Text style={styles.actionLabel}>WhatsApp</Text>
+            <Text style={styles.actionLabel}>{t('whatsApp')}</Text>
           </TouchableOpacity>
-          
-          <TouchableOpacity style={styles.actionButton}>
+
+          <TouchableOpacity style={styles.actionButton} onPress={openGiftSearch}>
             <View style={[styles.actionIcon, { backgroundColor: '#8b5cf6' }]}>
               <Text style={styles.actionIconText}>🎁</Text>
             </View>
-            <Text style={styles.actionLabel}>Надіслати подарунок</Text>
+            <Text style={styles.actionLabel}>{t('sendGift')}</Text>
           </TouchableOpacity>
-          
-          <TouchableOpacity style={styles.actionButton}>
-            <View style={[styles.actionIcon, { backgroundColor: '#0084FF' }]}>
-              <Text style={styles.actionIconText}>💬</Text>
+
+          <TouchableOpacity
+            style={styles.actionButton}
+            onPress={() => hasPhone && openCall(birthday.phone!)}
+            disabled={!hasPhone}
+          >
+            <View style={[styles.actionIcon, { backgroundColor: '#0084FF', opacity: hasPhone ? 1 : 0.5 }]}>
+              <Text style={styles.actionIconText}>📞</Text>
             </View>
-            <Text style={styles.actionLabel}>Messenger</Text>
+            <Text style={styles.actionLabel}>{t('call')}</Text>
           </TouchableOpacity>
         </View>
       </View>
