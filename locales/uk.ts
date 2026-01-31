@@ -78,7 +78,11 @@ export const uk = {
   filterMonth: 'Місяць',
   filterYear: 'Рік',
   dayNames: ['Неділя', 'Понеділок', 'Вівторок', 'Середа', 'Четвер', 'П\'ятниця', 'Субота'],
+  dayNamesShort: ['Нд', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+  monthNames: ['Січень', 'Лютий', 'Березень', 'Квітень', 'Травень', 'Червень', 'Липень', 'Серпень', 'Вересень', 'Жовтень', 'Листопад', 'Грудень'],
   monthNamesShort: ['січня', 'лютого', 'березня', 'квітня', 'травня', 'червня', 'липня', 'серпня', 'вересня', 'жовтня', 'листопада', 'грудня'],
+  calendar: 'Календар',
+  noBirthdaysOnDate: 'У цей день немає днів народження',
   currentDateFormatted: () => {
     const d = new Date();
     return `${d.getDate()}.${uk.monthNamesShort[d.getMonth()]} ${uk.dayNames[d.getDay()]}`;
@@ -89,6 +93,19 @@ export const uk = {
   sendGift: 'Надіслати подарунок',
   messenger: 'Messenger',
   call: 'Дзвінок',
+  greeting: 'Привітання',
+  generateGreeting: 'Текст поздравлення',
+  greetingShort: 'Коротко',
+  greetingOfficial: 'Офіційно',
+  greetingFunny: 'З гумором',
+  greetingForFriend: 'Для друга',
+  greetingForFamily: 'Для родини',
+  greetingForColleague: 'Для колеги',
+  greetingStyleLabel: 'Стиль',
+  greetingRecipientLabel: 'Кому',
+  copyGreeting: 'Копіювати',
+  copiedToClipboard: 'Скопійовано в буфер',
+  sendViaSms: 'SMS',
   ageLabel: 'Вік',
   yearWord: (n: number) => {
     const d = n % 10, t = n % 100;
@@ -125,7 +142,10 @@ export const uk = {
   // Statistics
   statistics: 'Статистика',
   statsThisYear: 'Днів народження цього року',
+  statsThisMonth: 'У цьому місяці',
+  statsThisQuarter: 'У цьому кварталі',
   statsNearest: 'Найближчий ДН',
+  statsCountdown: 'До наступного ДН',
   statsByMonth: 'По місяцях',
 
   // Tags
@@ -135,6 +155,21 @@ export const uk = {
   tagOther: 'Інше',
   filterByTag: 'Фільтр по тегу',
   allTags: 'Всі',
+
+  // Onboarding
+  onboardingSlide1Title: 'Додай перший день народження',
+  onboardingSlide1Text: 'Зберігай дні народження близьких — ніколи не забудь привітати.',
+  onboardingSlide2Title: 'Тут будуть нагадування',
+  onboardingSlide2Text: 'Додаток нагадає за 3 дні, за день і в сам день народження. Обери зручний час.',
+  onboardingSkip: 'Пропустити',
+  onboardingStart: 'Почати',
+  onboardingAllowNotifications: 'Дозволити нагадування',
+
+  // Quiet hours
+  quietHours: 'Тихі години',
+  quietHoursHint: 'Не надсилати нагадування вночі',
+  quietHoursFrom: 'З (год)',
+  quietHoursTo: 'До (год)',
 
   // Notifications
   notificationTitle3Days: 'Нагадування про день народження 🎉',

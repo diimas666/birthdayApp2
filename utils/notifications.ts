@@ -2,9 +2,19 @@ import notifee, { AndroidImportance, TriggerType, TimestampTrigger } from '@noti
 import { Platform } from 'react-native';
 import { Birthday } from '../types';
 import { uk } from '../locales/uk';
-import { getNotificationHour } from './settingsStorage';
+import { getNotificationHour, getQuietHoursFrom, getQuietHoursTo } from './settingsStorage';
 
 const ANDROID_CHANNEL_ID = 'birthday-reminders';
+
+/** Returns an hour that falls outside quiet time (e.g. 22–8 → use 8 if hour is in 22,23,0..7). */
+function getAllowedHour(hour: number, quietFrom: number, quietTo: number): number {
+  if (quietFrom <= quietTo) {
+    if (hour >= quietFrom && hour < quietTo) return quietTo;
+    return hour;
+  }
+  if (hour >= quietFrom || hour < quietTo) return quietTo;
+  return hour;
+}
 
 export const requestPermissions = async (): Promise<boolean> => {
   if (Platform.OS === 'android') {
@@ -26,7 +36,9 @@ export const scheduleBirthdayNotifications = async (birthday: Birthday, hour?: n
     return;
   }
 
-  const notificationHour = hour ?? await getNotificationHour();
+  const preferredHour = hour ?? await getNotificationHour();
+  const [quietFrom, quietTo] = await Promise.all([getQuietHoursFrom(), getQuietHoursTo()]);
+  const notificationHour = getAllowedHour(preferredHour, quietFrom, quietTo);
 
   const today = new Date();
   const thisYear = today.getFullYear();

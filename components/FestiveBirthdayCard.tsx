@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Linking, Alert } from 'react-native';
 import { BirthdayWithAge } from '../types';
 import { formatDate } from '../utils/dateHelpers';
 import { useTranslation } from '../hooks/useTranslation';
+import { GreetingModal } from './GreetingModal';
 
 interface FestiveBirthdayCardProps {
   birthday: BirthdayWithAge;
@@ -26,6 +27,7 @@ const openGiftSearch = () => {
 
 export const FestiveBirthdayCard: React.FC<FestiveBirthdayCardProps> = ({ birthday, onPress }) => {
   const { t } = useTranslation();
+  const [greetingVisible, setGreetingVisible] = useState(false);
   const hasPhone = Boolean(birthday.phone?.trim());
 
   const getDaysText = () => {
@@ -65,6 +67,16 @@ export const FestiveBirthdayCard: React.FC<FestiveBirthdayCardProps> = ({ birthd
         <View style={styles.actions}>
           <TouchableOpacity
             style={styles.actionButton}
+            onPress={() => setGreetingVisible(true)}
+          >
+            <View style={[styles.actionIcon, { backgroundColor: '#e040fb' }]}>
+              <Text style={styles.actionIconText}>🎂</Text>
+            </View>
+            <Text style={styles.actionLabel}>{t('greeting')}</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.actionButton}
             onPress={() => hasPhone && openWhatsApp(birthday.phone!)}
             disabled={!hasPhone}
           >
@@ -93,6 +105,12 @@ export const FestiveBirthdayCard: React.FC<FestiveBirthdayCardProps> = ({ birthd
           </TouchableOpacity>
         </View>
       </View>
+
+      <GreetingModal
+        visible={greetingVisible}
+        birthday={birthday}
+        onClose={() => setGreetingVisible(false)}
+      />
     </TouchableOpacity>
   );
 };

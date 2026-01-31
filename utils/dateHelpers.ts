@@ -108,6 +108,28 @@ export const getTodaysBirthdays = (birthdays: Birthday[]): BirthdayWithAge[] => 
   return enriched.filter(b => b.daysUntil === 0);
 };
 
+/** Count birthdays that fall in the given calendar month (by birth month). */
+export const getBirthdaysInMonth = (birthdays: Birthday[], month: number): number => {
+  return birthdays.filter(b => new Date(b.dateOfBirth).getMonth() === month).length;
+};
+
+/** Quarter 1 = Jan–Mar, 2 = Apr–Jun, 3 = Jul–Sep, 4 = Oct–Dec. */
+export const getBirthdaysInQuarter = (birthdays: Birthday[], quarter: 1 | 2 | 3 | 4): number => {
+  const startMonth = (quarter - 1) * 3;
+  return birthdays.filter(b => {
+    const m = new Date(b.dateOfBirth).getMonth();
+    return m >= startMonth && m < startMonth + 3;
+  }).length;
+};
+
+/** Birthdays that fall on the given month and day (any year). */
+export const getBirthdaysOnDate = (birthdays: Birthday[], month: number, day: number): Birthday[] => {
+  return birthdays.filter(b => {
+    const d = new Date(b.dateOfBirth);
+    return d.getMonth() === month && d.getDate() === day;
+  });
+};
+
 export const formatDate = (date: Date): string => {
   return date.toLocaleDateString('uk-UA', {
     month: 'long',

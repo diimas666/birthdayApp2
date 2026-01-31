@@ -14,7 +14,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import ConfettiCannon from 'react-native-confetti-cannon';
 import { Birthday, BirthdayWithAge } from '../types';
 import { getBirthdays, saveBirthday } from '../utils/storage';
-import { getBirthdaysByFilter, getTodaysBirthdays, enrichBirthday } from '../utils/dateHelpers';
+import { getBirthdaysByFilter, getTodaysBirthdays, enrichBirthday, getBirthdaysInMonth, getBirthdaysInQuarter } from '../utils/dateHelpers';
 import { rescheduleAllNotifications } from '../utils/notifications';
 import { getLastConfettiDate, setLastConfettiDate } from '../utils/settingsStorage';
 import { FestiveBirthdayCard } from '../components/FestiveBirthdayCard';
@@ -81,8 +81,13 @@ export const HomeScreen: React.FC = () => {
   const stats = useMemo(() => {
     const enriched = birthdays.map(enrichBirthday).sort((a, b) => a.daysUntil - b.daysUntil);
     const countThisYear = enriched.length;
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentQuarter = (Math.floor(currentMonth / 3) + 1) as 1 | 2 | 3 | 4;
+    const countThisMonth = getBirthdaysInMonth(birthdays, currentMonth);
+    const countThisQuarter = getBirthdaysInQuarter(birthdays, currentQuarter);
     const nearest = enriched[0] ?? null;
-    return { countThisYear, nearest };
+    return { countThisYear, countThisMonth, countThisQuarter, nearest };
   }, [birthdays]);
 
   useFocusEffect(
@@ -152,6 +157,14 @@ export const HomeScreen: React.FC = () => {
           <View style={styles.statsRow}>
             <Text style={[styles.statsLabel, { color: secondaryText }]}>{t('statsThisYear')}:</Text>
             <Text style={[styles.statsValue, { color: textColor }]}>{stats.countThisYear}</Text>
+          </View>
+          <View style={styles.statsRow}>
+            <Text style={[styles.statsLabel, { color: secondaryText }]}>{t('statsThisMonth')}:</Text>
+            <Text style={[styles.statsValue, { color: textColor }]}>{stats.countThisMonth}</Text>
+          </View>
+          <View style={styles.statsRow}>
+            <Text style={[styles.statsLabel, { color: secondaryText }]}>{t('statsThisQuarter')}:</Text>
+            <Text style={[styles.statsValue, { color: textColor }]}>{stats.countThisQuarter}</Text>
           </View>
           {stats.nearest && (
             <View style={styles.statsRow}>

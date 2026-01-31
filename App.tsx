@@ -1,15 +1,18 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { StatusBar, StyleSheet, Text } from 'react-native';
+import { StatusBar, StyleSheet, Text, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { HomeScreen } from './screens/HomeScreen';
 import { ListScreen } from './screens/ListScreen';
+import { CalendarScreen } from './screens/CalendarScreen';
 import { SettingsScreen } from './screens/SettingsScreen';
+import { OnboardingScreen } from './screens/OnboardingScreen';
 import { requestPermissions } from './utils/notifications';
 import { getBirthdays } from './utils/storage';
 import { rescheduleAllNotifications } from './utils/notifications';
+import { getOnboardingDone } from './utils/settingsStorage';
 import { useTranslation } from './hooks/useTranslation';
 
 const Tab = createBottomTabNavigator();
@@ -43,6 +46,14 @@ function AppTabs() {
         }}
       />
       <Tab.Screen
+        name="Calendar"
+        component={CalendarScreen}
+        options={{
+          tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 24 }}>📅</Text>,
+          tabBarLabel: t('calendar'),
+        }}
+      />
+      <Tab.Screen
         name="Settings"
         component={SettingsScreen}
         options={{
@@ -55,14 +66,41 @@ function AppTabs() {
 }
 
 export default function App() {
+  const [onboardingDone, setOnboardingDoneState] = useState<boolean | null>(null);
+
   useEffect(() => {
+    getOnboardingDone().then(setOnboardingDoneState);
+  }, []);
+
+  useEffect(() => {
+    if (onboardingDone !== true) return;
     requestPermissions();
     const initializeNotifications = async () => {
       const birthdays = await getBirthdays();
       await rescheduleAllNotifications(birthdays);
     };
     initializeNotifications();
-  }, []);
+  }, [onboardingDone]);
+
+  if (onboardingDone === null) {
+    return (
+      <ThemeProvider>
+        <GestureHandlerRootView style={styles.root}>
+          <View style={[styles.root, { backgroundColor: '#1a0a2e' }]} />
+        </GestureHandlerRootView>
+      </ThemeProvider>
+    );
+  }
+
+  if (onboardingDone === false) {
+    return (
+      <ThemeProvider>
+        <GestureHandlerRootView style={styles.root}>
+          <OnboardingScreen onComplete={() => setOnboardingDoneState(true)} />
+        </GestureHandlerRootView>
+      </ThemeProvider>
+    );
+  }
 
   return (
     <ThemeProvider>

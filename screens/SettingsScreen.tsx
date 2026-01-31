@@ -18,6 +18,9 @@ import { ThemeMode } from "../utils/settingsStorage";
 import {
   getNotificationHour,
   setNotificationHour,
+  getQuietHoursFrom,
+  getQuietHoursTo,
+  setQuietHours,
 } from "../utils/settingsStorage";
 import {
   exportBirthdaysJson,
@@ -32,11 +35,17 @@ export const SettingsScreen: React.FC = () => {
   const { t } = useTranslation();
   const { theme, setThemeMode, isDark } = useTheme();
   const [notificationHour, setNotificationHourState] = useState(9);
+  const [quietFrom, setQuietFromState] = useState(22);
+  const [quietTo, setQuietToState] = useState(8);
   const [importModalVisible, setImportModalVisible] = useState(false);
   const [importJson, setImportJson] = useState("");
 
   useEffect(() => {
     getNotificationHour().then(setNotificationHourState);
+    Promise.all([getQuietHoursFrom(), getQuietHoursTo()]).then(([from, to]) => {
+      setQuietFromState(from);
+      setQuietToState(to);
+    });
   }, []);
 
   const handleThemeChange = async (mode: ThemeMode) => {
@@ -48,6 +57,14 @@ export const SettingsScreen: React.FC = () => {
     setNotificationHourState(hour);
     const birthdays = await getBirthdays();
     await rescheduleAllNotifications(birthdays, hour);
+  };
+
+  const handleQuietHoursChange = async (from: number, to: number) => {
+    await setQuietHours(from, to);
+    setQuietFromState(from);
+    setQuietToState(to);
+    const birthdays = await getBirthdays();
+    await rescheduleAllNotifications(birthdays);
   };
 
   const handleExport = async () => {
@@ -178,6 +195,71 @@ export const SettingsScreen: React.FC = () => {
         </View>
 
         <View style={[styles.section, { backgroundColor: cardBg }]}>
+          <Text style={[styles.sectionTitle, { color: secondaryColor }]}>
+            {t("quietHours")}
+          </Text>
+          <Text style={[styles.quietHint, { color: textColor }]}>
+            {t("quietHoursHint")}
+          </Text>
+          <Text style={[styles.quietLabel, { color: textColor }]}>
+            {t("quietHoursFrom")}
+          </Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.hoursRow}
+          >
+            {HOURS.map((h) => (
+              <TouchableOpacity
+                key={`from-${h}`}
+                style={[
+                  styles.hourChip,
+                  quietFrom === h && { backgroundColor: secondaryColor },
+                ]}
+                onPress={() => handleQuietHoursChange(h, quietTo)}
+              >
+                <Text
+                  style={[
+                    styles.hourChipText,
+                    quietFrom === h && styles.hourChipTextActive,
+                  ]}
+                >
+                  {h}:00
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+          <Text style={[styles.quietLabel, { color: textColor, marginTop: 12 }]}>
+            {t("quietHoursTo")}
+          </Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.hoursRow}
+          >
+            {HOURS.map((h) => (
+              <TouchableOpacity
+                key={`to-${h}`}
+                style={[
+                  styles.hourChip,
+                  quietTo === h && { backgroundColor: secondaryColor },
+                ]}
+                onPress={() => handleQuietHoursChange(quietFrom, h)}
+              >
+                <Text
+                  style={[
+                    styles.hourChipText,
+                    quietTo === h && styles.hourChipTextActive,
+                  ]}
+                >
+                  {h}:00
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
+
+        <View style={[styles.section, { backgroundColor: cardBg }]}>
           <TouchableOpacity style={styles.menuRow} onPress={handleExport}>
             <Text style={[styles.menuRowText, { color: textColor }]}>
               {t("exportData")}
@@ -297,6 +379,8 @@ const styles = StyleSheet.create({
   hourChipActive: { backgroundColor: "#8b5cf6" },
   hourChipText: { fontSize: 14, color: "#333" },
   hourChipTextActive: { color: "#fff" },
+  quietHint: { fontSize: 14, marginBottom: 12, opacity: 0.9 },
+  quietLabel: { fontSize: 14, fontWeight: "600", marginBottom: 6 },
   menuRow: {
     flexDirection: "row",
     justifyContent: "space-between",
