@@ -217,7 +217,12 @@ export const GreetingModal: React.FC<GreetingModalProps> = ({
               style={[styles.refreshBtn, { backgroundColor: secondaryColor }]}
               onPress={refreshGreeting}
             >
-              <Ionicons name="refresh" size={22} color="#fff" style={styles.refreshIcon} />
+              <Ionicons
+                name="refresh"
+                size={22}
+                color="#fff"
+                style={styles.refreshIcon}
+              />
               <Text style={styles.refreshBtnText}>{t("greetingRefresh")}</Text>
             </TouchableOpacity>
             {/* кнопки для копіювання, відправлення в WhatsApp, відправлення SMS */}
@@ -307,7 +312,14 @@ const styles = StyleSheet.create({
   },
   refreshIcon: {},
   refreshBtnText: { color: "#fff", fontWeight: "600", fontSize: 15 },
-  actions: { flexDirection: "row", flexWrap: "wrap", gap: 10, marginTop: 20 },
+  actions: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 10,
+    marginTop: 20,
+    justifyContent: "space-between",
+    width: "100%",
+  },
   primaryBtn: {
     paddingVertical: 12,
     paddingHorizontal: 20,
