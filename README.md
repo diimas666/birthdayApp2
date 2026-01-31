@@ -17,7 +17,7 @@
 
 ### 1. Установка зависимостей (обязательно перед `pod install`)
 
-Без установленных зависимостей команда `pod install` в папке `ios` выдаст ошибку вида: *"Cannot find module '@react-native-community/cli'"*. Сначала установи пакеты:
+Без установленных зависимостей команда `pod install` в папке `ios` выдаст ошибку вида: _"Cannot find module '@react-native-community/cli'"_. Сначала установи пакеты:
 
 ```bash
 npm install
