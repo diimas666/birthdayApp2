@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Component, type ErrorInfo } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { StatusBar, StyleSheet, View } from "react-native";
+import { StatusBar, StyleSheet, View, Platform, Text } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { ThemeProvider } from "./contexts/ThemeContext";
@@ -16,6 +16,37 @@ import { getBirthdays } from "./utils/storage";
 import { rescheduleAllNotifications } from "./utils/notifications";
 import { getOnboardingDone } from "./utils/settingsStorage";
 import { useTranslation } from "./hooks/useTranslation";
+
+// #region agent log
+const log = (location: string, message: string, data: Record<string, unknown>, hypothesisId: string) => {
+  const payload = { location, message, data: { ...data, platform: Platform.OS }, hypothesisId };
+  console.log('[DEBUG]', JSON.stringify(payload));
+  fetch('http://127.0.0.1:7244/ingest/be24e36e-c29f-4989-be54-b71a377e8d68',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...payload,timestamp:Date.now(),sessionId:'debug-session'})}).catch(()=>{});
+};
+// #endregion
+
+class AppErrorBoundary extends Component<
+  { children: React.ReactNode },
+  { error: Error | null }
+> {
+  state = { error: null as Error | null };
+  static getDerivedStateFromError(error: Error) {
+    return { error };
+  }
+  componentDidCatch(error: Error, info: ErrorInfo) {
+    log('App.tsx:ErrorBoundary', 'componentDidCatch', { message: error.message, componentStack: info.componentStack }, 'H2');
+  }
+  render() {
+    if (this.state.error) {
+      return (
+        <View style={[styles.root, { backgroundColor: '#1a0a2e', padding: 20, justifyContent: 'center' }]}>
+          <Text style={{ color: '#fff', fontSize: 14 }}>{this.state.error.message}</Text>
+        </View>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 const Tab = createBottomTabNavigator();
 
@@ -80,55 +111,110 @@ export default function App() {
     null
   );
 
+  // #region agent log
+  log('App.tsx:render', 'App render', { onboardingDone }, 'H1');
+  // #endregion
+
   useEffect(() => {
-    getOnboardingDone().then(setOnboardingDoneState);
+    // #region agent log
+    log('App.tsx:useEffect', 'getOnboardingDone called', {}, 'H1');
+    // #endregion
+    let cancelled = false;
+    const timeout = setTimeout(() => {
+      if (cancelled) return;
+      // #region agent log
+      log('App.tsx:getOnboardingDone.timeout', 'getOnboardingDone timeout fallback', {}, 'H1');
+      // #endregion
+      setOnboardingDoneState(false);
+    }, 3000);
+    getOnboardingDone()
+      .then((v) => {
+        if (cancelled) return;
+        clearTimeout(timeout);
+        // #region agent log
+        log('App.tsx:getOnboardingDone.then', 'getOnboardingDone resolved', { value: v }, 'H1');
+        // #endregion
+        setOnboardingDoneState(v);
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        clearTimeout(timeout);
+        // #region agent log
+        log('App.tsx:getOnboardingDone.catch', 'getOnboardingDone rejected', { err: String(err) }, 'H1');
+        // #endregion
+        setOnboardingDoneState(false);
+      });
+    return () => {
+      cancelled = true;
+      clearTimeout(timeout);
+    };
   }, []);
 
   useEffect(() => {
     if (onboardingDone !== true) return;
-    requestPermissions();
-    const initializeNotifications = async () => {
-      const birthdays = await getBirthdays();
-      await rescheduleAllNotifications(birthdays);
-    };
-    initializeNotifications();
+    const t = setTimeout(() => {
+      requestPermissions();
+      const initializeNotifications = async () => {
+        try {
+          const birthdays = await getBirthdays();
+          await rescheduleAllNotifications(birthdays);
+        } catch (_) {}
+      };
+      initializeNotifications();
+    }, 500);
+    return () => clearTimeout(t);
   }, [onboardingDone]);
 
   if (onboardingDone === null) {
+    // #region agent log
+    log('App.tsx:branch', 'rendering loading (onboardingDone=null)', {}, 'H5');
+    // #endregion
     return (
-      <ThemeProvider>
-        <LanguageProvider>
-          <GestureHandlerRootView style={styles.root}>
-            <View style={[styles.root, { backgroundColor: "#1a0a2e" }]} />
-          </GestureHandlerRootView>
-        </LanguageProvider>
-      </ThemeProvider>
+      <AppErrorBoundary>
+        <ThemeProvider>
+          <LanguageProvider>
+            <GestureHandlerRootView style={styles.root}>
+              <View style={[styles.root, { backgroundColor: "#1a0a2e" }]} />
+            </GestureHandlerRootView>
+          </LanguageProvider>
+        </ThemeProvider>
+      </AppErrorBoundary>
     );
   }
 
   if (onboardingDone === false) {
+    // #region agent log
+    log('App.tsx:branch', 'rendering onboarding', {}, 'H1');
+    // #endregion
     return (
-      <ThemeProvider>
-        <LanguageProvider>
-          <GestureHandlerRootView style={styles.root}>
-            <OnboardingScreen onComplete={() => setOnboardingDoneState(true)} />
-          </GestureHandlerRootView>
-        </LanguageProvider>
-      </ThemeProvider>
+      <AppErrorBoundary>
+        <ThemeProvider>
+          <LanguageProvider>
+            <GestureHandlerRootView style={styles.root}>
+              <OnboardingScreen onComplete={() => setOnboardingDoneState(true)} />
+            </GestureHandlerRootView>
+          </LanguageProvider>
+        </ThemeProvider>
+      </AppErrorBoundary>
     );
   }
 
+  // #region agent log
+  log('App.tsx:branch', 'rendering main tabs', {}, 'H1');
+  // #endregion
   return (
-    <ThemeProvider>
-      <LanguageProvider>
-        <GestureHandlerRootView style={styles.root}>
-          <StatusBar barStyle="light-content" backgroundColor="#1a0a2e" />
-          <NavigationContainer>
-            <AppTabs />
-          </NavigationContainer>
-        </GestureHandlerRootView>
-      </LanguageProvider>
-    </ThemeProvider>
+    <AppErrorBoundary>
+      <ThemeProvider>
+        <LanguageProvider>
+          <GestureHandlerRootView style={styles.root}>
+            <StatusBar barStyle="light-content" backgroundColor="#1a0a2e" />
+            <NavigationContainer>
+              <AppTabs />
+            </NavigationContainer>
+          </GestureHandlerRootView>
+        </LanguageProvider>
+      </ThemeProvider>
+    </AppErrorBoundary>
   );
 }
 
