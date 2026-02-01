@@ -15,12 +15,13 @@ export const calculateAge = (dateOfBirth: Date): number => {
 
 export const getNextBirthday = (dateOfBirth: Date): Date => {
   const today = new Date();
+  const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
   const thisYear = today.getFullYear();
   const birthDate = new Date(dateOfBirth);
   
   let nextBirthday = new Date(thisYear, birthDate.getMonth(), birthDate.getDate());
   
-  if (nextBirthday < today) {
+  if (nextBirthday.getTime() < todayStart.getTime()) {
     nextBirthday = new Date(thisYear + 1, birthDate.getMonth(), birthDate.getDate());
   }
   

@@ -14,6 +14,7 @@ import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/dat
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import { Birthday } from '../types';
 import { useTranslation } from '../hooks/useTranslation';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface BirthdayModalProps {
   visible: boolean;
@@ -29,6 +30,8 @@ export const BirthdayModal: React.FC<BirthdayModalProps> = ({
   editingBirthday,
 }) => {
   const { t } = useTranslation();
+  const { language } = useLanguage();
+  const locale = language === 'uk' ? 'uk-UA' : 'en-US';
   const PRESET_TAGS = [t('tagFamily'), t('tagFriends'), t('tagWork'), t('tagOther')];
   const [name, setName] = useState('');
   const [dateOfBirth, setDateOfBirth] = useState(new Date());
@@ -168,7 +171,7 @@ export const BirthdayModal: React.FC<BirthdayModalProps> = ({
                 onPress={() => setShowDatePicker(true)}
               >
                 <Text style={styles.dateButtonText}>
-                  {dateOfBirth.toLocaleDateString('uk-UA', {
+                  {dateOfBirth.toLocaleDateString(locale, {
                     month: 'long',
                     day: 'numeric',
                     year: 'numeric',
@@ -181,6 +184,7 @@ export const BirthdayModal: React.FC<BirthdayModalProps> = ({
                     value={dateOfBirth}
                     mode="date"
                     display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                    locale={locale}
                     onChange={(event: DateTimePickerEvent, selectedDate?: Date) => {
                       setShowDatePicker(Platform.OS === 'ios');
                       if (selectedDate) {

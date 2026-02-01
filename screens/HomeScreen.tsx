@@ -147,7 +147,7 @@ export const HomeScreen: React.FC = () => {
       )}
 
       <View style={[styles.header, { backgroundColor: cardBg }]}>
-        {/* <View style={styles.headerTop}>
+        <View style={styles.headerTop}>
           <View>
             <Text style={[styles.greeting, { color: textColor }]}>
               {t("homeGreeting")}
@@ -156,7 +156,7 @@ export const HomeScreen: React.FC = () => {
               {t("greetingSubtext")}
             </Text>
           </View>
-        </View> */}
+        </View>
 
         <SearchBar
           value={searchQuery}
