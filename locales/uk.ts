@@ -21,6 +21,9 @@ export const uk = {
   // App navigation
   home: 'Головна',
   allBirthdays: 'Всі дні народження',
+  allBirthdaysShort: 'Дні',
+  calendarShort: 'Календар',
+  settingsShort: 'Налашт.',
   
   // Home screen
   appName: 'Нагадування про дні народження',

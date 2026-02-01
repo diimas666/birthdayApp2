@@ -7,6 +7,9 @@ export const en = {
   // App navigation
   home: 'Home',
   allBirthdays: 'All Birthdays',
+  allBirthdaysShort: 'List',
+  calendarShort: 'Calendar',
+  settingsShort: 'Settings',
 
   // Home screen
   appName: 'Birthday Reminder',

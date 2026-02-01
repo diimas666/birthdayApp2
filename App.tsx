@@ -2,6 +2,7 @@ import React, { useEffect, useState, Component, type ErrorInfo } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { StatusBar, StyleSheet, View, Platform, Text } from "react-native";
+import { useSafeAreaInsets, SafeAreaProvider } from "react-native-safe-area-context";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { ThemeProvider } from "./contexts/ThemeContext";
@@ -86,14 +87,27 @@ const Tab = createBottomTabNavigator();
 
 function AppTabs() {
   const { t } = useTranslation();
+  const insets = useSafeAreaInsets();
+  const isAndroid = Platform.OS === "android";
+  const tabBarBottom = isAndroid ? Math.max(10, insets.bottom) : 10;
+  const tabBarHeight = 56 + tabBarBottom;
+
   return (
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarStyle: styles.tabBar,
+        tabBarStyle: [
+          styles.tabBar,
+          {
+            height: tabBarHeight,
+            paddingBottom: tabBarBottom,
+            paddingTop: 8,
+          },
+        ],
         tabBarActiveTintColor: "#8b5cf6",
         tabBarInactiveTintColor: "#666",
-        tabBarLabelStyle: styles.tabBarLabel,
+        tabBarLabelStyle: [styles.tabBarLabel, isAndroid && styles.tabBarLabelAndroid],
+        tabBarItemStyle: isAndroid ? { paddingVertical: 4 } : undefined,
       }}
     >
       <Tab.Screen
@@ -101,7 +115,7 @@ function AppTabs() {
         component={HomeScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="home" size={size ?? 24} color={color} />
+            <Ionicons name="home" size={size ?? 22} color={color} />
           ),
           tabBarLabel: t("home"),
         }}
@@ -111,9 +125,9 @@ function AppTabs() {
         component={ListScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="list" size={size ?? 24} color={color} />
+            <Ionicons name="list" size={size ?? 22} color={color} />
           ),
-          tabBarLabel: t("allBirthdays"),
+          tabBarLabel: isAndroid ? t("allBirthdaysShort") : t("allBirthdays"),
         }}
       />
       <Tab.Screen
@@ -121,9 +135,9 @@ function AppTabs() {
         component={CalendarScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="calendar" size={size ?? 24} color={color} />
+            <Ionicons name="calendar" size={size ?? 22} color={color} />
           ),
-          tabBarLabel: t("calendar"),
+          tabBarLabel: isAndroid ? t("calendarShort") : t("calendar"),
         }}
       />
       <Tab.Screen
@@ -131,9 +145,9 @@ function AppTabs() {
         component={SettingsScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="settings" size={size ?? 24} color={color} />
+            <Ionicons name="settings" size={size ?? 22} color={color} />
           ),
-          tabBarLabel: t("settings"),
+          tabBarLabel: isAndroid ? t("settingsShort") : t("settings"),
         }}
       />
     </Tab.Navigator>
@@ -258,10 +272,12 @@ export default function App() {
       <ThemeProvider>
         <LanguageProvider>
           <GestureHandlerRootView style={styles.root}>
-            <StatusBar barStyle="light-content" backgroundColor="#1a0a2e" />
-            <NavigationContainer>
-              <AppTabs />
-            </NavigationContainer>
+            <SafeAreaProvider>
+              <StatusBar barStyle="light-content" backgroundColor="#1a0a2e" />
+              <NavigationContainer>
+                <AppTabs />
+              </NavigationContainer>
+            </SafeAreaProvider>
           </GestureHandlerRootView>
         </LanguageProvider>
       </ThemeProvider>
@@ -281,13 +297,14 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: -2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    height: 72,
-    paddingBottom: 10,
-    paddingTop: 10,
     overflow: "hidden",
   },
   tabBarLabel: {
     fontSize: 12,
     fontWeight: "600",
+  },
+  tabBarLabelAndroid: {
+    fontSize: 11,
+    marginTop: 2,
   },
 });
