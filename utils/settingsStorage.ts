@@ -64,24 +64,10 @@ export const setLastConfettiDate = async (dateStr: string): Promise<void> => {
 };
 
 export const getOnboardingDone = async (): Promise<boolean> => {
-  // #region agent log
-  const _dbg = (msg: string, data: Record<string, unknown>) => {
-    const payload = { location: 'settingsStorage.ts:getOnboardingDone', message: msg, data, hypothesisId: 'H1' };
-    console.log('[DEBUG]', JSON.stringify(payload));
-    fetch('http://127.0.0.1:7244/ingest/be24e36e-c29f-4989-be54-b71a377e8d68',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...payload,timestamp:Date.now(),sessionId:'debug-session'})}).catch(()=>{});
-  };
-  _dbg('getOnboardingDone entry', {});
-  // #endregion
   try {
     const v = await AsyncStorage.getItem(KEY_ONBOARDING_DONE);
-    // #region agent log
-    _dbg('getOnboardingDone result', { raw: v, result: v === 'true' });
-    // #endregion
     return v === 'true';
-  } catch (e) {
-    // #region agent log
-    _dbg('getOnboardingDone catch', { err: String(e) });
-    // #endregion
+  } catch {
     return false;
   }
 };

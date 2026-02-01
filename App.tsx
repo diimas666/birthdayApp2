@@ -18,10 +18,28 @@ import { getOnboardingDone } from "./utils/settingsStorage";
 import { useTranslation } from "./hooks/useTranslation";
 
 // #region agent log
-const log = (location: string, message: string, data: Record<string, unknown>, hypothesisId: string) => {
-  const payload = { location, message, data: { ...data, platform: Platform.OS }, hypothesisId };
-  console.log('[DEBUG]', JSON.stringify(payload));
-  fetch('http://127.0.0.1:7244/ingest/be24e36e-c29f-4989-be54-b71a377e8d68',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...payload,timestamp:Date.now(),sessionId:'debug-session'})}).catch(()=>{});
+const log = (
+  location: string,
+  message: string,
+  data: Record<string, unknown>,
+  hypothesisId: string
+) => {
+  const payload = {
+    location,
+    message,
+    data: { ...data, platform: Platform.OS },
+    hypothesisId,
+  };
+  console.log("[DEBUG]", JSON.stringify(payload));
+  fetch("http://127.0.0.1:7244/ingest/be24e36e-c29f-4989-be54-b71a377e8d68", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      ...payload,
+      timestamp: Date.now(),
+      sessionId: "debug-session",
+    }),
+  }).catch(() => {});
 };
 // #endregion
 
@@ -34,13 +52,29 @@ class AppErrorBoundary extends Component<
     return { error };
   }
   componentDidCatch(error: Error, info: ErrorInfo) {
-    log('App.tsx:ErrorBoundary', 'componentDidCatch', { message: error.message, componentStack: info.componentStack }, 'H2');
+    log(
+      "App.tsx:ErrorBoundary",
+      "componentDidCatch",
+      { message: error.message, componentStack: info.componentStack },
+      "H2"
+    );
   }
   render() {
     if (this.state.error) {
       return (
-        <View style={[styles.root, { backgroundColor: '#1a0a2e', padding: 20, justifyContent: 'center' }]}>
-          <Text style={{ color: '#fff', fontSize: 14 }}>{this.state.error.message}</Text>
+        <View
+          style={[
+            styles.root,
+            {
+              backgroundColor: "#1a0a2e",
+              padding: 20,
+              justifyContent: "center",
+            },
+          ]}
+        >
+          <Text style={{ color: "#fff", fontSize: 14 }}>
+            {this.state.error.message}
+          </Text>
         </View>
       );
     }
@@ -112,18 +146,23 @@ export default function App() {
   );
 
   // #region agent log
-  log('App.tsx:render', 'App render', { onboardingDone }, 'H1');
+  log("App.tsx:render", "App render", { onboardingDone }, "H1");
   // #endregion
 
   useEffect(() => {
     // #region agent log
-    log('App.tsx:useEffect', 'getOnboardingDone called', {}, 'H1');
+    log("App.tsx:useEffect", "getOnboardingDone called", {}, "H1");
     // #endregion
     let cancelled = false;
     const timeout = setTimeout(() => {
       if (cancelled) return;
       // #region agent log
-      log('App.tsx:getOnboardingDone.timeout', 'getOnboardingDone timeout fallback', {}, 'H1');
+      log(
+        "App.tsx:getOnboardingDone.timeout",
+        "getOnboardingDone timeout fallback",
+        {},
+        "H1"
+      );
       // #endregion
       setOnboardingDoneState(false);
     }, 3000);
@@ -132,7 +171,12 @@ export default function App() {
         if (cancelled) return;
         clearTimeout(timeout);
         // #region agent log
-        log('App.tsx:getOnboardingDone.then', 'getOnboardingDone resolved', { value: v }, 'H1');
+        log(
+          "App.tsx:getOnboardingDone.then",
+          "getOnboardingDone resolved",
+          { value: v },
+          "H1"
+        );
         // #endregion
         setOnboardingDoneState(v);
       })
@@ -140,7 +184,12 @@ export default function App() {
         if (cancelled) return;
         clearTimeout(timeout);
         // #region agent log
-        log('App.tsx:getOnboardingDone.catch', 'getOnboardingDone rejected', { err: String(err) }, 'H1');
+        log(
+          "App.tsx:getOnboardingDone.catch",
+          "getOnboardingDone rejected",
+          { err: String(err) },
+          "H1"
+        );
         // #endregion
         setOnboardingDoneState(false);
       });
@@ -167,7 +216,7 @@ export default function App() {
 
   if (onboardingDone === null) {
     // #region agent log
-    log('App.tsx:branch', 'rendering loading (onboardingDone=null)', {}, 'H5');
+    log("App.tsx:branch", "rendering loading (onboardingDone=null)", {}, "H5");
     // #endregion
     return (
       <AppErrorBoundary>
@@ -184,14 +233,16 @@ export default function App() {
 
   if (onboardingDone === false) {
     // #region agent log
-    log('App.tsx:branch', 'rendering onboarding', {}, 'H1');
+    log("App.tsx:branch", "rendering onboarding", {}, "H1");
     // #endregion
     return (
       <AppErrorBoundary>
         <ThemeProvider>
           <LanguageProvider>
             <GestureHandlerRootView style={styles.root}>
-              <OnboardingScreen onComplete={() => setOnboardingDoneState(true)} />
+              <OnboardingScreen
+                onComplete={() => setOnboardingDoneState(true)}
+              />
             </GestureHandlerRootView>
           </LanguageProvider>
         </ThemeProvider>
@@ -200,7 +251,7 @@ export default function App() {
   }
 
   // #region agent log
-  log('App.tsx:branch', 'rendering main tabs', {}, 'H1');
+  log("App.tsx:branch", "rendering main tabs", {}, "H1");
   // #endregion
   return (
     <AppErrorBoundary>

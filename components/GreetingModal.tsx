@@ -53,7 +53,11 @@ interface GreetingModalProps {
   onClose: () => void;
 }
 
-const openWhatsAppWithText = (phone: string, text: string, errorMsg: string) => {
+const openWhatsAppWithText = (
+  phone: string,
+  text: string,
+  errorMsg: string
+) => {
   const cleaned = phone.replace(/\D/g, "");
   const encoded = encodeURIComponent(text);
   const url = `https://wa.me/${cleaned}?text=${encoded}`;
@@ -111,7 +115,11 @@ export const GreetingModal: React.FC<GreetingModalProps> = ({
 
   const handleWhatsApp = () => {
     if (hasPhone && birthday?.phone)
-      openWhatsAppWithText(birthday.phone, editableText, t("openWhatsAppFailed"));
+      openWhatsAppWithText(
+        birthday.phone,
+        editableText,
+        t("openWhatsAppFailed")
+      );
     else Alert.alert("", t("addPhoneToContact"));
   };
 
