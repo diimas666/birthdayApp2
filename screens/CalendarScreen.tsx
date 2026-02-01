@@ -17,7 +17,11 @@ import { useTranslation } from '../hooks/useTranslation';
 import { useTheme } from '../contexts/ThemeContext';
 
 const DAYS_IN_WEEK = 7;
-const CELL_SIZE = Math.floor((Dimensions.get('window').width - 40) / 7) - 4;
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const GRID_PAD = 24;
+const CELL_GAP = 4;
+const CELL_BASE = Math.floor((SCREEN_WIDTH - GRID_PAD - 6 * CELL_GAP) / 7);
+const CELL_SIZE = Math.max(32, CELL_BASE - CELL_GAP);
 
 export const CalendarScreen: React.FC = () => {
   const { t, locale } = useTranslation();
@@ -122,8 +126,14 @@ export const CalendarScreen: React.FC = () => {
       <ScrollView style={styles.scroll} contentContainerStyle={styles.gridWrap}>
         <View style={styles.grid}>
           {grid.map((day, index) => {
+            const isLastInRow = index % DAYS_IN_WEEK === 6;
             if (day === null) {
-              return <View key={`empty-${index}`} style={styles.cell} />;
+              return (
+                <View
+                  key={`empty-${index}`}
+                  style={[styles.cell, isLastInRow && styles.cellLastInRow]}
+                />
+              );
             }
             const hasBday = hasBirthday(day);
             const isSelected = selectedDate === day;
@@ -133,6 +143,7 @@ export const CalendarScreen: React.FC = () => {
                 key={day}
                 style={[
                   styles.cell,
+                  isLastInRow && styles.cellLastInRow,
                   isPurple && { backgroundColor: secondaryColor },
                 ]}
                 onPress={() => setSelectedDate(day)}
@@ -224,24 +235,33 @@ const styles = StyleSheet.create({
   monthTitle: { fontSize: 18, fontWeight: '600' },
   weekdayRow: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'flex-start',
     marginBottom: 8,
+    paddingHorizontal: 12,
   },
-  weekdayCell: { fontSize: 12, width: CELL_SIZE + 4, textAlign: 'center' },
+  weekdayCell: {
+    fontSize: 12,
+    width: CELL_SIZE + CELL_GAP,
+    textAlign: 'center',
+  },
   scroll: { flex: 1 },
   gridWrap: { padding: 12 },
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'flex-start',
+    width: SCREEN_WIDTH - GRID_PAD,
   },
   cell: {
-    width: CELL_SIZE + 4,
-    height: CELL_SIZE + 4,
-    margin: 2,
+    width: CELL_SIZE + CELL_GAP,
+    height: CELL_SIZE + CELL_GAP,
+    marginRight: CELL_GAP,
+    marginBottom: CELL_GAP,
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  cellLastInRow: {
+    marginRight: 0,
   },
   cellDay: { fontSize: 14, fontWeight: '600' },
   modalOverlay: {
