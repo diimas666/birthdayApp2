@@ -17,6 +17,18 @@ export const en = {
   todaysBirthdays: "Today's Birthdays 🎉",
   upcomingBirthdays: 'Upcoming (next 7 days)',
   noEventsToday: 'No events today 🎈',
+  todayEmptyState: "No birthdays today 🎈\nBut there will be soon 😉",
+  heroTodayTitle: "Today's birthday!",
+  heroTodayDays: '0 days',
+  heroNearestTitle: 'Nearest birthday',
+  heroButtonGreet: 'Greet',
+  heroButtonGift: 'Gift',
+  statsCollapsed: 'Statistics',
+  statsExpand: 'expand',
+  statsCollapse: 'collapse',
+  statsThisMonthShort: 'This month',
+  statsThisYearShort: 'This year',
+  statsNearestShort: 'Nearest',
   noUpcomingBirthdays: 'No upcoming birthdays. Add one to get started! 🎂',
 
   // Birthday card
@@ -99,6 +111,7 @@ export const en = {
   copiedToClipboard: 'Copied to clipboard',
   sendViaSms: 'SMS',
   ageLabel: 'Age',
+  importantPerson: 'Important (mom, partner)',
   yearWord: (n: number) => {
     if (n === 1) return 'year';
     return 'years';

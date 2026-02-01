@@ -6,6 +6,7 @@ export interface Birthday {
   phone?: string;
   photoUri?: string;
   tags?: string[];
+  isImportant?: boolean;
   createdAt: Date;
 }
 

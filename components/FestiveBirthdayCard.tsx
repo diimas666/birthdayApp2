@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Linking, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Linking, Alert, Platform, ActionSheetIOS } from 'react-native';
 import { BirthdayWithAge } from '../types';
 import { formatDate } from '../utils/dateHelpers';
 import { useTranslation } from '../hooks/useTranslation';
@@ -26,10 +26,17 @@ const openGiftSearch = (searchQuery: string) => {
   Linking.openURL(`https://www.google.com/search?q=${q}`).catch(() => {});
 };
 
+const getCardGradientColor = (daysUntil: number): string => {
+  if (daysUntil === 0) return '#7c3aed';
+  if (daysUntil <= 7) return '#8b5cf6';
+  return '#a78bfa';
+};
+
 export const FestiveBirthdayCard: React.FC<FestiveBirthdayCardProps> = ({ birthday, onPress }) => {
   const { t } = useTranslation();
   const [greetingVisible, setGreetingVisible] = useState(false);
   const hasPhone = Boolean(birthday.phone?.trim());
+  const cardColor = getCardGradientColor(birthday.daysUntil);
 
   const getDaysText = () => {
     if (birthday.daysUntil === 0) return { text: '0', label: t('todayShort') };
@@ -38,22 +45,47 @@ export const FestiveBirthdayCard: React.FC<FestiveBirthdayCardProps> = ({ birthd
   };
 
   const ageWord = t('yearWord', birthday.age) as string;
-
   const daysInfo = getDaysText();
 
+  const handleLongPress = () => {
+    if (!hasPhone) return;
+    if (Platform.OS === 'ios' && ActionSheetIOS) {
+      ActionSheetIOS.showActionSheetWithOptions(
+        {
+          options: [t('cancel'), t('call')],
+          cancelButtonIndex: 0,
+        },
+        (i) => {
+          if (i === 1) openCall(birthday.phone!, t('openCallFailed'));
+        }
+      );
+    } else {
+      Alert.alert(t('call'), birthday.phone!, [
+        { text: t('cancel'), style: 'cancel' },
+        { text: t('call'), onPress: () => openCall(birthday.phone!, t('openCallFailed')) },
+      ]);
+    }
+  };
+
   return (
-    <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.9}>
-      {/* Background pattern */}
+    <TouchableOpacity
+      style={[styles.card, { backgroundColor: cardColor }]}
+      onPress={onPress}
+      onLongPress={handleLongPress}
+      activeOpacity={0.9}
+    >
       <View style={styles.backgroundPattern}>
         <View style={styles.patternCircle1} />
         <View style={styles.patternCircle2} />
         <View style={styles.patternCircle3} />
       </View>
 
-      {/* Main content */}
       <View style={styles.content}>
         <View style={styles.headerRow}>
           <View style={styles.nameSection}>
+            {birthday.isImportant && (
+              <Text style={styles.pinBadge}>⭐</Text>
+            )}
             <Text style={styles.name}>{birthday.name}</Text>
             <Text style={styles.date}>{formatDate(birthday.nextBirthday)}</Text>
             <Text style={styles.age}>{t('ageLabel')}: {birthday.age} {ageWord}</Text>
@@ -64,13 +96,9 @@ export const FestiveBirthdayCard: React.FC<FestiveBirthdayCardProps> = ({ birthd
           </View>
         </View>
 
-        {/* Action buttons */}
         <View style={styles.actions}>
-          <TouchableOpacity
-            style={styles.actionButton}
-            onPress={() => setGreetingVisible(true)}
-          >
-            <View style={[styles.actionIcon, { backgroundColor: '#e040fb' }]}>
+          <TouchableOpacity style={styles.actionButton} onPress={() => setGreetingVisible(true)}>
+            <View style={[styles.actionIcon, { backgroundColor: 'rgba(255,255,255,0.3)' }]}>
               <Text style={styles.actionIconText}>🎂</Text>
             </View>
             <Text style={styles.actionLabel}>{t('greeting')}</Text>
@@ -81,28 +109,17 @@ export const FestiveBirthdayCard: React.FC<FestiveBirthdayCardProps> = ({ birthd
             onPress={() => hasPhone && openWhatsApp(birthday.phone!, t('openWhatsAppFailed'))}
             disabled={!hasPhone}
           >
-            <View style={[styles.actionIcon, { backgroundColor: '#25D366', opacity: hasPhone ? 1 : 0.5 }]}>
+            <View style={[styles.actionIcon, { backgroundColor: 'rgba(255,255,255,0.3)', opacity: hasPhone ? 1 : 0.5 }]}>
               <Text style={styles.actionIconText}>💬</Text>
             </View>
             <Text style={styles.actionLabel}>{t('whatsApp')}</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.actionButton} onPress={() => openGiftSearch(t('giftSearchQuery'))}>
-            <View style={[styles.actionIcon, { backgroundColor: '#8b5cf6' }]}>
+            <View style={[styles.actionIcon, { backgroundColor: 'rgba(255,255,255,0.3)' }]}>
               <Text style={styles.actionIconText}>🎁</Text>
             </View>
             <Text style={styles.actionLabel}>{t('sendGift')}</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.actionButton}
-            onPress={() => hasPhone && openCall(birthday.phone!, t('openCallFailed'))}
-            disabled={!hasPhone}
-          >
-            <View style={[styles.actionIcon, { backgroundColor: '#0084FF', opacity: hasPhone ? 1 : 0.5 }]}>
-              <Text style={styles.actionIconText}>📞</Text>
-            </View>
-            <Text style={styles.actionLabel}>{t('call')}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -118,7 +135,6 @@ export const FestiveBirthdayCard: React.FC<FestiveBirthdayCardProps> = ({ birthd
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#8b5cf6',
     borderRadius: 16,
     marginHorizontal: 20,
     marginBottom: 12,
@@ -128,7 +144,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 6,
     elevation: 6,
-    minHeight: 180,
+    minHeight: 160,
+  },
+  pinBadge: {
+    fontSize: 14,
+    marginBottom: 2,
   },
   backgroundPattern: {
     position: 'absolute',

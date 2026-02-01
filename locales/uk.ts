@@ -31,6 +31,18 @@ export const uk = {
   todaysBirthdays: 'Сьогоднішні дні народження 🎉',
   upcomingBirthdays: 'Найближчі (наступні 7 днів)',
   noEventsToday: 'Сьогодні подій немає 🎈',
+  todayEmptyState: 'Сьогодні без свят 🎈\nАле скоро будуть 😉',
+  heroTodayTitle: 'Сьогодні день народження!',
+  heroTodayDays: '0 днів',
+  heroNearestTitle: 'Найближчий день народження',
+  heroButtonGreet: 'Привітати',
+  heroButtonGift: 'Подарунок',
+  statsCollapsed: 'Статистика',
+  statsExpand: 'розгорнути',
+  statsCollapse: 'згорнути',
+  statsThisMonthShort: 'Цього місяця',
+  statsThisYearShort: 'Цього року',
+  statsNearestShort: 'Найближчий',
   noUpcomingBirthdays: 'Немає найближчих днів народження. Додайте одне, щоб почати! 🎂',
   
   // Birthday card
@@ -113,6 +125,7 @@ export const uk = {
   copiedToClipboard: 'Скопійовано в буфер',
   sendViaSms: 'SMS',
   ageLabel: 'Вік',
+  importantPerson: 'Важлива особа (мама, партнер)',
   yearWord: (n: number) => {
     const d = n % 10, t = n % 100;
     if (t >= 11 && t <= 19) return 'років';

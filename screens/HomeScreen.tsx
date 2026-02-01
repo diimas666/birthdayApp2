@@ -8,6 +8,7 @@ import {
   FlatList,
   Dimensions,
   StatusBar,
+  Linking,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect } from "@react-navigation/native";
@@ -21,6 +22,7 @@ import {
   getBirthdaysInMonth,
   getBirthdaysInQuarter,
 } from "../utils/dateHelpers";
+import { GreetingModal } from "../components/GreetingModal";
 import { rescheduleAllNotifications } from "../utils/notifications";
 import {
   getLastConfettiDate,
@@ -55,6 +57,9 @@ export const HomeScreen: React.FC = () => {
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [statsExpanded, setStatsExpanded] = useState(false);
+  const [heroGreetingVisible, setHeroGreetingVisible] = useState(false);
+  const [heroGreetingBirthday, setHeroGreetingBirthday] = useState<BirthdayWithAge | null>(null);
 
   const loadBirthdays = async () => {
     const loaded = await getBirthdays();
@@ -90,19 +95,21 @@ export const HomeScreen: React.FC = () => {
 
   const currentDate = useMemo(() => t("currentDateFormatted") as string, [t]);
 
+  const todaysList = useMemo(() => getTodaysBirthdays(birthdays), [birthdays]);
+  const enrichedAll = useMemo(
+    () => birthdays.map(enrichBirthday).sort((a, b) => a.daysUntil - b.daysUntil),
+    [birthdays]
+  );
+  const nearestBirthday = enrichedAll[0] ?? null;
+
   const stats = useMemo(() => {
-    const enriched = birthdays
-      .map(enrichBirthday)
-      .sort((a, b) => a.daysUntil - b.daysUntil);
-    const countThisYear = enriched.length;
     const now = new Date();
     const currentMonth = now.getMonth();
-    const currentQuarter = (Math.floor(currentMonth / 3) + 1) as 1 | 2 | 3 | 4;
+    const countThisYear = enrichedAll.length;
     const countThisMonth = getBirthdaysInMonth(birthdays, currentMonth);
-    const countThisQuarter = getBirthdaysInQuarter(birthdays, currentQuarter);
-    const nearest = enriched[0] ?? null;
-    return { countThisYear, countThisMonth, countThisQuarter, nearest };
-  }, [birthdays]);
+    const nearest = nearestBirthday;
+    return { countThisYear, countThisMonth, nearest };
+  }, [birthdays, enrichedAll, nearestBirthday]);
 
   useFocusEffect(
     useCallback(() => {
@@ -214,55 +221,113 @@ export const HomeScreen: React.FC = () => {
           {currentDate}
         </Text>
 
+        {/* Hero: фокус дня */}
         <View
           style={[
-            styles.statsBlock,
-            { backgroundColor: statsBg, borderColor: statsBorder },
+            styles.heroBlock,
+            {
+              backgroundColor: isDark ? "#3a2a5e" : "#8b5cf6",
+              borderColor: isDark ? "#5a4a7e" : "#7c3aed",
+            },
           ]}
         >
-          <Text style={[styles.statsTitle, { color: statsBorder }]}>
-            {t("statistics")}
-          </Text>
-          <View style={styles.statsRow}>
-            <Text style={[styles.statsLabel, { color: secondaryText }]}>
-              {t("statsThisYear")}:
-            </Text>
-            <Text style={[styles.statsValue, { color: textColor }]}>
-              {stats.countThisYear}
-            </Text>
-          </View>
-          <View style={styles.statsRow}>
-            <Text style={[styles.statsLabel, { color: secondaryText }]}>
-              {t("statsThisMonth")}:
-            </Text>
-            <Text style={[styles.statsValue, { color: textColor }]}>
-              {stats.countThisMonth}
-            </Text>
-          </View>
-          <View style={styles.statsRow}>
-            <Text style={[styles.statsLabel, { color: secondaryText }]}>
-              {t("statsThisQuarter")}:
-            </Text>
-            <Text style={[styles.statsValue, { color: textColor }]}>
-              {stats.countThisQuarter}
-            </Text>
-          </View>
-          {stats.nearest && (
-            <View style={styles.statsRow}>
-              <Text style={[styles.statsLabel, { color: secondaryText }]}>
-                {t("statsNearest")}:
+          {todaysList.length > 0 ? (
+            <>
+              <Text style={styles.heroEmoji}>🎉</Text>
+              <Text style={styles.heroTitle}>{t("heroTodayTitle")}</Text>
+              <Text style={styles.heroName}>
+                {todaysList[0].name} — {todaysList[0].age} {t("yearWord", todaysList[0].age) as string}
               </Text>
-              <Text style={[styles.statsValue, { color: textColor }]}>
-                {stats.nearest.name} —{" "}
-                {stats.nearest.daysUntil === 0
-                  ? t("todayShort")
-                  : stats.nearest.daysUntil === 1
-                    ? t("tomorrow")
-                    : t("inDays", stats.nearest.daysUntil)}
+              <Text style={styles.heroDays}>⏳ {t("heroTodayDays")}</Text>
+              <View style={styles.heroButtons}>
+                <TouchableOpacity
+                  style={styles.heroButton}
+                  onPress={() => {
+                    setHeroGreetingBirthday(todaysList[0]);
+                    setHeroGreetingVisible(true);
+                  }}
+                >
+                  <Text style={styles.heroButtonText}>{t("heroButtonGreet")}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.heroButton}
+                  onPress={() => {
+                    const q = encodeURIComponent((t("giftSearchQuery") as string) || "gift");
+                    Linking.openURL(`https://www.google.com/search?q=${q}`).catch(() => {});
+                  }}
+                >
+                  <Text style={styles.heroButtonText}>{t("heroButtonGift")}</Text>
+                </TouchableOpacity>
+              </View>
+            </>
+          ) : nearestBirthday ? (
+            <>
+              <Text style={styles.heroEmoji}>📅</Text>
+              <Text style={styles.heroTitle}>{t("heroNearestTitle")}</Text>
+              <Text style={styles.heroName}>
+                {nearestBirthday.name} —{" "}
+                {nearestBirthday.daysUntil === 1
+                  ? t("tomorrow")
+                  : t("inDays", nearestBirthday.daysUntil)}
               </Text>
-            </View>
+            </>
+          ) : (
+            <>
+              <Text style={styles.heroEmoji}>📅</Text>
+              <Text style={styles.heroTitle}>{t("heroNearestTitle")}</Text>
+              <Text style={styles.heroName}>{t("noUpcomingBirthdays")}</Text>
+            </>
           )}
         </View>
+
+        {/* Статистика — свернутая карточка */}
+        <TouchableOpacity
+          style={[
+            styles.statsCollapsedBlock,
+            { backgroundColor: statsBg, borderColor: statsBorder },
+          ]}
+          onPress={() => setStatsExpanded(!statsExpanded)}
+          activeOpacity={0.8}
+        >
+          <Text style={[styles.statsCollapsedTitle, { color: statsBorder }]}>
+            📊 {t("statsCollapsed")} {statsExpanded ? "▴" : "▾"}
+          </Text>
+          {statsExpanded && (
+            <View style={styles.statsExpandedContent}>
+              <View style={styles.statsRow}>
+                <Text style={[styles.statsLabel, { color: secondaryText }]}>
+                  {t("statsThisMonthShort")}:
+                </Text>
+                <Text style={[styles.statsValue, { color: textColor }]}>
+                  {stats.countThisMonth}
+                </Text>
+              </View>
+              <View style={styles.statsRow}>
+                <Text style={[styles.statsLabel, { color: secondaryText }]}>
+                  {t("statsThisYearShort")}:
+                </Text>
+                <Text style={[styles.statsValue, { color: textColor }]}>
+                  {stats.countThisYear}
+                </Text>
+              </View>
+              {stats.nearest && (
+                <View style={styles.statsRow}>
+                  <Text style={[styles.statsLabel, { color: secondaryText }]}>
+                    {t("statsNearestShort")}:
+                  </Text>
+                  <Text style={[styles.statsValue, { color: textColor }]}>
+                    {stats.nearest.name} —{" "}
+                    {stats.nearest.daysUntil === 0
+                      ? t("todayShort")
+                      : stats.nearest.daysUntil === 1
+                        ? t("tomorrow")
+                        : t("inDays", stats.nearest.daysUntil)}
+                  </Text>
+                </View>
+              )}
+            </View>
+          )}
+        </TouchableOpacity>
       </View>
 
       <ScrollView
@@ -271,7 +336,12 @@ export const HomeScreen: React.FC = () => {
       >
         {filteredBirthdays.length > 0 ? (
           <View style={styles.section}>
-            <Text style={[styles.sectionTitle, { color: textColor }]}>
+            <Text
+              style={[
+                activeFilter === "today" ? styles.sectionTitleToday : styles.sectionTitle,
+                { color: textColor },
+              ]}
+            >
               {activeFilter === "today"
                 ? t("todaysBirthdays")
                 : t("sectionBirthdays")}
@@ -282,11 +352,17 @@ export const HomeScreen: React.FC = () => {
           </View>
         ) : (
           <View style={styles.section}>
-            <EmptyState
-              message={searchQuery ? t("noResults") : t("noBirthdaysInPeriod")}
-              emoji="🎂"
-              textColor={secondaryText}
-            />
+            {activeFilter === "today" && !searchQuery ? (
+              <Text style={[styles.todayEmptyText, { color: secondaryText }]}>
+                {t("todayEmptyState")}
+              </Text>
+            ) : (
+              <EmptyState
+                message={searchQuery ? t("noResults") : t("noBirthdaysInPeriod")}
+                emoji="🎂"
+                textColor={secondaryText}
+              />
+            )}
           </View>
         )}
       </ScrollView>
@@ -303,6 +379,17 @@ export const HomeScreen: React.FC = () => {
         onClose={() => setModalVisible(false)}
         onSave={handleSave}
       />
+
+      {heroGreetingBirthday && (
+        <GreetingModal
+          visible={heroGreetingVisible}
+          birthday={heroGreetingBirthday}
+          onClose={() => {
+            setHeroGreetingVisible(false);
+            setHeroGreetingBirthday(null);
+          }}
+        />
+      )}
     </SafeAreaView>
   );
 };
@@ -355,22 +442,50 @@ const styles = StyleSheet.create({
     marginTop: 4,
     marginBottom: 8,
   },
-  statsBlock: {
+  heroBlock: {
     marginHorizontal: 20,
-    marginTop: 8,
+    marginBottom: 12,
+    padding: 20,
+    borderRadius: 16,
+    borderWidth: 1,
+    alignItems: "center",
+  },
+  heroEmoji: { fontSize: 32, marginBottom: 8 },
+  heroTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#fff",
+    marginBottom: 6,
+    textAlign: "center",
+  },
+  heroName: {
+    fontSize: 16,
+    color: "#fff",
+    opacity: 0.95,
+    marginBottom: 4,
+    textAlign: "center",
+  },
+  heroDays: { fontSize: 14, color: "#fff", opacity: 0.9, marginBottom: 12 },
+  heroButtons: { flexDirection: "row", gap: 12 },
+  heroButton: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 12,
+    backgroundColor: "rgba(255,255,255,0.25)",
+  },
+  heroButtonText: { fontSize: 14, fontWeight: "600", color: "#fff" },
+  statsCollapsedBlock: {
+    marginHorizontal: 20,
     marginBottom: 12,
     padding: 12,
-    backgroundColor: "#f0e6ff",
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: "#8b5cf6",
   },
-  statsTitle: {
+  statsCollapsedTitle: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#8b5cf6",
-    marginBottom: 8,
   },
+  statsExpandedContent: { marginTop: 10, paddingTop: 8, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: "rgba(139,92,246,0.3)" },
   statsRow: {
     flexDirection: "row",
     flexWrap: "wrap",
@@ -392,6 +507,19 @@ const styles = StyleSheet.create({
     color: "#000",
     marginBottom: 16,
     paddingHorizontal: 20,
+  },
+  sectionTitleToday: {
+    fontSize: 22,
+    fontWeight: "bold",
+    marginBottom: 16,
+    paddingHorizontal: 20,
+  },
+  todayEmptyText: {
+    fontSize: 16,
+    textAlign: "center",
+    lineHeight: 24,
+    paddingHorizontal: 24,
+    paddingVertical: 32,
   },
   fab: {
     position: "absolute",
