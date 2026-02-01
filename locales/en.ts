@@ -168,6 +168,10 @@ export const en = {
   onboardingStart: 'Get started',
   onboardingAllowNotifications: 'Allow notifications',
 
+  // Smart reminders
+  notifyOnBirthdayDay: 'Reminder on birthday day',
+  notifyOnBirthdayDayHint: '3 days and 1 day before — always; on the day — optional',
+
   // Quiet hours
   quietHours: 'Quiet hours',
   quietHoursHint: 'Do not send reminders at night',

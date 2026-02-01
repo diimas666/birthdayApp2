@@ -185,6 +185,10 @@ export const uk = {
   onboardingStart: 'Почати',
   onboardingAllowNotifications: 'Дозволити нагадування',
 
+  // Smart reminders
+  notifyOnBirthdayDay: 'Нагадування в день народження',
+  notifyOnBirthdayDayHint: 'За 3 дні та за 1 день — завжди; в сам день — за бажанням',
+
   // Quiet hours
   quietHours: 'Тихі години',
   quietHoursHint: 'Не надсилати нагадування вночі',

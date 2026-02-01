@@ -9,6 +9,7 @@ const KEY_QUIET_HOURS_TO = '@birthday_app:quietHoursTo';
 const KEY_LANGUAGE = '@birthday_app:language';
 const KEY_IMPORT_ONLY_WITH_BIRTHDAY = '@birthday_app:importOnlyWithBirthday';
 const KEY_IMPORT_UPDATE_CHANGES = '@birthday_app:importUpdateChanges';
+const KEY_NOTIFY_ON_BIRTHDAY_DAY = '@birthday_app:notifyOnBirthdayDay';
 
 export type ThemeMode = 'light' | 'dark';
 export type LanguageCode = 'uk' | 'en';
@@ -127,4 +128,17 @@ export const getImportUpdateChanges = async (): Promise<boolean> => {
 
 export const setImportUpdateChanges = async (value: boolean): Promise<void> => {
   await AsyncStorage.setItem(KEY_IMPORT_UPDATE_CHANGES, value ? 'true' : 'false');
+};
+
+export const getNotifyOnBirthdayDay = async (): Promise<boolean> => {
+  try {
+    const v = await AsyncStorage.getItem(KEY_NOTIFY_ON_BIRTHDAY_DAY);
+    return v !== 'false';
+  } catch {
+    return true;
+  }
+};
+
+export const setNotifyOnBirthdayDay = async (value: boolean): Promise<void> => {
+  await AsyncStorage.setItem(KEY_NOTIFY_ON_BIRTHDAY_DAY, value ? 'true' : 'false');
 };

@@ -24,6 +24,8 @@ import {
   getQuietHoursFrom,
   getQuietHoursTo,
   setQuietHours,
+  getNotifyOnBirthdayDay,
+  setNotifyOnBirthdayDay,
   getImportOnlyWithBirthday,
   setImportOnlyWithBirthday,
   getImportUpdateChanges,
@@ -51,6 +53,7 @@ export const SettingsScreen: React.FC = () => {
   const [quietTo, setQuietToState] = useState(8);
   const [importModalVisible, setImportModalVisible] = useState(false);
   const [importJson, setImportJson] = useState("");
+  const [notifyOnBirthdayDay, setNotifyOnBirthdayDayState] = useState(true);
   const [importOnlyWithBirthday, setImportOnlyWithBirthdayState] = useState(true);
   const [importUpdateChanges, setImportUpdateChangesState] = useState(true);
   const [importingContacts, setImportingContacts] = useState(false);
@@ -61,6 +64,7 @@ export const SettingsScreen: React.FC = () => {
       setQuietFromState(from);
       setQuietToState(to);
     });
+    getNotifyOnBirthdayDay().then(setNotifyOnBirthdayDayState);
     getImportOnlyWithBirthday().then(setImportOnlyWithBirthdayState);
     getImportUpdateChanges().then(setImportUpdateChangesState);
   }, []);
@@ -80,6 +84,13 @@ export const SettingsScreen: React.FC = () => {
     await setQuietHours(from, to);
     setQuietFromState(from);
     setQuietToState(to);
+    const birthdays = await getBirthdays();
+    await rescheduleAllNotifications(birthdays);
+  };
+
+  const handleNotifyOnBirthdayDayChange = async (value: boolean) => {
+    await setNotifyOnBirthdayDay(value);
+    setNotifyOnBirthdayDayState(value);
     const birthdays = await getBirthdays();
     await rescheduleAllNotifications(birthdays);
   };
@@ -247,6 +258,20 @@ export const SettingsScreen: React.FC = () => {
               </TouchableOpacity>
             ))}
           </ScrollView>
+          <Text style={[styles.quietHint, { color: textColor, marginTop: 8 }]}>
+            {t("notifyOnBirthdayDayHint")}
+          </Text>
+          <View style={styles.switchRow}>
+            <Text style={[styles.switchLabel, { color: textColor }]}>
+              {t("notifyOnBirthdayDay")}
+            </Text>
+            <Switch
+              value={notifyOnBirthdayDay}
+              onValueChange={handleNotifyOnBirthdayDayChange}
+              trackColor={{ false: "#ccc", true: secondaryColor }}
+              thumbColor="#fff"
+            />
+          </View>
         </View>
 
         <View style={[styles.section, { backgroundColor: cardBg }]}>

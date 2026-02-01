@@ -3,7 +3,7 @@ import { Platform } from 'react-native';
 import { Birthday } from '../types';
 import { uk } from '../locales/uk';
 import { en } from '../locales/en';
-import { getNotificationHour, getQuietHoursFrom, getQuietHoursTo, getLanguage } from './settingsStorage';
+import { getNotificationHour, getQuietHoursFrom, getQuietHoursTo, getLanguage, getNotifyOnBirthdayDay } from './settingsStorage';
 
 const ANDROID_CHANNEL_ID = 'birthday-reminders';
 
@@ -108,20 +108,23 @@ export const scheduleBirthdayNotifications = async (birthday: Birthday, hour?: n
     );
   }
 
-  const dayOf = new Date(nextBirthday);
-  dayOf.setHours(notificationHour, 0, 0, 0);
-  if (dayOf > today) {
-    const trigger: TimestampTrigger = {
-      type: TriggerType.TIMESTAMP,
-      timestamp: dayOf.getTime(),
-    };
-    await notifee.createTriggerNotification(
-      {
-        ...baseNotification,
-        id: `birthday-${birthday.id}-today`,
-      },
-      trigger
-    );
+  const notifyOnDay = await getNotifyOnBirthdayDay();
+  if (notifyOnDay) {
+    const dayOf = new Date(nextBirthday);
+    dayOf.setHours(notificationHour, 0, 0, 0);
+    if (dayOf > today) {
+      const trigger: TimestampTrigger = {
+        type: TriggerType.TIMESTAMP,
+        timestamp: dayOf.getTime(),
+      };
+      await notifee.createTriggerNotification(
+        {
+          ...baseNotification,
+          id: `birthday-${birthday.id}-today`,
+        },
+        trigger
+      );
+    }
   }
 };
 
