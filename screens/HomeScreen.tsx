@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import {
   View,
   Text,
@@ -34,6 +34,8 @@ import { SearchBar } from "../components/SearchBar";
 import { FilterTabs } from "../components/FilterTabs";
 import { BirthdayModal } from "../components/BirthdayModal";
 import { EmptyState } from "../components/EmptyState";
+import { GiftBottomSheet, type GiftBottomSheetRef } from "../components/GiftBottomSheet";
+import { GiftWebViewModal } from "../components/GiftWebViewModal";
 import { useTranslation } from "../hooks/useTranslation";
 import { useTheme } from "../contexts/ThemeContext";
 
@@ -62,6 +64,8 @@ export const HomeScreen: React.FC = () => {
   const [heroGreetingVisible, setHeroGreetingVisible] = useState(false);
   const [heroGreetingBirthday, setHeroGreetingBirthday] =
     useState<BirthdayWithAge | null>(null);
+  const [giftWebViewUrl, setGiftWebViewUrl] = useState<string | null>(null);
+  const giftSheetRef = useRef<GiftBottomSheetRef>(null);
 
   const loadBirthdays = async () => {
     const loaded = await getBirthdays();
@@ -257,14 +261,9 @@ export const HomeScreen: React.FC = () => {
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.heroButton}
-                  onPress={() => {
-                    const q = encodeURIComponent(
-                      (t("giftSearchQuery") as string) || "gift"
-                    );
-                    Linking.openURL(
-                      `https://www.google.com/search?q=${q}`
-                    ).catch(() => {});
-                  }}
+                  onPress={() =>
+                    giftSheetRef.current?.present(todaysList[0].name)
+                  }
                 >
                   <Text style={styles.heroButtonText}>
                     {t("heroButtonGift")}
@@ -368,7 +367,11 @@ export const HomeScreen: React.FC = () => {
                 : t("sectionBirthdays")}
             </Text>
             {filteredBirthdays.map((item) => (
-              <FestiveBirthdayCard key={item.id} birthday={item} />
+              <FestiveBirthdayCard
+                key={item.id}
+                birthday={item}
+                onGiftPress={(name) => giftSheetRef.current?.present(name)}
+              />
             ))}
           </View>
         ) : (
@@ -413,6 +416,20 @@ export const HomeScreen: React.FC = () => {
           }}
         />
       )}
+
+      <GiftBottomSheet
+        ref={giftSheetRef}
+        onSelect={(query) => {
+          setGiftWebViewUrl(
+            `https://www.google.com/search?q=${encodeURIComponent(query)}`
+          );
+        }}
+      />
+      <GiftWebViewModal
+        visible={!!giftWebViewUrl}
+        url={giftWebViewUrl}
+        onClose={() => setGiftWebViewUrl(null)}
+      />
     </SafeAreaView>
   );
 };

@@ -8,6 +8,7 @@ import { GreetingModal } from './GreetingModal';
 interface FestiveBirthdayCardProps {
   birthday: BirthdayWithAge;
   onPress?: () => void;
+  onGiftPress?: (name: string) => void;
 }
 
 const openWhatsApp = (phone: string, errorMsg: string) => {
@@ -32,7 +33,7 @@ const getCardGradientColor = (daysUntil: number): string => {
   return '#a78bfa';
 };
 
-export const FestiveBirthdayCard: React.FC<FestiveBirthdayCardProps> = ({ birthday, onPress }) => {
+export const FestiveBirthdayCard: React.FC<FestiveBirthdayCardProps> = ({ birthday, onPress, onGiftPress }) => {
   const { t } = useTranslation();
   const [greetingVisible, setGreetingVisible] = useState(false);
   const hasPhone = Boolean(birthday.phone?.trim());
@@ -115,7 +116,10 @@ export const FestiveBirthdayCard: React.FC<FestiveBirthdayCardProps> = ({ birthd
             <Text style={styles.actionLabel}>{t('whatsApp')}</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.actionButton} onPress={() => openGiftSearch(t('giftSearchQuery'))}>
+          <TouchableOpacity
+            style={styles.actionButton}
+            onPress={() => (onGiftPress ? onGiftPress(birthday.name) : openGiftSearch(t('giftSearchQuery')))}
+          >
             <View style={[styles.actionIcon, { backgroundColor: 'rgba(255,255,255,0.3)' }]}>
               <Text style={styles.actionIconText}>🎁</Text>
             </View>

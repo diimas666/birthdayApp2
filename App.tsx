@@ -4,6 +4,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { StatusBar, StyleSheet, View, Platform, Text } from "react-native";
 import { useSafeAreaInsets, SafeAreaProvider } from "react-native-safe-area-context";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { LanguageProvider } from "./contexts/LanguageContext";
@@ -273,10 +274,12 @@ export default function App() {
         <LanguageProvider>
           <GestureHandlerRootView style={styles.root}>
             <SafeAreaProvider>
-              <StatusBar barStyle="light-content" backgroundColor="#1a0a2e" />
-              <NavigationContainer>
-                <AppTabs />
-              </NavigationContainer>
+              <BottomSheetModalProvider>
+                <StatusBar barStyle="light-content" backgroundColor="#1a0a2e" />
+                <NavigationContainer>
+                  <AppTabs />
+                </NavigationContainer>
+              </BottomSheetModalProvider>
             </SafeAreaProvider>
           </GestureHandlerRootView>
         </LanguageProvider>
