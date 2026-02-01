@@ -205,7 +205,11 @@ export const HomeScreen: React.FC = () => {
                 {todaysList[0].name} — {todaysList[0].age}{" "}
                 {t("yearWord", todaysList[0].age) as string}
               </Text>
-              <Text style={styles.heroDays}>⏳ {t("heroTodayDays")}</Text>
+              {todaysList[0].daysUntil > 0 && (
+                <Text style={styles.heroDays}>
+                  ⏳ {t("inDays", todaysList[0].daysUntil)}
+                </Text>
+              )}
               <View style={styles.heroButtons}>
                 <TouchableOpacity
                   style={styles.heroButton}
