@@ -183,6 +183,7 @@ export const en = {
   tagWork: 'Work',
   tagOther: 'Other',
   filterByTag: 'Filter by tag',
+  categories: 'Categories',
   allTags: 'All',
 
   // Onboarding

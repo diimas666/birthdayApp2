@@ -31,7 +31,7 @@ import {
 } from "../utils/settingsStorage";
 import { FestiveBirthdayCard } from "../components/FestiveBirthdayCard";
 import { SearchBar } from "../components/SearchBar";
-import { FilterTabs } from "../components/FilterTabs";
+import { FilterDropdowns } from "../components/FilterDropdowns";
 import { BirthdayModal } from "../components/BirthdayModal";
 import { EmptyState } from "../components/EmptyState";
 import { GiftBottomSheet, type GiftBottomSheetRef } from "../components/GiftBottomSheet";
@@ -177,53 +177,12 @@ export const HomeScreen: React.FC = () => {
           onChangeText={setSearchQuery}
           placeholder={t("searchPlaceholder")}
         />
-        <FilterTabs
+        <FilterDropdowns
           activeFilter={activeFilter}
           onFilterChange={setActiveFilter}
+          selectedTag={selectedTag}
+          onTagChange={setSelectedTag}
         />
-        <View style={styles.tagRow}>
-          <TouchableOpacity
-            style={[
-              styles.tagChip,
-              { backgroundColor: chipBg },
-              !selectedTag && styles.tagChipActive,
-            ]}
-            onPress={() => setSelectedTag(null)}
-          >
-            <Text
-              style={[
-                styles.tagChipText,
-                { color: chipText },
-                !selectedTag && styles.tagChipTextActive,
-              ]}
-            >
-              {t("allTags")}
-            </Text>
-          </TouchableOpacity>
-          {[t("tagFamily"), t("tagFriends"), t("tagWork"), t("tagOther")].map(
-            (tag) => (
-              <TouchableOpacity
-                key={tag}
-                style={[
-                  styles.tagChip,
-                  { backgroundColor: chipBg },
-                  selectedTag === tag && styles.tagChipActive,
-                ]}
-                onPress={() => setSelectedTag(selectedTag === tag ? null : tag)}
-              >
-                <Text
-                  style={[
-                    styles.tagChipText,
-                    { color: chipText },
-                    selectedTag === tag && styles.tagChipTextActive,
-                  ]}
-                >
-                  {tag}
-                </Text>
-              </TouchableOpacity>
-            )
-          )}
-        </View>
         <Text style={[styles.dateText, { color: textColor }]}>
           {currentDate}
         </Text>
@@ -459,22 +418,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#666",
   },
-  tagRow: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    paddingHorizontal: 20,
-    gap: 8,
-    marginBottom: 8,
-  },
-  tagChip: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 10,
-    backgroundColor: "#eee",
-  },
-  tagChipActive: { backgroundColor: "#8b5cf6" },
-  tagChipText: { fontSize: 12, color: "#333" },
-  tagChipTextActive: { color: "#fff", fontWeight: "600" },
   dateText: {
     fontSize: 14,
     color: "#000",

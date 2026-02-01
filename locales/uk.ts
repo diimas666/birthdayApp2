@@ -200,6 +200,7 @@ export const uk = {
   tagWork: 'Робота',
   tagOther: 'Інше',
   filterByTag: 'Фільтр по тегу',
+  categories: 'Категорії',
   allTags: 'Всі',
 
   // Onboarding
