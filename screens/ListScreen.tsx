@@ -109,23 +109,16 @@ export const ListScreen: React.FC = () => {
     setEditingBirthday(null);
   };
 
-  const renderRightActions = (progress: Animated.AnimatedInterpolation<number>, dragX: Animated.AnimatedInterpolation<number>, item: BirthdayWithAge) => {
-    const scale = dragX.interpolate({
-      inputRange: [-100, 0],
-      outputRange: [1, 0],
-      extrapolate: 'clamp',
-    });
-
+  const renderRightActions = (_progress: Animated.AnimatedInterpolation<number>, _dragX: Animated.AnimatedInterpolation<number>, item: BirthdayWithAge) => {
     return (
       <View style={styles.rightAction}>
-        <Animated.View style={[styles.deleteButton, { transform: [{ scale }] }]}>
-          <TouchableOpacity
-            style={styles.deleteButtonContent}
-            onPress={() => handleDelete(item.id)}
-          >
-            <Text style={styles.deleteButtonText}>{t('delete')}</Text>
-          </TouchableOpacity>
-        </Animated.View>
+        <TouchableOpacity
+          style={styles.deleteButton}
+          onPress={() => handleDelete(item.id)}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.deleteButtonText}>{t('delete')}</Text>
+        </TouchableOpacity>
       </View>
     );
   };
@@ -138,15 +131,18 @@ export const ListScreen: React.FC = () => {
     };
 
     return (
-      <Swipeable
-        renderRightActions={(progress, dragX) => renderRightActions(progress, dragX, item)}
-        overshootRight={false}
-      >
-        <TouchableOpacity
-          style={[styles.listItem, { backgroundColor: listItemBg, borderColor: listItemBorder }]}
-          onPress={() => handleEdit(item)}
-          activeOpacity={0.7}
+      <View style={styles.listItemWrap}>
+        <Swipeable
+          renderRightActions={(progress, dragX) => renderRightActions(progress, dragX, item)}
+          overshootRight={false}
+          friction={2}
+          rightThreshold={40}
         >
+          <TouchableOpacity
+            style={[styles.listItem, { backgroundColor: listItemBg, borderColor: listItemBorder }]}
+            onPress={() => handleEdit(item)}
+            activeOpacity={0.7}
+          >
           <View style={styles.listItemContent}>
             <View style={styles.listItemLeft}>
               <Text style={[styles.listItemName, { color: textColor }]}>{item.name}</Text>
@@ -163,8 +159,9 @@ export const ListScreen: React.FC = () => {
               </View>
             </View>
           </View>
-        </TouchableOpacity>
-      </Swipeable>
+          </TouchableOpacity>
+        </Swipeable>
+      </View>
     );
   };
 
@@ -279,7 +276,6 @@ const styles = StyleSheet.create({
   listItem: {
     backgroundColor: '#fff',
     borderRadius: 16,
-    marginBottom: 12,
     borderWidth: 1,
     borderColor: '#e8e8e8',
     overflow: 'hidden',
@@ -329,30 +325,26 @@ const styles = StyleSheet.create({
   daysBadgeTextToday: {
     color: '#fff',
   },
-  rightAction: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'flex-end',
+  listItemWrap: {
     marginBottom: 12,
   },
+  rightAction: {
+    width: 110,
+    borderRadius: 16,
+    overflow: 'hidden',
+  },
   deleteButton: {
+    flex: 1,
     backgroundColor: '#ef4444',
     justifyContent: 'center',
     alignItems: 'center',
-    width: 100,
-    height: '100%',
-    borderTopRightRadius: 16,
-    borderBottomRightRadius: 16,
-  },
-  deleteButtonContent: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
+    minHeight: 72,
+    paddingHorizontal: 14,
   },
   deleteButtonText: {
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
