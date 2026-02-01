@@ -10,6 +10,7 @@ import {
   StatusBar,
   Linking,
 } from "react-native";
+import Ionicons from "react-native-vector-icons/Ionicons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect } from "@react-navigation/native";
 import ConfettiCannon from "react-native-confetti-cannon";
@@ -59,7 +60,8 @@ export const HomeScreen: React.FC = () => {
   const [showConfetti, setShowConfetti] = useState(false);
   const [statsExpanded, setStatsExpanded] = useState(false);
   const [heroGreetingVisible, setHeroGreetingVisible] = useState(false);
-  const [heroGreetingBirthday, setHeroGreetingBirthday] = useState<BirthdayWithAge | null>(null);
+  const [heroGreetingBirthday, setHeroGreetingBirthday] =
+    useState<BirthdayWithAge | null>(null);
 
   const loadBirthdays = async () => {
     const loaded = await getBirthdays();
@@ -97,7 +99,8 @@ export const HomeScreen: React.FC = () => {
 
   const todaysList = useMemo(() => getTodaysBirthdays(birthdays), [birthdays]);
   const enrichedAll = useMemo(
-    () => birthdays.map(enrichBirthday).sort((a, b) => a.daysUntil - b.daysUntil),
+    () =>
+      birthdays.map(enrichBirthday).sort((a, b) => a.daysUntil - b.daysUntil),
     [birthdays]
   );
   const nearestBirthday = enrichedAll[0] ?? null;
@@ -236,7 +239,8 @@ export const HomeScreen: React.FC = () => {
               <Text style={styles.heroEmoji}>🎉</Text>
               <Text style={styles.heroTitle}>{t("heroTodayTitle")}</Text>
               <Text style={styles.heroName}>
-                {todaysList[0].name} — {todaysList[0].age} {t("yearWord", todaysList[0].age) as string}
+                {todaysList[0].name} — {todaysList[0].age}{" "}
+                {t("yearWord", todaysList[0].age) as string}
               </Text>
               <Text style={styles.heroDays}>⏳ {t("heroTodayDays")}</Text>
               <View style={styles.heroButtons}>
@@ -247,16 +251,24 @@ export const HomeScreen: React.FC = () => {
                     setHeroGreetingVisible(true);
                   }}
                 >
-                  <Text style={styles.heroButtonText}>{t("heroButtonGreet")}</Text>
+                  <Text style={styles.heroButtonText}>
+                    {t("heroButtonGreet")}
+                  </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.heroButton}
                   onPress={() => {
-                    const q = encodeURIComponent((t("giftSearchQuery") as string) || "gift");
-                    Linking.openURL(`https://www.google.com/search?q=${q}`).catch(() => {});
+                    const q = encodeURIComponent(
+                      (t("giftSearchQuery") as string) || "gift"
+                    );
+                    Linking.openURL(
+                      `https://www.google.com/search?q=${q}`
+                    ).catch(() => {});
                   }}
                 >
-                  <Text style={styles.heroButtonText}>{t("heroButtonGift")}</Text>
+                  <Text style={styles.heroButtonText}>
+                    {t("heroButtonGift")}
+                  </Text>
                 </TouchableOpacity>
               </View>
             </>
@@ -289,9 +301,16 @@ export const HomeScreen: React.FC = () => {
           onPress={() => setStatsExpanded(!statsExpanded)}
           activeOpacity={0.8}
         >
-          <Text style={[styles.statsCollapsedTitle, { color: statsBorder }]}>
-            📊 {t("statsCollapsed")} {statsExpanded ? "▴" : "▾"}
-          </Text>
+          <View style={styles.statsCollapsedRow}>
+            <Text style={[styles.statsCollapsedTitle, { color: statsBorder }]}>
+              📊 {t("statsCollapsed")}
+            </Text>
+            <Ionicons
+              name={statsExpanded ? "chevron-up" : "chevron-down"}
+              size={20}
+              color={statsBorder}
+            />
+          </View>
           {statsExpanded && (
             <View style={styles.statsExpandedContent}>
               <View style={styles.statsRow}>
@@ -338,7 +357,9 @@ export const HomeScreen: React.FC = () => {
           <View style={styles.section}>
             <Text
               style={[
-                activeFilter === "today" ? styles.sectionTitleToday : styles.sectionTitle,
+                activeFilter === "today"
+                  ? styles.sectionTitleToday
+                  : styles.sectionTitle,
                 { color: textColor },
               ]}
             >
@@ -358,7 +379,9 @@ export const HomeScreen: React.FC = () => {
               </Text>
             ) : (
               <EmptyState
-                message={searchQuery ? t("noResults") : t("noBirthdaysInPeriod")}
+                message={
+                  searchQuery ? t("noResults") : t("noBirthdaysInPeriod")
+                }
                 emoji="🎂"
                 textColor={secondaryText}
               />
@@ -481,11 +504,21 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 1,
   },
+  statsCollapsedRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
   statsCollapsedTitle: {
     fontSize: 14,
     fontWeight: "600",
   },
-  statsExpandedContent: { marginTop: 10, paddingTop: 8, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: "rgba(139,92,246,0.3)" },
+  statsExpandedContent: {
+    marginTop: 10,
+    paddingTop: 8,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: "rgba(139,92,246,0.3)",
+  },
   statsRow: {
     flexDirection: "row",
     flexWrap: "wrap",
