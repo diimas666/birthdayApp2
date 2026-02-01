@@ -38,6 +38,7 @@ import {
   getBirthdays,
 } from "../utils/storage";
 import { rescheduleAllNotifications } from "../utils/notifications";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 const HOURS = Array.from({ length: 24 }, (_, i) => i);
 
@@ -190,82 +191,30 @@ export const SettingsScreen: React.FC = () => {
         </Text>
 
         <View style={[styles.section, { backgroundColor: cardBg }]}>
-          <Text style={[styles.sectionTitle, { color: secondaryColor }]}>
-            {t("language")}
-          </Text>
-          <View style={styles.row}>
-            <TouchableOpacity
-              style={[
-                styles.optionButton,
-                language === "uk" && { backgroundColor: secondaryColor },
-              ]}
-              onPress={() => handleLanguageChange("uk")}
-            >
-              <Text
-                style={[
-                  styles.optionText,
-                  language === "uk" && styles.optionTextActive,
-                ]}
-              >
-                {t("languageUk")}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                styles.optionButton,
-                language === "en" && { backgroundColor: secondaryColor },
-              ]}
-              onPress={() => handleLanguageChange("en")}
-            >
-              <Text
-                style={[
-                  styles.optionText,
-                  language === "en" && styles.optionTextActive,
-                ]}
-              >
-                {t("languageEn")}
-              </Text>
-            </TouchableOpacity>
+          <View style={styles.switchRow}>
+            <Text style={[styles.switchLabel, { color: textColor }]}>
+              {t("language")} — {language === "uk" ? t("languageUk") : t("languageEn")}
+            </Text>
+            <Switch
+              value={language === "uk"}
+              onValueChange={(v) => handleLanguageChange(v ? "uk" : "en")}
+              trackColor={{ false: "#ccc", true: secondaryColor }}
+              thumbColor="#fff"
+            />
           </View>
         </View>
 
         <View style={[styles.section, { backgroundColor: cardBg }]}>
-          <Text style={[styles.sectionTitle, { color: secondaryColor }]}>
-            {t("theme")}
-          </Text>
-          <View style={styles.row}>
-            <TouchableOpacity
-              style={[
-                styles.optionButton,
-                theme === "light" && { backgroundColor: secondaryColor },
-              ]}
-              onPress={() => handleThemeChange("light")}
-            >
-              <Text
-                style={[
-                  styles.optionText,
-                  theme === "light" && styles.optionTextActive,
-                ]}
-              >
-                {t("themeLight")}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                styles.optionButton,
-                theme === "dark" && { backgroundColor: secondaryColor },
-              ]}
-              onPress={() => handleThemeChange("dark")}
-            >
-              <Text
-                style={[
-                  styles.optionText,
-                  theme === "dark" && styles.optionTextActive,
-                ]}
-              >
-                {t("themeDark")}
-              </Text>
-            </TouchableOpacity>
+          <View style={styles.switchRow}>
+            <Text style={[styles.switchLabel, { color: textColor }]}>
+              {t("theme")} — {theme === "dark" ? t("themeDark") : t("themeLight")}
+            </Text>
+            <Switch
+              value={theme === "dark"}
+              onValueChange={(v) => handleThemeChange(v ? "dark" : "light")}
+              trackColor={{ false: "#ccc", true: secondaryColor }}
+              thumbColor="#fff"
+            />
           </View>
         </View>
 
@@ -406,42 +355,50 @@ export const SettingsScreen: React.FC = () => {
           </TouchableOpacity>
         </View>
 
-        <View style={[styles.section, { backgroundColor: cardBg }]}>
-          <Text style={[styles.sectionTitle, { color: secondaryColor }]}>
-            {t("exportData")}
-          </Text>
-          <TouchableOpacity style={styles.menuRow} onPress={handleExportCsv}>
-            <Text style={[styles.menuRowText, { color: textColor }]}>
-              {t("exportDataList")}
-            </Text>
-            <Text style={styles.menuRowArrow}>→</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.menuRow} onPress={handleExportJson}>
-            <Text style={[styles.menuRowText, { color: textColor }]}>
-              {t("exportDataFull")}
-            </Text>
-            <Text style={styles.menuRowArrow}>→</Text>
+        <View style={[styles.section, styles.telegramBlock, { backgroundColor: cardBg }]}>
+          <TouchableOpacity
+            style={[styles.telegramRow, styles.telegramRowBorder, { borderBottomColor: isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.06)" }]}
+            onPress={handleExportCsv}
+            activeOpacity={0.7}
+          >
+            <View style={[styles.telegramIconWrap, { backgroundColor: isDark ? "rgba(139,92,246,0.25)" : "#f0e6ff" }]}>
+              <Ionicons name="document-text-outline" size={22} color={secondaryColor} />
+            </View>
+            <Text style={[styles.telegramRowText, { color: textColor }]}>{t("exportDataList")}</Text>
+            <Ionicons name="chevron-forward" size={20} color="#888" />
           </TouchableOpacity>
           <TouchableOpacity
-            style={styles.menuRow}
+            style={[styles.telegramRow, styles.telegramRowBorder, { borderBottomColor: isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.06)" }]}
+            onPress={handleExportJson}
+            activeOpacity={0.7}
+          >
+            <View style={[styles.telegramIconWrap, { backgroundColor: isDark ? "rgba(139,92,246,0.25)" : "#f0e6ff" }]}>
+              <Ionicons name="document-outline" size={22} color={secondaryColor} />
+            </View>
+            <Text style={[styles.telegramRowText, { color: textColor }]}>{t("exportDataFull")}</Text>
+            <Ionicons name="chevron-forward" size={20} color="#888" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.telegramRow, styles.telegramRowBorder, { borderBottomColor: isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.06)" }]}
             onPress={() => setImportModalVisible(true)}
+            activeOpacity={0.7}
           >
-            <Text style={[styles.menuRowText, { color: textColor }]}>
-              {t("importData")}
-            </Text>
-            <Text style={styles.menuRowArrow}>→</Text>
+            <View style={[styles.telegramIconWrap, { backgroundColor: isDark ? "rgba(139,92,246,0.25)" : "#f0e6ff" }]}>
+              <Ionicons name="cloud-upload-outline" size={22} color={secondaryColor} />
+            </View>
+            <Text style={[styles.telegramRowText, { color: textColor }]}>{t("importData")}</Text>
+            <Ionicons name="chevron-forward" size={20} color="#888" />
           </TouchableOpacity>
-        </View>
-
-        <View style={[styles.section, { backgroundColor: cardBg }]}>
           <TouchableOpacity
-            style={styles.menuRow}
+            style={styles.telegramRow}
             onPress={handleWriteToSupport}
+            activeOpacity={0.7}
           >
-            <Text style={[styles.menuRowText, { color: textColor }]}>
-              {t("writeToSupport")}
-            </Text>
-            <Text style={styles.menuRowArrow}>→</Text>
+            <View style={[styles.telegramIconWrap, { backgroundColor: isDark ? "rgba(139,92,246,0.25)" : "#f0e6ff" }]}>
+              <Ionicons name="mail-outline" size={22} color={secondaryColor} />
+            </View>
+            <Text style={[styles.telegramRowText, { color: textColor }]}>{t("writeToSupport")}</Text>
+            <Ionicons name="chevron-forward" size={20} color="#888" />
           </TouchableOpacity>
         </View>
         <View style={[styles.section, { backgroundColor: cardBg }]}>
@@ -512,18 +469,31 @@ const styles = StyleSheet.create({
     padding: 16,
     marginBottom: 16,
   },
+  telegramBlock: {
+    paddingVertical: 0,
+    paddingHorizontal: 12,
+    overflow: "hidden",
+  },
+  telegramRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 14,
+    paddingHorizontal: 4,
+  },
+  telegramRowBorder: {
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  telegramIconWrap: {
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 14,
+  },
+  telegramRowText: { fontSize: 16, flex: 1 },
   sectionTitle: { fontSize: 16, fontWeight: "600", marginBottom: 12 },
   row: { flexDirection: "row", gap: 12 },
-  optionButton: {
-    flex: 1,
-    paddingVertical: 12,
-    borderRadius: 12,
-    backgroundColor: "#eee",
-    alignItems: "center",
-  },
-  optionButtonActive: { backgroundColor: "#8b5cf6" },
-  optionText: { fontSize: 16, color: "#333" },
-  optionTextActive: { color: "#fff" },
   hoursRow: { flexDirection: "row", marginHorizontal: -4 },
   hourChip: {
     paddingHorizontal: 14,
@@ -537,14 +507,6 @@ const styles = StyleSheet.create({
   hourChipTextActive: { color: "#fff" },
   quietHint: { fontSize: 14, marginBottom: 12, opacity: 0.9 },
   quietLabel: { fontSize: 14, fontWeight: "600", marginBottom: 6 },
-  menuRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingVertical: 14,
-  },
-  menuRowText: { fontSize: 16 },
-  menuRowArrow: { fontSize: 18, color: "#666" },
   aboutText: { fontSize: 14, marginBottom: 8 },
   versionText: { fontSize: 12 },
   importOverlay: {
