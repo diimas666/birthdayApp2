@@ -10,6 +10,8 @@ import {
   Modal,
   TextInput,
   Linking,
+  Switch,
+  ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "../contexts/ThemeContext";
@@ -22,7 +24,12 @@ import {
   getQuietHoursFrom,
   getQuietHoursTo,
   setQuietHours,
+  getImportOnlyWithBirthday,
+  setImportOnlyWithBirthday,
+  getImportUpdateChanges,
+  setImportUpdateChanges,
 } from "../utils/settingsStorage";
+import { importFromContacts } from "../utils/contactsImport";
 import {
   exportBirthdaysJson,
   exportBirthdaysCsv,
@@ -43,6 +50,9 @@ export const SettingsScreen: React.FC = () => {
   const [quietTo, setQuietToState] = useState(8);
   const [importModalVisible, setImportModalVisible] = useState(false);
   const [importJson, setImportJson] = useState("");
+  const [importOnlyWithBirthday, setImportOnlyWithBirthdayState] = useState(true);
+  const [importUpdateChanges, setImportUpdateChangesState] = useState(true);
+  const [importingContacts, setImportingContacts] = useState(false);
 
   useEffect(() => {
     getNotificationHour().then(setNotificationHourState);
@@ -50,6 +60,8 @@ export const SettingsScreen: React.FC = () => {
       setQuietFromState(from);
       setQuietToState(to);
     });
+    getImportOnlyWithBirthday().then(setImportOnlyWithBirthdayState);
+    getImportUpdateChanges().then(setImportUpdateChangesState);
   }, []);
 
   const handleThemeChange = async (mode: ThemeMode) => {
@@ -105,6 +117,37 @@ export const SettingsScreen: React.FC = () => {
 
   const handleLanguageChange = async (code: LanguageCode) => {
     await setLanguageCode(code);
+  };
+
+  const handleImportFromContacts = async () => {
+    setImportingContacts(true);
+    try {
+      const result = await importFromContacts();
+      if (result.error) {
+        Alert.alert(t("error"), t("contactsPermissionDenied"));
+        return;
+      }
+      const birthdays = await getBirthdays();
+      await rescheduleAllNotifications(birthdays);
+      Alert.alert(
+        t("importSuccess"),
+        t("importFromContactsSuccess", result.added, result.updated, result.skipped, result.totalWithBirthday)
+      );
+    } catch (e) {
+      Alert.alert(t("importError"), String(e));
+    } finally {
+      setImportingContacts(false);
+    }
+  };
+
+  const handleImportOnlyWithBirthdayChange = async (value: boolean) => {
+    await setImportOnlyWithBirthday(value);
+    setImportOnlyWithBirthdayState(value);
+  };
+
+  const handleImportUpdateChangesChange = async (value: boolean) => {
+    await setImportUpdateChanges(value);
+    setImportUpdateChangesState(value);
   };
 
   const handleImport = async () => {
@@ -324,6 +367,47 @@ export const SettingsScreen: React.FC = () => {
 
         <View style={[styles.section, { backgroundColor: cardBg }]}>
           <Text style={[styles.sectionTitle, { color: secondaryColor }]}>
+            {t("importFromContacts")}
+          </Text>
+          <View style={styles.switchRow}>
+            <Text style={[styles.switchLabel, { color: textColor }]}>
+              {t("importOnlyWithBirthday")}
+            </Text>
+            <Switch
+              value={importOnlyWithBirthday}
+              onValueChange={handleImportOnlyWithBirthdayChange}
+              trackColor={{ false: "#ccc", true: secondaryColor }}
+              thumbColor="#fff"
+            />
+          </View>
+          <View style={styles.switchRow}>
+            <Text style={[styles.switchLabel, { color: textColor }]}>
+              {t("importUpdateChanges")}
+            </Text>
+            <Switch
+              value={importUpdateChanges}
+              onValueChange={handleImportUpdateChangesChange}
+              trackColor={{ false: "#ccc", true: secondaryColor }}
+              thumbColor="#fff"
+            />
+          </View>
+          <TouchableOpacity
+            style={[styles.importContactsButton, { backgroundColor: secondaryColor }]}
+            onPress={handleImportFromContacts}
+            disabled={importingContacts}
+          >
+            {importingContacts ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.importContactsButtonText}>
+                {t("importFromContacts")}
+              </Text>
+            )}
+          </TouchableOpacity>
+        </View>
+
+        <View style={[styles.section, { backgroundColor: cardBg }]}>
+          <Text style={[styles.sectionTitle, { color: secondaryColor }]}>
             {t("exportData")}
           </Text>
           <TouchableOpacity style={styles.menuRow} onPress={handleExportCsv}>
@@ -497,4 +581,18 @@ const styles = StyleSheet.create({
   },
   importButtonText: { fontSize: 16, fontWeight: "600", color: "#fff" },
   importButtonTextCancel: { fontSize: 16, fontWeight: "600", color: "#333" },
+  switchRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: 12,
+  },
+  switchLabel: { fontSize: 16, flex: 1, marginRight: 12 },
+  importContactsButton: {
+    paddingVertical: 14,
+    borderRadius: 12,
+    alignItems: "center",
+    marginTop: 8,
+  },
+  importContactsButtonText: { fontSize: 16, fontWeight: "600", color: "#fff" },
 });

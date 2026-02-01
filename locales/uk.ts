@@ -136,6 +136,12 @@ export const uk = {
   exportDataList: 'Експорт як список (CSV)',
   exportDataFull: 'Експорт повний (JSON)',
   importData: 'Імпорт даних',
+  importFromContacts: 'Імпорт з контактів',
+  importOnlyWithBirthday: 'Імпортувати тільки з датою народження',
+  importUpdateChanges: 'Оновлювати зміни при повторному імпорті',
+  importFromContactsSuccess: (added: number, updated: number, skipped: number, total: number) =>
+    `Імпорт з контактів: додано ${added}, оновлено ${updated}, пропущено ${skipped}. У контактах з датою: ${total}.`,
+  contactsPermissionDenied: 'Доступ до контактів заборонено',
   importPlaceholder: 'Вставте CSV або JSON...',
   about: 'Про додаток',
   aboutText: 'Дні народження — ніколи не забудь особливий день.',

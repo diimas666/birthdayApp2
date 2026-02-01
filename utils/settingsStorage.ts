@@ -7,6 +7,8 @@ const KEY_ONBOARDING_DONE = '@birthday_app:onboardingDone';
 const KEY_QUIET_HOURS_FROM = '@birthday_app:quietHoursFrom';
 const KEY_QUIET_HOURS_TO = '@birthday_app:quietHoursTo';
 const KEY_LANGUAGE = '@birthday_app:language';
+const KEY_IMPORT_ONLY_WITH_BIRTHDAY = '@birthday_app:importOnlyWithBirthday';
+const KEY_IMPORT_UPDATE_CHANGES = '@birthday_app:importUpdateChanges';
 
 export type ThemeMode = 'light' | 'dark';
 export type LanguageCode = 'uk' | 'en';
@@ -99,4 +101,30 @@ export const getQuietHoursTo = async (): Promise<number> => {
 export const setQuietHours = async (from: number, to: number): Promise<void> => {
   await AsyncStorage.setItem(KEY_QUIET_HOURS_FROM, String(Math.max(0, Math.min(23, from))));
   await AsyncStorage.setItem(KEY_QUIET_HOURS_TO, String(Math.max(0, Math.min(23, to))));
+};
+
+export const getImportOnlyWithBirthday = async (): Promise<boolean> => {
+  try {
+    const v = await AsyncStorage.getItem(KEY_IMPORT_ONLY_WITH_BIRTHDAY);
+    return v === 'true';
+  } catch {
+    return true;
+  }
+};
+
+export const setImportOnlyWithBirthday = async (value: boolean): Promise<void> => {
+  await AsyncStorage.setItem(KEY_IMPORT_ONLY_WITH_BIRTHDAY, value ? 'true' : 'false');
+};
+
+export const getImportUpdateChanges = async (): Promise<boolean> => {
+  try {
+    const v = await AsyncStorage.getItem(KEY_IMPORT_UPDATE_CHANGES);
+    return v === 'true';
+  } catch {
+    return true;
+  }
+};
+
+export const setImportUpdateChanges = async (value: boolean): Promise<void> => {
+  await AsyncStorage.setItem(KEY_IMPORT_UPDATE_CHANGES, value ? 'true' : 'false');
 };

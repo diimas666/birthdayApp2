@@ -3229,6 +3229,7 @@ __metadata:
     react: "npm:19.0.0"
     react-native: "npm:0.78.0"
     react-native-confetti-cannon: "npm:^1.5.2"
+    react-native-contacts: "npm:^7.0.4"
     react-native-gesture-handler: "npm:^2.20.0"
     react-native-haptic-feedback: "npm:^2.3.2"
     react-native-reanimated: "npm:^3.16.0"
@@ -7248,6 +7249,15 @@ __metadata:
   version: 1.5.2
   resolution: "react-native-confetti-cannon@npm:1.5.2"
   checksum: 10c0/da7655ed1ace6c63fb38efe21dd44f42cd7e9112a1d26875d17047f6301c3654765e8a779ad68fbf1b1404fc89d2dbeae80322a9be8ea2f54acf021acf794417
+  languageName: node
+  linkType: hard
+
+"react-native-contacts@npm:^7.0.4":
+  version: 7.0.8
+  resolution: "react-native-contacts@npm:7.0.8"
+  peerDependencies:
+    react-native: ">=0.64.0"
+  checksum: 10c0/ed73caed6268e4332a5169111770358696e4119f01992916bfe02ea5d8d2a7dd610f0a96a058dc7045852dd539cf2d733f38888905c48e84ac88598f97ee75f8
   languageName: node
   linkType: hard
 

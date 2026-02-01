@@ -119,6 +119,12 @@ export const en = {
   exportDataList: 'Export as list (CSV)',
   exportDataFull: 'Export full (JSON)',
   importData: 'Import data',
+  importFromContacts: 'Import from Contacts',
+  importOnlyWithBirthday: 'Import only contacts with birthday',
+  importUpdateChanges: 'Update changes on re-import',
+  importFromContactsSuccess: (added: number, updated: number, skipped: number, total: number) =>
+    `Import from Contacts: added ${added}, updated ${updated}, skipped ${skipped}. Contacts with birthday: ${total}.`,
+  contactsPermissionDenied: 'Contacts access denied',
   importPlaceholder: 'Paste CSV or JSON...',
   about: 'About',
   aboutText: 'Birthdays — never forget a special day.',
