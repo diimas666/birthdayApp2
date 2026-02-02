@@ -91,6 +91,7 @@ export const en = {
 
   // Card actions
   whatsApp: 'WhatsApp',
+  telegram: 'Telegram',
   sendGift: 'Send gift',
   giftSearchQuery: 'gift ideas',
   giftIdeasFor: (name: string) => `Gift ideas for ${name}`,
@@ -168,6 +169,7 @@ export const en = {
   addPhoneToContact: 'Add phone number to the contact card',
   selectContact: 'Select a contact',
   openWhatsAppFailed: 'Could not open WhatsApp',
+  openTelegramFailed: 'Could not open Telegram',
   openSmsFailed: 'Could not open SMS',
   openCallFailed: 'Could not open call',
 

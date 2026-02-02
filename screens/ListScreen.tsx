@@ -3,12 +3,12 @@ import {
   View,
   Text,
   StyleSheet,
+  FlatList,
   TouchableOpacity,
   Alert,
   Animated,
   StatusBar,
 } from 'react-native';
-import { FlashList } from '@shopify/flash-list';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
@@ -205,10 +205,9 @@ export const ListScreen: React.FC = () => {
           ))}
         </View>
       </View>
-      <FlashList<BirthdayWithAge>
+      <FlatList
         data={sortedBirthdays}
         renderItem={renderItem}
-        estimatedItemSize={100}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.list}
         showsVerticalScrollIndicator={false}

@@ -53,14 +53,10 @@ interface GreetingModalProps {
   onClose: () => void;
 }
 
-const openWhatsAppWithText = (
-  phone: string,
-  text: string,
-  errorMsg: string
-) => {
+const openTelegram = (phone: string, errorMsg: string) => {
   const cleaned = phone.replace(/\D/g, "");
-  const encoded = encodeURIComponent(text);
-  const url = `https://wa.me/${cleaned}?text=${encoded}`;
+  if (!cleaned.length) return;
+  const url = `https://t.me/+${cleaned}`;
   Linking.openURL(url).catch(() => Alert.alert("", errorMsg));
 };
 
@@ -113,13 +109,9 @@ export const GreetingModal: React.FC<GreetingModalProps> = ({
     }
   };
 
-  const handleWhatsApp = () => {
+  const handleTelegram = () => {
     if (hasPhone && birthday?.phone)
-      openWhatsAppWithText(
-        birthday.phone,
-        editableText,
-        t("openWhatsAppFailed")
-      );
+      openTelegram(birthday.phone, t("openTelegramFailed"));
     else Alert.alert("", t("addPhoneToContact"));
   };
 
@@ -231,7 +223,7 @@ export const GreetingModal: React.FC<GreetingModalProps> = ({
               />
               <Text style={styles.refreshBtnText}>{t("greetingRefresh")}</Text>
             </TouchableOpacity>
-            {/* кнопки для копіювання, відправлення в WhatsApp, відправлення SMS */}
+            {/* кнопки: копіювати, Telegram, SMS */}
             <View style={styles.actions}>
               <TouchableOpacity
                 style={[styles.primaryBtn, { backgroundColor: secondaryColor }]}
@@ -242,12 +234,12 @@ export const GreetingModal: React.FC<GreetingModalProps> = ({
               <TouchableOpacity
                 style={[
                   styles.primaryBtn,
-                  { backgroundColor: "#25D366", opacity: hasPhone ? 1 : 0.6 },
+                  { backgroundColor: "#0088cc", opacity: hasPhone ? 1 : 0.6 },
                 ]}
-                onPress={handleWhatsApp}
+                onPress={handleTelegram}
                 disabled={!hasPhone}
               >
-                <Text style={styles.primaryBtnText}>{t("whatsApp")}</Text>
+                <Text style={styles.primaryBtnText}>{t("telegram")}</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[

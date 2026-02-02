@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Linking, Alert, Platform, ActionSheetIOS } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { BirthdayWithAge } from '../types';
 import { formatDate } from '../utils/dateHelpers';
 import { useTranslation } from '../hooks/useTranslation';
@@ -11,9 +12,10 @@ interface FestiveBirthdayCardProps {
   onGiftPress?: (name: string) => void;
 }
 
-const openWhatsApp = (phone: string, errorMsg: string) => {
+const openTelegram = (phone: string, errorMsg: string) => {
   const cleaned = phone.replace(/\D/g, '');
-  const url = `https://wa.me/${cleaned}`;
+  if (!cleaned.length) return;
+  const url = `https://t.me/+${cleaned}`;
   Linking.openURL(url).catch(() => Alert.alert('', errorMsg));
 };
 
@@ -28,9 +30,9 @@ const openGiftSearch = (searchQuery: string) => {
 };
 
 const getCardGradientColor = (daysUntil: number): string => {
-  if (daysUntil === 0) return '#7c3aed';
-  if (daysUntil <= 7) return '#8b5cf6';
-  return '#a78bfa';
+  if (daysUntil === 0) return '#6d28d9';
+  if (daysUntil <= 7) return '#7c3aed';
+  return '#8b5cf6';
 };
 
 export const FestiveBirthdayCard: React.FC<FestiveBirthdayCardProps> = ({ birthday, onPress, onGiftPress }) => {
@@ -73,7 +75,7 @@ export const FestiveBirthdayCard: React.FC<FestiveBirthdayCardProps> = ({ birthd
       style={[styles.card, { backgroundColor: cardColor }]}
       onPress={onPress}
       onLongPress={handleLongPress}
-      activeOpacity={0.9}
+      activeOpacity={0.92}
     >
       <View style={styles.backgroundPattern}>
         <View style={styles.patternCircle1} />
@@ -99,7 +101,7 @@ export const FestiveBirthdayCard: React.FC<FestiveBirthdayCardProps> = ({ birthd
 
         <View style={styles.actions}>
           <TouchableOpacity style={styles.actionButton} onPress={() => setGreetingVisible(true)}>
-            <View style={[styles.actionIcon, { backgroundColor: 'rgba(255,255,255,0.3)' }]}>
+            <View style={styles.actionIcon}>
               <Text style={styles.actionIconText}>🎂</Text>
             </View>
             <Text style={styles.actionLabel}>{t('greeting')}</Text>
@@ -107,20 +109,20 @@ export const FestiveBirthdayCard: React.FC<FestiveBirthdayCardProps> = ({ birthd
 
           <TouchableOpacity
             style={styles.actionButton}
-            onPress={() => hasPhone && openWhatsApp(birthday.phone!, t('openWhatsAppFailed'))}
+            onPress={() => hasPhone && openTelegram(birthday.phone!, t('openTelegramFailed'))}
             disabled={!hasPhone}
           >
-            <View style={[styles.actionIcon, { backgroundColor: 'rgba(255,255,255,0.3)', opacity: hasPhone ? 1 : 0.5 }]}>
-              <Text style={styles.actionIconText}>💬</Text>
+            <View style={[styles.actionIcon, !hasPhone && styles.actionIconDisabled]}>
+              <Ionicons name="send" size={24} color="#fff" />
             </View>
-            <Text style={styles.actionLabel}>{t('whatsApp')}</Text>
+            <Text style={styles.actionLabel}>{t('telegram')}</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={styles.actionButton}
             onPress={() => (onGiftPress ? onGiftPress(birthday.name) : openGiftSearch(t('giftSearchQuery')))}
           >
-            <View style={[styles.actionIcon, { backgroundColor: 'rgba(255,255,255,0.3)' }]}>
+            <View style={styles.actionIcon}>
               <Text style={styles.actionIconText}>🎁</Text>
             </View>
             <Text style={styles.actionLabel}>{t('sendGift')}</Text>
@@ -139,16 +141,18 @@ export const FestiveBirthdayCard: React.FC<FestiveBirthdayCardProps> = ({ birthd
 
 const styles = StyleSheet.create({
   card: {
-    borderRadius: 16,
+    borderRadius: 20,
     marginHorizontal: 20,
-    marginBottom: 12,
+    marginBottom: 14,
     overflow: 'hidden',
-    shadowColor: '#8b5cf6',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 6,
-    elevation: 6,
-    minHeight: 160,
+    shadowColor: '#5b21b6',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 10,
+    elevation: 8,
+    minHeight: 172,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.12)',
   },
   pinBadge: {
     fontSize: 14,
@@ -160,37 +164,37 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    opacity: 0.15,
+    opacity: 0.12,
   },
   patternCircle1: {
     position: 'absolute',
-    width: 120,
-    height: 120,
-    borderRadius: 60,
+    width: 140,
+    height: 140,
+    borderRadius: 70,
     backgroundColor: '#fff',
-    top: -40,
-    right: -40,
+    top: -50,
+    right: -50,
   },
   patternCircle2: {
     position: 'absolute',
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: 90,
+    height: 90,
+    borderRadius: 45,
     backgroundColor: '#fff',
-    bottom: -20,
-    left: -20,
+    bottom: -25,
+    left: -25,
   },
   patternCircle3: {
     position: 'absolute',
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
     backgroundColor: '#fff',
-    top: '50%',
-    right: 20,
+    top: '45%',
+    right: 24,
   },
   content: {
-    padding: 16,
+    padding: 20,
     position: 'relative',
     zIndex: 1,
   },
@@ -198,68 +202,84 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    marginBottom: 16,
+    marginBottom: 18,
   },
   nameSection: {
     flex: 1,
+    paddingRight: 12,
   },
   name: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: 'bold',
     color: '#fff',
-    marginBottom: 4,
+    marginBottom: 6,
+    letterSpacing: 0.3,
   },
   date: {
-    fontSize: 14,
+    fontSize: 15,
     color: '#fff',
-    opacity: 0.9,
+    opacity: 0.92,
     marginBottom: 2,
   },
   age: {
-    fontSize: 12,
+    fontSize: 13,
     color: '#fff',
-    opacity: 0.8,
+    opacity: 0.82,
   },
   daysBadge: {
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: 11,
-    padding: 10,
-    minWidth: 70,
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.22)',
+    borderRadius: 14,
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    minWidth: 76,
   },
   daysNumber: {
-    fontSize: 28,
+    fontSize: 30,
     fontWeight: 'bold',
     color: '#fff',
   },
   daysLabel: {
     fontSize: 11,
     color: '#fff',
-    marginTop: 2,
+    marginTop: 3,
+    opacity: 0.95,
   },
   actions: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    gap: 12,
+    alignItems: 'center',
+    gap: 8,
+    paddingTop: 16,
+    marginTop: 4,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(255,255,255,0.25)',
   },
   actionButton: {
     alignItems: 'center',
     flex: 1,
   },
   actionIcon: {
-    width: 44,
-    height: 44,
-    borderRadius: 11,
+    width: 48,
+    height: 48,
+    borderRadius: 14,
+    backgroundColor: 'rgba(255,255,255,0.28)',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 6,
+    marginBottom: 8,
+  },
+  actionIconDisabled: {
+    opacity: 0.5,
   },
   actionIconText: {
-    fontSize: 20,
+    fontSize: 22,
   },
   actionLabel: {
     fontSize: 11,
+    fontWeight: '600',
     color: '#fff',
     textAlign: 'center',
+    opacity: 0.95,
   },
 });

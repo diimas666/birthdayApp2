@@ -105,6 +105,7 @@ export const uk = {
 
   // Card actions
   whatsApp: 'WhatsApp',
+  telegram: 'Telegram',
   sendGift: 'Надіслати подарунок',
   giftSearchQuery: 'ідеї подарунків',
   giftIdeasFor: (name: string) => `Ідеї подарунків для ${name}`,
@@ -185,6 +186,7 @@ export const uk = {
   addPhoneToContact: 'Додайте номер телефону в картку контакту',
   selectContact: 'Оберіть контакт',
   openWhatsAppFailed: 'Не вдалося відкрити WhatsApp',
+  openTelegramFailed: 'Не вдалося відкрити Telegram',
   openSmsFailed: 'Не вдалося відкрити SMS',
   openCallFailed: 'Не вдалося відкрити дзвінок',
 
