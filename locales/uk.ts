@@ -168,6 +168,9 @@ export const uk = {
   importFromContactsSuccess: (added: number, updated: number, skipped: number, total: number) =>
     `Імпорт з контактів: додано ${added}, оновлено ${updated}, пропущено ${skipped}. У контактах з датою: ${total}.`,
   contactsPermissionDenied: 'Доступ до контактів заборонено',
+  contactsPermissionDeniedHint: 'Увімкніть доступ до контактів для Birthday Reminder в Налаштуваннях.',
+  openSettings: 'Відкрити налаштування',
+  noContactsWithBirthday: 'Немає контактів з датою народження. Додайте дати в додатку Контакти.',
   importPlaceholder: 'Вставте CSV або JSON...',
   about: 'Про додаток',
   aboutText: 'Дні народження — ніколи не забудь особливий день.',

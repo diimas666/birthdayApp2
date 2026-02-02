@@ -2,14 +2,31 @@ pluginManagement {
     includeBuild("../node_modules/@react-native/gradle-plugin")
 }
 plugins { id("com.facebook.react.settings") }
-// Root includeBuild so buildscript classpath resolves react-native-gradle-plugin
+
 includeBuild("../node_modules/@react-native/gradle-plugin") {
-  dependencySubstitution {
-    substitute module("com.facebook.react:react-native-gradle-plugin") using project(":react-native-gradle-plugin")
-  }
+    dependencySubstitution {
+        substitute module("com.facebook.react:react-native-gradle-plugin") using project(":react-native-gradle-plugin")
+    }
 }
 
-extensions.configure(com.facebook.react.ReactSettingsExtension){ ex -> ex.autolinkLibrariesFromCommand() }
+def nodeBinary = "node"
+def gradlePropsFile = file("gradle.properties")
+if (gradlePropsFile.exists()) {
+    def props = new Properties()
+    gradlePropsFile.withInputStream { props.load(it) }
+    def propNode = props.getProperty("NODE_BINARY", "").trim()
+    if (propNode) {
+        nodeBinary = propNode
+    }
+}
 
-rootProject.name = 'BirthdayApp'
-include ':app'
+def projectRoot = settings.rootDir.parentFile
+def cliFile = new File(projectRoot, "node_modules/@react-native-community/cli/build/bin.js")
+def cliCommand = [nodeBinary, cliFile.absolutePath, "config"]
+
+extensions.configure(com.facebook.react.ReactSettingsExtension) { ex ->
+    ex.autolinkLibrariesFromCommand(cliCommand)
+}
+
+rootProject.name = "BirthdayApp"
+include ":app"

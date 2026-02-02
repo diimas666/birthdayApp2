@@ -136,15 +136,30 @@ export const SettingsScreen: React.FC = () => {
     try {
       const result = await importFromContacts();
       if (result.error) {
-        Alert.alert(t("error"), t("contactsPermissionDenied"));
+        if (result.error === "Permission denied") {
+          Alert.alert(
+            t("contactsPermissionDenied"),
+            t("contactsPermissionDeniedHint"),
+            [
+              { text: t("openSettings"), onPress: () => Linking.openSettings() },
+              { text: "OK" },
+            ]
+          );
+        } else {
+          Alert.alert(t("error"), result.error);
+        }
         return;
       }
       const birthdays = await getBirthdays();
       await rescheduleAllNotifications(birthdays);
-      Alert.alert(
-        t("importSuccess"),
-        t("importFromContactsSuccess", result.added, result.updated, result.skipped, result.totalWithBirthday)
-      );
+      if (result.totalWithBirthday === 0) {
+        Alert.alert(t("importSuccess"), t("noContactsWithBirthday"));
+      } else {
+        Alert.alert(
+          t("importSuccess"),
+          t("importFromContactsSuccess", result.added, result.updated, result.skipped, result.totalWithBirthday)
+        );
+      }
     } catch (e) {
       Alert.alert(t("importError"), String(e));
     } finally {

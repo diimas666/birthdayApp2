@@ -151,6 +151,9 @@ export const en = {
   importFromContactsSuccess: (added: number, updated: number, skipped: number, total: number) =>
     `Import from Contacts: added ${added}, updated ${updated}, skipped ${skipped}. Contacts with birthday: ${total}.`,
   contactsPermissionDenied: 'Contacts access denied',
+  contactsPermissionDeniedHint: 'Enable Contacts for Birthday Reminder in Settings.',
+  openSettings: 'Open Settings',
+  noContactsWithBirthday: 'No contacts with birthday found. Add birth dates in the Contacts app.',
   importPlaceholder: 'Paste CSV or JSON...',
   about: 'About',
   aboutText: 'Birthdays — never forget a special day.',
