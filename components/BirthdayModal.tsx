@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   Modal,
   View,
@@ -9,17 +9,19 @@ import {
   Platform,
   Alert,
   ScrollView,
-} from 'react-native';
-import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
-import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
-import { Birthday } from '../types';
-import { useTranslation } from '../hooks/useTranslation';
-import { useLanguage } from '../contexts/LanguageContext';
+} from "react-native";
+import DateTimePicker, {
+  DateTimePickerEvent,
+} from "@react-native-community/datetimepicker";
+import ReactNativeHapticFeedback from "react-native-haptic-feedback";
+import { Birthday } from "../types";
+import { useTranslation } from "../hooks/useTranslation";
+import { useLanguage } from "../contexts/LanguageContext";
 
 interface BirthdayModalProps {
   visible: boolean;
   onClose: () => void;
-  onSave: (birthday: Omit<Birthday, 'id' | 'createdAt'>) => Promise<void>;
+  onSave: (birthday: Omit<Birthday, "id" | "createdAt">) => Promise<void>;
   editingBirthday?: Birthday | null;
 }
 
@@ -31,37 +33,39 @@ export const BirthdayModal: React.FC<BirthdayModalProps> = ({
 }) => {
   const { t } = useTranslation();
   const { language } = useLanguage();
-  const locale = language === 'uk' ? 'uk-UA' : 'en-US';
-  const PRESET_TAGS = [t('tagFamily'), t('tagWork'), t('tagOther')];
-  const [name, setName] = useState('');
+  const locale = language === "uk" ? "uk-UA" : "en-US";
+  const PRESET_TAGS = [t("tagFamily"), t("tagWork"), t("tagOther")];
+  const [name, setName] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState(new Date());
-  const [note, setNote] = useState('');
-  const [phone, setPhone] = useState('');
+  const [note, setNote] = useState("");
+  const [phone, setPhone] = useState("");
   const [photoUri, setPhotoUri] = useState<string | undefined>();
   const [tags, setTags] = useState<string[]>([]);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
   const resetForm = () => {
-    setName('');
+    setName("");
     setDateOfBirth(new Date());
-    setNote('');
-    setPhone('');
+    setNote("");
+    setPhone("");
     setPhotoUri(undefined);
     setTags([]);
     setShowDatePicker(false);
   };
 
   const toggleTag = (tag: string) => {
-    setTags(prev => prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]);
+    setTags((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+    );
   };
 
   useEffect(() => {
     if (editingBirthday) {
       setName(editingBirthday.name);
       setDateOfBirth(new Date(editingBirthday.dateOfBirth));
-      setNote(editingBirthday.note || '');
-      setPhone(editingBirthday.phone || '');
+      setNote(editingBirthday.note || "");
+      setPhone(editingBirthday.phone || "");
       setPhotoUri(editingBirthday.photoUri);
       setTags(editingBirthday.tags || []);
     } else {
@@ -71,18 +75,20 @@ export const BirthdayModal: React.FC<BirthdayModalProps> = ({
 
   const handleSave = async () => {
     if (!name.trim()) {
-      Alert.alert(t('validationError'), t('pleaseEnterName'));
+      Alert.alert(t("validationError"), t("pleaseEnterName"));
       return;
     }
 
     if (dateOfBirth > new Date()) {
-      Alert.alert(t('validationError'), t('dateCannotBeFuture'));
+      Alert.alert(t("validationError"), t("dateCannotBeFuture"));
       return;
     }
 
     setIsSaving(true);
     try {
-      ReactNativeHapticFeedback.trigger('impactMedium', { enableVibrateFallback: true });
+      ReactNativeHapticFeedback.trigger("impactMedium", {
+        enableVibrateFallback: true,
+      });
       await onSave({
         name: name.trim(),
         dateOfBirth,
@@ -94,7 +100,7 @@ export const BirthdayModal: React.FC<BirthdayModalProps> = ({
       resetForm();
       setTimeout(() => onClose(), 0);
     } catch (error) {
-      Alert.alert(t('error'), t('failedToSave'));
+      Alert.alert(t("error"), t("failedToSave"));
       console.error(error);
     } finally {
       setIsSaving(false);
@@ -118,63 +124,81 @@ export const BirthdayModal: React.FC<BirthdayModalProps> = ({
         <View style={styles.modalContainer}>
           <View style={styles.header}>
             <Text style={styles.title}>
-              {editingBirthday ? t('editBirthday') : t('addBirthday')}
+              {editingBirthday ? t("editBirthday") : t("addBirthday")}
             </Text>
-            <TouchableOpacity onPress={handleClose} style={styles.closeButton}>
+            <TouchableOpacity
+              onPress={handleClose}
+              style={styles.closeButton}
+              hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+            >
               <Text style={styles.closeButtonText}>✕</Text>
             </TouchableOpacity>
           </View>
 
-          <ScrollView style={styles.contentScroll} contentContainerStyle={styles.content}>
+          <ScrollView
+            style={styles.contentScroll}
+            contentContainerStyle={styles.content}
+            showsVerticalScrollIndicator={false}
+          >
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>{t('personName')}</Text>
+              <Text style={styles.label}>{t("personName")}</Text>
               <TextInput
                 style={styles.input}
                 value={name}
                 onChangeText={setName}
-                placeholder={t('enterName')}
+                placeholder={t("enterName")}
                 placeholderTextColor="#666"
               />
             </View>
 
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>{t('phone')}</Text>
+              <Text style={styles.label}>{t("phone")}</Text>
               <TextInput
                 style={styles.input}
                 value={phone}
                 onChangeText={setPhone}
-                placeholder={t('phonePlaceholder')}
+                placeholder={t("phonePlaceholder")}
                 placeholderTextColor="#666"
                 keyboardType="phone-pad"
               />
             </View>
 
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>{t('tags')}</Text>
+              <Text style={styles.label}>{t("tags")}</Text>
               <View style={styles.tagsRow}>
-                {PRESET_TAGS.map(tag => (
+                {PRESET_TAGS.map((tag) => (
                   <TouchableOpacity
                     key={tag}
-                    style={[styles.tagChip, tags.includes(tag) && styles.tagChipActive]}
+                    style={[
+                      styles.tagChip,
+                      tags.includes(tag) && styles.tagChipActive,
+                    ]}
                     onPress={() => toggleTag(tag)}
                   >
-                    <Text style={[styles.tagChipText, tags.includes(tag) && styles.tagChipTextActive]}>{tag}</Text>
+                    <Text
+                      style={[
+                        styles.tagChipText,
+                        tags.includes(tag) && styles.tagChipTextActive,
+                      ]}
+                    >
+                      {tag}
+                    </Text>
                   </TouchableOpacity>
                 ))}
               </View>
             </View>
 
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>{t('dateOfBirth')}</Text>
+              <Text style={styles.label}>{t("dateOfBirth")}</Text>
               <TouchableOpacity
                 style={styles.dateButton}
                 onPress={() => setShowDatePicker(true)}
               >
                 <Text style={styles.dateButtonText}>
                   {dateOfBirth.toLocaleDateString(locale, {
-                    month: 'long',
-                    day: 'numeric',
-                    year: 'numeric',
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric",
                   })}
                 </Text>
               </TouchableOpacity>
@@ -183,10 +207,13 @@ export const BirthdayModal: React.FC<BirthdayModalProps> = ({
                   <DateTimePicker
                     value={dateOfBirth}
                     mode="date"
-                    display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                    display={Platform.OS === "ios" ? "spinner" : "default"}
                     locale={locale}
-                    onChange={(event: DateTimePickerEvent, selectedDate?: Date) => {
-                      setShowDatePicker(Platform.OS === 'ios');
+                    onChange={(
+                      event: DateTimePickerEvent,
+                      selectedDate?: Date
+                    ) => {
+                      setShowDatePicker(Platform.OS === "ios");
                       if (selectedDate) {
                         setDateOfBirth(selectedDate);
                       }
@@ -202,12 +229,12 @@ export const BirthdayModal: React.FC<BirthdayModalProps> = ({
             </View>
 
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>{t('note')}</Text>
+              <Text style={styles.label}>{t("note")}</Text>
               <TextInput
                 style={[styles.input, styles.noteInput]}
                 value={note}
                 onChangeText={setNote}
-                placeholder={t('addNote')}
+                placeholder={t("addNote")}
                 placeholderTextColor="#666"
                 multiline
                 numberOfLines={3}
@@ -221,7 +248,7 @@ export const BirthdayModal: React.FC<BirthdayModalProps> = ({
               disabled={isSaving}
             >
               <Text style={styles.saveButtonText}>
-                {isSaving ? t('saving') : t('save')}
+                {isSaving ? t("saving") : t("save")}
               </Text>
             </TouchableOpacity>
           </ScrollView>
@@ -234,43 +261,45 @@ export const BirthdayModal: React.FC<BirthdayModalProps> = ({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    justifyContent: 'flex-end',
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
+    justifyContent: "flex-end",
   },
   modalContainer: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
     paddingTop: 20,
     paddingBottom: 40,
     paddingHorizontal: 20,
-    height: '80%',
+    height: "85%",
     borderWidth: 1,
-    borderColor: '#8b5cf6',
+    borderColor: "#8b5cf6",
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 24,
   },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#8b5cf6',
+    fontSize: 21,
+    fontWeight: "bold",
+    color: "#8b5cf6",
+    flex: 1,
+    paddingRight: 12,
   },
   closeButton: {
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: '#2a2a3e',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#2a2a3e",
+    justifyContent: "center",
+    alignItems: "center",
   },
   closeButtonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   contentScroll: { flex: 1 },
   content: {
@@ -278,45 +307,45 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   tagsRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
     gap: 8,
   },
   tagChip: {
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 16,
-    backgroundColor: '#eee',
+    backgroundColor: "#eee",
     borderWidth: 1,
-    borderColor: '#8b5cf6',
+    borderColor: "#8b5cf6",
   },
   tagChipActive: {
-    backgroundColor: '#8b5cf6',
+    backgroundColor: "#8b5cf6",
   },
-  tagChipText: { fontSize: 14, color: '#333' },
-  tagChipTextActive: { color: '#fff', fontWeight: '600' },
+  tagChipText: { fontSize: 14, color: "#333" },
+  tagChipTextActive: { color: "#fff", fontWeight: "600" },
   inputGroup: {
     gap: 8,
   },
   switchRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   label: {
     fontSize: 14,
-    fontWeight: '600',
-    color: '#8b5cf6',
+    fontWeight: "600",
+    color: "#8b5cf6",
     marginBottom: 4,
   },
   input: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 11,
     padding: 16,
-    color: '#000',
+    color: "#000",
     fontSize: 16,
     borderWidth: 1,
-    borderColor: '#8b5cf6',
+    borderColor: "#8b5cf6",
   },
   noteInput: {
     height: 80,
@@ -325,32 +354,32 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   dateButton: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 11,
     padding: 16,
     borderWidth: 1,
-    borderColor: '#8b5cf6',
+    borderColor: "#8b5cf6",
   },
   dateButtonText: {
-    color: '#000',
+    color: "#000",
     fontSize: 16,
   },
   datePickerContainer: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 11,
     marginTop: 8,
     padding: 16,
     borderWidth: 2,
-    borderColor: '#8b5cf6',
+    borderColor: "#8b5cf6",
     minHeight: 200,
   },
   saveButton: {
-    backgroundColor: '#8b5cf6',
+    backgroundColor: "#8b5cf6",
     borderRadius: 11,
     padding: 18,
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 8,
-    shadowColor: '#8b5cf6',
+    shadowColor: "#8b5cf6",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -360,8 +389,8 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   saveButtonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 });
