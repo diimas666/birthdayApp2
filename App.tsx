@@ -1,5 +1,5 @@
 import React, { useEffect, useState, Component, type ErrorInfo } from "react";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { StatusBar, StyleSheet, View, Platform, Text } from "react-native";
 import { useSafeAreaInsets, SafeAreaProvider } from "react-native-safe-area-context";
@@ -19,32 +19,6 @@ import { rescheduleAllNotifications } from "./utils/notifications";
 import { getOnboardingDone } from "./utils/settingsStorage";
 import { useTranslation } from "./hooks/useTranslation";
 
-// #region agent log
-const log = (
-  location: string,
-  message: string,
-  data: Record<string, unknown>,
-  hypothesisId: string
-) => {
-  const payload = {
-    location,
-    message,
-    data: { ...data, platform: Platform.OS },
-    hypothesisId,
-  };
-  console.log("[DEBUG]", JSON.stringify(payload));
-  fetch("http://127.0.0.1:7244/ingest/be24e36e-c29f-4989-be54-b71a377e8d68", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      ...payload,
-      timestamp: Date.now(),
-      sessionId: "debug-session",
-    }),
-  }).catch(() => {});
-};
-// #endregion
-
 class AppErrorBoundary extends Component<
   { children: React.ReactNode },
   { error: Error | null }
@@ -53,13 +27,8 @@ class AppErrorBoundary extends Component<
   static getDerivedStateFromError(error: Error) {
     return { error };
   }
-  componentDidCatch(error: Error, info: ErrorInfo) {
-    log(
-      "App.tsx:ErrorBoundary",
-      "componentDidCatch",
-      { message: error.message, componentStack: info.componentStack },
-      "H2"
-    );
+  componentDidCatch(error: Error, _info: ErrorInfo) {
+    console.error("AppErrorBoundary:", error.message);
   }
   render() {
     if (this.state.error) {
@@ -84,6 +53,21 @@ class AppErrorBoundary extends Component<
   }
 }
 
+const TAB_BAR_BG = "#1a0a2e";
+
+const DarkNavTheme = {
+  ...DefaultTheme,
+  dark: true,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: "#8b5cf6",
+    background: TAB_BAR_BG,
+    card: TAB_BAR_BG,
+    border: TAB_BAR_BG,
+    text: "#fff",
+  },
+};
+
 const Tab = createBottomTabNavigator();
 
 function AppTabs() {
@@ -103,8 +87,23 @@ function AppTabs() {
             height: tabBarHeight,
             paddingBottom: tabBarBottom,
             paddingTop: 8,
+            backgroundColor: "transparent",
+            borderTopWidth: 0,
+            borderTopColor: TAB_BAR_BG,
           },
         ],
+        tabBarBackground: () => (
+          <View
+            style={[
+              StyleSheet.absoluteFill,
+              {
+                backgroundColor: TAB_BAR_BG,
+                borderTopLeftRadius: 24,
+                borderTopRightRadius: 24,
+              },
+            ]}
+          />
+        ),
         tabBarActiveTintColor: "#8b5cf6",
         tabBarInactiveTintColor: "#666",
         tabBarLabelStyle: [styles.tabBarLabel, isAndroid && styles.tabBarLabelAndroid],
@@ -160,52 +159,21 @@ export default function App() {
     null
   );
 
-  // #region agent log
-  log("App.tsx:render", "App render", { onboardingDone }, "H1");
-  // #endregion
-
   useEffect(() => {
-    // #region agent log
-    log("App.tsx:useEffect", "getOnboardingDone called", {}, "H1");
-    // #endregion
     let cancelled = false;
     const timeout = setTimeout(() => {
       if (cancelled) return;
-      // #region agent log
-      log(
-        "App.tsx:getOnboardingDone.timeout",
-        "getOnboardingDone timeout fallback",
-        {},
-        "H1"
-      );
-      // #endregion
       setOnboardingDoneState(false);
     }, 3000);
     getOnboardingDone()
       .then((v) => {
         if (cancelled) return;
         clearTimeout(timeout);
-        // #region agent log
-        log(
-          "App.tsx:getOnboardingDone.then",
-          "getOnboardingDone resolved",
-          { value: v },
-          "H1"
-        );
-        // #endregion
         setOnboardingDoneState(v);
       })
-      .catch((err) => {
+      .catch(() => {
         if (cancelled) return;
         clearTimeout(timeout);
-        // #region agent log
-        log(
-          "App.tsx:getOnboardingDone.catch",
-          "getOnboardingDone rejected",
-          { err: String(err) },
-          "H1"
-        );
-        // #endregion
         setOnboardingDoneState(false);
       });
     return () => {
@@ -230,9 +198,6 @@ export default function App() {
   }, [onboardingDone]);
 
   if (onboardingDone === null) {
-    // #region agent log
-    log("App.tsx:branch", "rendering loading (onboardingDone=null)", {}, "H5");
-    // #endregion
     return (
       <AppErrorBoundary>
         <ThemeProvider>
@@ -247,9 +212,6 @@ export default function App() {
   }
 
   if (onboardingDone === false) {
-    // #region agent log
-    log("App.tsx:branch", "rendering onboarding", {}, "H1");
-    // #endregion
     return (
       <AppErrorBoundary>
         <ThemeProvider>
@@ -265,23 +227,22 @@ export default function App() {
     );
   }
 
-  // #region agent log
-  log("App.tsx:branch", "rendering main tabs", {}, "H1");
-  // #endregion
   return (
     <AppErrorBoundary>
       <ThemeProvider>
         <LanguageProvider>
-          <GestureHandlerRootView style={styles.root}>
-            <SafeAreaProvider>
-              <BottomSheetModalProvider>
-                <StatusBar barStyle="light-content" backgroundColor="#1a0a2e" />
-                <NavigationContainer>
-                  <AppTabs />
-                </NavigationContainer>
-              </BottomSheetModalProvider>
-            </SafeAreaProvider>
-          </GestureHandlerRootView>
+            <GestureHandlerRootView style={[styles.root, { backgroundColor: TAB_BAR_BG }]}>
+              <SafeAreaProvider>
+                <View style={[styles.root, { backgroundColor: TAB_BAR_BG }]}>
+                  <BottomSheetModalProvider>
+                    <StatusBar barStyle="light-content" backgroundColor={TAB_BAR_BG} />
+                    <NavigationContainer theme={DarkNavTheme}>
+                      <AppTabs />
+                    </NavigationContainer>
+                  </BottomSheetModalProvider>
+                </View>
+              </SafeAreaProvider>
+            </GestureHandlerRootView>
         </LanguageProvider>
       </ThemeProvider>
     </AppErrorBoundary>
@@ -291,7 +252,6 @@ export default function App() {
 const styles = StyleSheet.create({
   root: { flex: 1 },
   tabBar: {
-    backgroundColor: "#1a0a2e",
     borderTopWidth: 0,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,

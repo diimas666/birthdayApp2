@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#8b5cf6',
     paddingHorizontal: 12,
     paddingVertical: 6,
-    borderRadius: 12,
+    borderRadius: 11,
   },
   badgeText: {
     color: '#fff',

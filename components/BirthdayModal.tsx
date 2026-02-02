@@ -9,7 +9,6 @@ import {
   Platform,
   Alert,
   ScrollView,
-  Switch,
 } from 'react-native';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
@@ -33,14 +32,13 @@ export const BirthdayModal: React.FC<BirthdayModalProps> = ({
   const { t } = useTranslation();
   const { language } = useLanguage();
   const locale = language === 'uk' ? 'uk-UA' : 'en-US';
-  const PRESET_TAGS = [t('tagFamily'), t('tagFriends'), t('tagWork'), t('tagOther')];
+  const PRESET_TAGS = [t('tagFamily'), t('tagWork'), t('tagOther')];
   const [name, setName] = useState('');
   const [dateOfBirth, setDateOfBirth] = useState(new Date());
   const [note, setNote] = useState('');
   const [phone, setPhone] = useState('');
   const [photoUri, setPhotoUri] = useState<string | undefined>();
   const [tags, setTags] = useState<string[]>([]);
-  const [isImportant, setIsImportant] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -51,7 +49,6 @@ export const BirthdayModal: React.FC<BirthdayModalProps> = ({
     setPhone('');
     setPhotoUri(undefined);
     setTags([]);
-    setIsImportant(false);
     setShowDatePicker(false);
   };
 
@@ -67,7 +64,6 @@ export const BirthdayModal: React.FC<BirthdayModalProps> = ({
       setPhone(editingBirthday.phone || '');
       setPhotoUri(editingBirthday.photoUri);
       setTags(editingBirthday.tags || []);
-      setIsImportant(editingBirthday.isImportant ?? false);
     } else {
       resetForm();
     }
@@ -94,7 +90,6 @@ export const BirthdayModal: React.FC<BirthdayModalProps> = ({
         phone: phone.trim() || undefined,
         photoUri,
         tags: tags.length > 0 ? tags : undefined,
-        isImportant: isImportant || undefined,
       });
       resetForm();
       setTimeout(() => onClose(), 0);
@@ -151,16 +146,6 @@ export const BirthdayModal: React.FC<BirthdayModalProps> = ({
                 placeholder={t('phonePlaceholder')}
                 placeholderTextColor="#666"
                 keyboardType="phone-pad"
-              />
-            </View>
-
-            <View style={[styles.inputGroup, styles.switchRow]}>
-              <Text style={styles.label}>{t('importantPerson')}</Text>
-              <Switch
-                value={isImportant}
-                onValueChange={setIsImportant}
-                trackColor={{ false: '#ccc', true: '#8b5cf6' }}
-                thumbColor="#fff"
               />
             </View>
 
@@ -326,7 +311,7 @@ const styles = StyleSheet.create({
   },
   input: {
     backgroundColor: '#fff',
-    borderRadius: 12,
+    borderRadius: 11,
     padding: 16,
     color: '#000',
     fontSize: 16,
@@ -341,7 +326,7 @@ const styles = StyleSheet.create({
   },
   dateButton: {
     backgroundColor: '#fff',
-    borderRadius: 12,
+    borderRadius: 11,
     padding: 16,
     borderWidth: 1,
     borderColor: '#8b5cf6',
@@ -352,7 +337,7 @@ const styles = StyleSheet.create({
   },
   datePickerContainer: {
     backgroundColor: '#fff',
-    borderRadius: 12,
+    borderRadius: 11,
     marginTop: 8,
     padding: 16,
     borderWidth: 2,
@@ -361,7 +346,7 @@ const styles = StyleSheet.create({
   },
   saveButton: {
     backgroundColor: '#8b5cf6',
-    borderRadius: 12,
+    borderRadius: 11,
     padding: 18,
     alignItems: 'center',
     marginTop: 8,

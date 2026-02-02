@@ -256,7 +256,7 @@ const styles = StyleSheet.create({
     height: CELL_SIZE + CELL_GAP,
     marginRight: CELL_GAP,
     marginBottom: CELL_GAP,
-    borderRadius: 10,
+    borderRadius: 11,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -280,7 +280,7 @@ const styles = StyleSheet.create({
   modalList: { maxHeight: 320, marginBottom: 16 },
   modalCard: {
     padding: 14,
-    borderRadius: 12,
+    borderRadius: 11,
     borderWidth: 1,
     marginBottom: 12,
   },
@@ -289,7 +289,7 @@ const styles = StyleSheet.create({
   modalNote: { fontSize: 13, marginTop: 6, fontStyle: 'italic' },
   modalClose: {
     paddingVertical: 14,
-    borderRadius: 12,
+    borderRadius: 11,
     alignItems: 'center',
   },
   modalCloseText: { color: '#fff', fontWeight: '600', fontSize: 16 },

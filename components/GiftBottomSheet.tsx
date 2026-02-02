@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
   chip: {
     paddingHorizontal: 16,
     paddingVertical: 12,
-    borderRadius: 12,
+    borderRadius: 11,
     borderWidth: 1,
   },
   chipText: {

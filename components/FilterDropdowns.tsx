@@ -359,7 +359,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 10,
     paddingHorizontal: 12,
-    borderRadius: 24,
+    borderRadius: 11,
     gap: 8,
   },
   triggerText: {
@@ -409,7 +409,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 10,
     paddingHorizontal: 12,
-    borderRadius: 12,
+    borderRadius: 11,
     marginBottom: 4,
     gap: 10,
   },

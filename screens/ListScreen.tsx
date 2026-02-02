@@ -244,13 +244,13 @@ const styles = StyleSheet.create({
   sortLabel: { fontSize: 14, color: '#666' },
   sortTabs: { flexDirection: 'row', gap: 8 },
   sortTab: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 12,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 11,
     backgroundColor: '#eee',
   },
   sortTabActive: { backgroundColor: '#8b5cf6' },
-  sortTabText: { fontSize: 12, color: '#333' },
+  sortTabText: { fontSize: 14, color: '#333' },
   sortTabTextActive: { fontWeight: '600', color: '#fff' },
   list: {
     padding: 16,
@@ -312,7 +312,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f0e6ff',
     paddingHorizontal: 12,
     paddingVertical: 6,
-    borderRadius: 12,
+    borderRadius: 11,
   },
   daysBadgeToday: {
     backgroundColor: '#8b5cf6',
@@ -330,7 +330,7 @@ const styles = StyleSheet.create({
   },
   rightAction: {
     width: 110,
-    borderRadius: 16,
+    borderRadius: 11,
     overflow: 'hidden',
   },
   deleteButton: {

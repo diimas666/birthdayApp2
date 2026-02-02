@@ -64,25 +64,26 @@ export async function importFromContacts(): Promise<ImportFromContactsResult> {
     return { added: 0, updated: 0, skipped: 0, totalWithBirthday: 0, error: 'Permission denied' };
   }
 
-  const onlyWithBirthday = await getImportOnlyWithBirthday();
-  const updateChanges = await getImportUpdateChanges();
-  const existing = await getBirthdays();
+  try {
+    const onlyWithBirthday = await getImportOnlyWithBirthday();
+    const updateChanges = await getImportUpdateChanges();
+    const existing = await getBirthdays();
 
-  const byPhone = new Map<string, Birthday>();
-  const byNameAndDate = new Map<string, Birthday>();
-  for (const b of existing) {
-    const phone = normalizePhone(b.phone);
-    if (phone) byPhone.set(phone, b);
-    const key = `${(b.name || '').toLowerCase().trim()}-${new Date(b.dateOfBirth).getTime()}`;
-    byNameAndDate.set(key, b);
-  }
+    const byPhone = new Map<string, Birthday>();
+    const byNameAndDate = new Map<string, Birthday>();
+    for (const b of existing) {
+      const phone = normalizePhone(b.phone);
+      if (phone) byPhone.set(phone, b);
+      const key = `${(b.name || '').toLowerCase().trim()}-${new Date(b.dateOfBirth).getTime()}`;
+      byNameAndDate.set(key, b);
+    }
 
-  let added = 0;
-  let updated = 0;
-  let skipped = 0;
-  let totalWithBirthday = 0;
+    let added = 0;
+    let updated = 0;
+    let skipped = 0;
+    let totalWithBirthday = 0;
 
-  const contacts = await Contacts.getAll();
+    const contacts = await Contacts.getAll();
   for (const contact of contacts) {
     const dateOfBirth = getBirthdayFromContact(contact);
     if (onlyWithBirthday && !dateOfBirth) continue;
@@ -140,5 +141,9 @@ export async function importFromContacts(): Promise<ImportFromContactsResult> {
     byNameAndDate.set(keyNameDate, newBirthday);
   }
 
-  return { added, updated, skipped, totalWithBirthday };
+    return { added, updated, skipped, totalWithBirthday };
+  } catch (e) {
+    const message = e instanceof Error ? e.message : String(e);
+    return { added: 0, updated: 0, skipped: 0, totalWithBirthday: 0, error: message };
+  }
 }

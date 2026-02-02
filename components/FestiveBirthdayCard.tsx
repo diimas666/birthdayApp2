@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
   daysBadge: {
     alignItems: 'center',
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: 10,
+    borderRadius: 11,
     padding: 10,
     minWidth: 70,
   },
@@ -249,7 +249,7 @@ const styles = StyleSheet.create({
   actionIcon: {
     width: 44,
     height: 44,
-    borderRadius: 10,
+    borderRadius: 11,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 6,

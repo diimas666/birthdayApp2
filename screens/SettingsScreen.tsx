@@ -526,7 +526,7 @@ const styles = StyleSheet.create({
   telegramIconWrap: {
     width: 36,
     height: 36,
-    borderRadius: 10,
+    borderRadius: 11,
     alignItems: "center",
     justifyContent: "center",
     marginRight: 14,
@@ -538,7 +538,7 @@ const styles = StyleSheet.create({
   hourChip: {
     paddingHorizontal: 14,
     paddingVertical: 8,
-    borderRadius: 20,
+    borderRadius: 11,
     backgroundColor: "#eee",
     marginRight: 8,
   },
@@ -562,7 +562,7 @@ const styles = StyleSheet.create({
   importTitle: { fontSize: 20, fontWeight: "bold", marginBottom: 16 },
   importInput: {
     borderWidth: 1,
-    borderRadius: 12,
+    borderRadius: 11,
     padding: 12,
     minHeight: 120,
     textAlignVertical: "top",
@@ -571,14 +571,14 @@ const styles = StyleSheet.create({
   importButtonCancel: {
     flex: 1,
     padding: 14,
-    borderRadius: 12,
+    borderRadius: 11,
     backgroundColor: "#eee",
     alignItems: "center",
   },
   importButtonOk: {
     flex: 1,
     padding: 14,
-    borderRadius: 12,
+    borderRadius: 11,
     alignItems: "center",
   },
   importButtonText: { fontSize: 16, fontWeight: "600", color: "#fff" },
@@ -592,7 +592,7 @@ const styles = StyleSheet.create({
   switchLabel: { fontSize: 16, flex: 1, marginRight: 12 },
   importContactsButton: {
     paddingVertical: 14,
-    borderRadius: 12,
+    borderRadius: 11,
     alignItems: "center",
     marginTop: 8,
   },

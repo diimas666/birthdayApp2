@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
     marginVertical: 16,
     borderWidth: 1,
     borderColor: "#8b5cf6",
-    borderRadius: 12,
+    borderRadius: 11,
     backgroundColor: "#fff",
     position: "relative",
   },
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
   },
   input: {
     backgroundColor: "transparent",
-    borderRadius: 12,
+    borderRadius: 11,
     paddingHorizontal: 16,
     paddingVertical: 12,
     paddingRight: 44,

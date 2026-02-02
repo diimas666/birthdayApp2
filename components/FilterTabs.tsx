@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
   tab: {
     paddingHorizontal: 16,
     paddingVertical: 8,
-    borderRadius: 10,
+    borderRadius: 11,
     backgroundColor: "#f3f3f3",
     minWidth: 70,
     alignItems: "center",

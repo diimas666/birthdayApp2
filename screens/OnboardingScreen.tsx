@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
     marginTop: 32,
     paddingVertical: 14,
     paddingHorizontal: 24,
-    borderRadius: 14,
+    borderRadius: 11,
     backgroundColor: 'rgba(139, 92, 246, 0.3)',
     borderWidth: 1,
     borderColor: '#8b5cf6',
@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
   hourChip: {
     paddingHorizontal: 14,
     paddingVertical: 10,
-    borderRadius: 20,
+    borderRadius: 11,
     backgroundColor: 'rgba(255,255,255,0.1)',
     marginRight: 8,
   },
@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
     marginTop: 24,
     paddingVertical: 18,
     paddingHorizontal: 48,
-    borderRadius: 16,
+    borderRadius: 11,
     backgroundColor: '#8b5cf6',
   },
   startButtonText: {

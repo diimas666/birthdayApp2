@@ -457,7 +457,7 @@ const styles = StyleSheet.create({
   heroButton: {
     paddingHorizontal: 20,
     paddingVertical: 10,
-    borderRadius: 12,
+    borderRadius: 11,
     backgroundColor: "rgba(255,255,255,0.25)",
   },
   heroButtonText: { fontSize: 14, fontWeight: "600", color: "#fff" },
@@ -465,7 +465,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginBottom: 12,
     padding: 12,
-    borderRadius: 12,
+    borderRadius: 11,
     borderWidth: 1,
   },
   statsCollapsedRow: {

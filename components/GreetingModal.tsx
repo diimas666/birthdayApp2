@@ -294,14 +294,14 @@ const styles = StyleSheet.create({
   chip: {
     paddingHorizontal: 14,
     paddingVertical: 8,
-    borderRadius: 12,
+    borderRadius: 11,
     backgroundColor: "#eee",
   },
   chipText: { fontSize: 14, color: "#333" },
   chipTextActive: { color: "#fff" },
   textArea: {
     borderWidth: 1,
-    borderRadius: 12,
+    borderRadius: 11,
     padding: 12,
     minHeight: 100,
     textAlignVertical: "top",
@@ -310,7 +310,7 @@ const styles = StyleSheet.create({
   refreshBtn: {
     marginTop: 12,
     paddingVertical: 10,
-    borderRadius: 12,
+    borderRadius: 11,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
@@ -329,7 +329,7 @@ const styles = StyleSheet.create({
   primaryBtn: {
     paddingVertical: 12,
     paddingHorizontal: 20,
-    borderRadius: 12,
+    borderRadius: 11,
     minWidth: 100,
     justifyContent: "center",
     alignItems: "center",
