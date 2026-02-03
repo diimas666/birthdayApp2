@@ -2,7 +2,10 @@ import React, { useEffect, useState, Component, type ErrorInfo } from "react";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { StatusBar, StyleSheet, View, Platform, Text } from "react-native";
-import { useSafeAreaInsets, SafeAreaProvider } from "react-native-safe-area-context";
+import {
+  useSafeAreaInsets,
+  SafeAreaProvider,
+} from "react-native-safe-area-context";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -18,6 +21,7 @@ import { getBirthdays } from "./utils/storage";
 import { rescheduleAllNotifications } from "./utils/notifications";
 import { getOnboardingDone } from "./utils/settingsStorage";
 import { useTranslation } from "./hooks/useTranslation";
+import { scaleFont } from "./utils/scale";
 
 class AppErrorBoundary extends Component<
   { children: React.ReactNode },
@@ -70,12 +74,39 @@ const DarkNavTheme = {
 
 const Tab = createBottomTabNavigator();
 
+function TabLabel({
+  children,
+  color,
+  labelStyle,
+}: {
+  children: string;
+  color: string;
+  labelStyle: object;
+}) {
+  return (
+    <View style={styles.tabLabelWrapper}>
+      <Text
+        numberOfLines={1}
+        adjustsFontSizeToFit
+        minimumFontScale={0.6}
+        style={[styles.tabBarLabel, labelStyle, { color }]}
+      >
+        {children}
+      </Text>
+    </View>
+  );
+}
+
 function AppTabs() {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const isAndroid = Platform.OS === "android";
   const tabBarBottom = isAndroid ? Math.max(10, insets.bottom) : 10;
   const tabBarHeight = 56 + tabBarBottom;
+  const labelStyle = [
+    styles.tabBarLabel,
+    isAndroid && styles.tabBarLabelAndroid,
+  ];
 
   return (
     <Tab.Navigator
@@ -106,8 +137,11 @@ function AppTabs() {
         ),
         tabBarActiveTintColor: "#8b5cf6",
         tabBarInactiveTintColor: "#666",
-        tabBarLabelStyle: [styles.tabBarLabel, isAndroid && styles.tabBarLabelAndroid],
-        tabBarItemStyle: isAndroid ? { paddingVertical: 4 } : undefined,
+        tabBarAllowFontScaling: false,
+        tabBarLabelStyle: labelStyle,
+        tabBarItemStyle: isAndroid
+          ? { paddingVertical: 4, paddingHorizontal: 2 }
+          : undefined,
       }}
     >
       <Tab.Screen
@@ -117,7 +151,11 @@ function AppTabs() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="home" size={size ?? 22} color={color} />
           ),
-          tabBarLabel: t("home"),
+          tabBarLabel: ({ color }) => (
+            <TabLabel color={color} labelStyle={StyleSheet.flatten(labelStyle)}>
+              {t("home")}
+            </TabLabel>
+          ),
         }}
       />
       <Tab.Screen
@@ -127,7 +165,11 @@ function AppTabs() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="list" size={size ?? 22} color={color} />
           ),
-          tabBarLabel: isAndroid ? t("allBirthdaysShort") : t("allBirthdays"),
+          tabBarLabel: ({ color }) => (
+            <TabLabel color={color} labelStyle={StyleSheet.flatten(labelStyle)}>
+              {t("allBirthdays")}
+            </TabLabel>
+          ),
         }}
       />
       <Tab.Screen
@@ -137,7 +179,11 @@ function AppTabs() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="calendar" size={size ?? 22} color={color} />
           ),
-          tabBarLabel: isAndroid ? t("calendarShort") : t("calendar"),
+          tabBarLabel: ({ color }) => (
+            <TabLabel color={color} labelStyle={StyleSheet.flatten(labelStyle)}>
+              {t("calendar")}
+            </TabLabel>
+          ),
         }}
       />
       <Tab.Screen
@@ -147,7 +193,11 @@ function AppTabs() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="settings" size={size ?? 22} color={color} />
           ),
-          tabBarLabel: isAndroid ? t("settingsShort") : t("settings"),
+          tabBarLabel: ({ color }) => (
+            <TabLabel color={color} labelStyle={StyleSheet.flatten(labelStyle)}>
+              {t("settings")}
+            </TabLabel>
+          ),
         }}
       />
     </Tab.Navigator>
@@ -231,18 +281,23 @@ export default function App() {
     <AppErrorBoundary>
       <ThemeProvider>
         <LanguageProvider>
-            <GestureHandlerRootView style={[styles.root, { backgroundColor: TAB_BAR_BG }]}>
-              <SafeAreaProvider>
-                <View style={[styles.root, { backgroundColor: TAB_BAR_BG }]}>
-                  <BottomSheetModalProvider>
-                    <StatusBar barStyle="light-content" backgroundColor={TAB_BAR_BG} />
-                    <NavigationContainer theme={DarkNavTheme}>
-                      <AppTabs />
-                    </NavigationContainer>
-                  </BottomSheetModalProvider>
-                </View>
-              </SafeAreaProvider>
-            </GestureHandlerRootView>
+          <GestureHandlerRootView
+            style={[styles.root, { backgroundColor: TAB_BAR_BG }]}
+          >
+            <SafeAreaProvider>
+              <View style={[styles.root, { backgroundColor: TAB_BAR_BG }]}>
+                <BottomSheetModalProvider>
+                  <StatusBar
+                    barStyle="light-content"
+                    backgroundColor={TAB_BAR_BG}
+                  />
+                  <NavigationContainer theme={DarkNavTheme}>
+                    <AppTabs />
+                  </NavigationContainer>
+                </BottomSheetModalProvider>
+              </View>
+            </SafeAreaProvider>
+          </GestureHandlerRootView>
         </LanguageProvider>
       </ThemeProvider>
     </AppErrorBoundary>
@@ -262,12 +317,19 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     overflow: "hidden",
   },
+  tabLabelWrapper: {
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 2,
+  },
   tabBarLabel: {
-    fontSize: 12,
+    fontSize: scaleFont(12),
     fontWeight: "600",
+    textAlign: "center",
   },
   tabBarLabelAndroid: {
-    fontSize: 11,
+    fontSize: scaleFont(10),
     marginTop: 2,
   },
 });
