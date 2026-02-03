@@ -8,8 +8,6 @@ apply from: file("${projectRoot}/node_modules/react-native-vector-icons/fonts.gr
 
 react {
     autolinkLibrariesWithApp()
-    def nodePath = rootProject.findProperty("NODE_BINARY") ?: "node"
-    nodeExecutableAndArgs = [nodePath]
 }
 
 def enableProguardInReleaseBuilds = false
@@ -49,27 +47,10 @@ android {
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
     }
-    packaging {
-        jniLibs {
-            pickFirsts += [
-                "lib/arm64-v8a/libc++_shared.so",
-                "lib/armeabi-v7a/libc++_shared.so",
-                "lib/x86/libc++_shared.so",
-                "lib/x86_64/libc++_shared.so",
-                "**/libhermes.so",
-                "**/libhermes_executor.so"
-            ]
-        }
-    }
 }
 
 dependencies {
-    implementation("com.facebook.react:react-android")
     implementation("androidx.multidex:multidex:2.0.1")
-    def useHermes = (rootProject.findProperty("hermesEnabled") ?: "true").toBoolean()
-    if (useHermes) {
-        implementation("com.facebook.react:hermes-android")
-    } else {
-        implementation jscFlavor
-    }
+    implementation("com.facebook.react:react-android")
+    implementation("com.facebook.react:hermes-android")
 }

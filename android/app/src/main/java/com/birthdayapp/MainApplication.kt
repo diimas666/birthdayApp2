@@ -44,18 +44,10 @@ class MainApplication : MultiDexApplication(), ReactApplication {
             logCrash(t)
             defaultHandler?.uncaughtException(thread, t)
         }
-        try {
-            SoLoader.init(this, false)
-            SoLoader.loadLibrary("reactnative")
-            if (BuildConfig.IS_HERMES_ENABLED) {
-                SoLoader.loadLibrary("hermestooling")
-            }
-            if (BuildConfig.IS_NEW_ARCHITECTURE_ENABLED) {
-                load()
-            }
-        } catch (t: Throwable) {
-            logCrash(t)
-            throw t
+        SoLoader.init(this, false)
+        if (BuildConfig.IS_NEW_ARCHITECTURE_ENABLED) {
+          // If you opted-in for the New Architecture, we load the native entry point for this app.
+          load()
         }
     }
 
