@@ -27,9 +27,9 @@ export const SearchBar: React.FC<SearchBarProps> = ({
         { backgroundColor: bg, borderColor: "#8b5cf6" },
       ]}
     >
-      <View style={styles.searchIconWrap}>
+      {/* <View style={styles.searchIconWrap}>
         <Ionicons name="search" size={22} color={iconColor} />
-      </View>
+      </View> */}
       <TextInput
         style={[styles.input, { color: textColor }]}
         value={value}

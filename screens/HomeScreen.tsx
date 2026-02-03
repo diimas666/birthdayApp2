@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+  useRef,
+} from "react";
 import {
   View,
   Text,
@@ -9,7 +15,17 @@ import {
   Dimensions,
   StatusBar,
   Linking,
+  LayoutAnimation,
+  Platform,
+  UIManager,
 } from "react-native";
+
+if (
+  Platform.OS === "android" &&
+  UIManager.setLayoutAnimationEnabledExperimental
+) {
+  UIManager.setLayoutAnimationEnabledExperimental(true);
+}
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect } from "@react-navigation/native";
@@ -34,11 +50,20 @@ import { SearchBar } from "../components/SearchBar";
 import { FilterDropdowns } from "../components/FilterDropdowns";
 import { BirthdayModal } from "../components/BirthdayModal";
 import { EmptyState } from "../components/EmptyState";
-import { GiftBottomSheet, type GiftBottomSheetRef } from "../components/GiftBottomSheet";
+import {
+  GiftBottomSheet,
+  type GiftBottomSheetRef,
+} from "../components/GiftBottomSheet";
 import { GiftWebViewModal } from "../components/GiftWebViewModal";
 import { useTranslation } from "../hooks/useTranslation";
 import { useTheme } from "../contexts/ThemeContext";
-import { spacing, fontSize, borderRadius, moderateScale, verticalScale } from "../utils/scale";
+import {
+  spacing,
+  fontSize,
+  borderRadius,
+  moderateScale,
+  verticalScale,
+} from "../utils/scale";
 
 const { width } = Dimensions.get("window");
 
@@ -66,7 +91,13 @@ export const HomeScreen: React.FC = () => {
   const [heroGreetingBirthday, setHeroGreetingBirthday] =
     useState<BirthdayWithAge | null>(null);
   const [giftWebViewUrl, setGiftWebViewUrl] = useState<string | null>(null);
+  const [searchExpanded, setSearchExpanded] = useState(false);
   const giftSheetRef = useRef<GiftBottomSheetRef>(null);
+
+  const toggleSearch = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setSearchExpanded((v) => !v);
+  };
 
   const loadBirthdays = async () => {
     const loaded = await getBirthdays();
@@ -163,7 +194,7 @@ export const HomeScreen: React.FC = () => {
 
       <View style={[styles.header, { backgroundColor: cardBg }]}>
         <View style={styles.headerTop}>
-          <View>
+          <View style={styles.greetingBlock}>
             <Text style={[styles.greeting, { color: textColor }]}>
               {t("homeGreeting")}
             </Text>
@@ -171,22 +202,37 @@ export const HomeScreen: React.FC = () => {
               {t("greetingSubtext")}
             </Text>
           </View>
+          <TouchableOpacity
+            style={[styles.searchIconBtn, { backgroundColor: chipBg }]}
+            onPress={toggleSearch}
+            activeOpacity={0.7}
+          >
+            <Ionicons
+              name="search"
+              size={22}
+              color={searchExpanded ? "#8b5cf6" : secondaryText}
+            />
+          </TouchableOpacity>
         </View>
 
-        <SearchBar
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-          placeholder={t("searchPlaceholder")}
-        />
-        <FilterDropdowns
-          activeFilter={activeFilter}
-          onFilterChange={setActiveFilter}
-          selectedTag={selectedTag}
-          onTagChange={setSelectedTag}
-        />
-        <Text style={[styles.dateText, { color: textColor }]}>
-          {currentDate}
-        </Text>
+        {searchExpanded && (
+          <SearchBar
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            placeholder={t("searchPlaceholder")}
+          />
+        )}
+        <View style={{ marginTop: searchExpanded ? 0 : spacing.sm }}>
+          <FilterDropdowns
+            activeFilter={activeFilter}
+            onFilterChange={setActiveFilter}
+            selectedTag={selectedTag}
+            onTagChange={setSelectedTag}
+          />
+          <Text style={[styles.dateText, { color: textColor }]}>
+            {currentDate}
+          </Text>
+        </View>
 
         {/* Hero: фокус дня */}
         <View
@@ -302,8 +348,8 @@ export const HomeScreen: React.FC = () => {
                     {stats.nearest.daysUntil === 0
                       ? t("todayShort")
                       : stats.nearest.daysUntil === 1
-                        ? t("tomorrow")
-                        : t("inDays", stats.nearest.daysUntil)}
+                      ? t("tomorrow")
+                      : t("inDays", stats.nearest.daysUntil)}
                   </Text>
                 </View>
               )}
@@ -411,7 +457,18 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: spacing.lg,
-    marginBottom: spacing.md,
+    paddingTop: spacing.sm,
+    paddingBottom: spacing.xs,
+  },
+  greetingBlock: {
+    flex: 1,
+  },
+  searchIconBtn: {
+    width: moderateScale(44),
+    height: moderateScale(44),
+    borderRadius: borderRadius.sm,
+    justifyContent: "center",
+    alignItems: "center",
   },
   greeting: {
     fontSize: fontSize.xxl,
@@ -453,7 +510,12 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xs,
     textAlign: "center",
   },
-  heroDays: { fontSize: fontSize.md, color: "#fff", opacity: 0.9, marginBottom: spacing.md },
+  heroDays: {
+    fontSize: fontSize.md,
+    color: "#fff",
+    opacity: 0.9,
+    marginBottom: spacing.md,
+  },
   heroButtons: { flexDirection: "row", gap: spacing.md },
   heroButton: {
     paddingHorizontal: spacing.lg,
