@@ -3,6 +3,7 @@ import { View, StyleSheet, TouchableOpacity, Text, Modal, ActivityIndicator } fr
 import { WebView } from 'react-native-webview';
 import { useTheme } from '../contexts/ThemeContext';
 import { useTranslation } from '../hooks/useTranslation';
+import { spacing, fontSize, verticalScale, moderateScale } from '../utils/scale';
 
 interface GiftWebViewModalProps {
   visible: boolean;
@@ -66,15 +67,15 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    paddingTop: 48,
+    paddingHorizontal: spacing.md,
+    paddingVertical: moderateScale(12),
+    paddingTop: verticalScale(48),
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: 'rgba(0,0,0,0.1)',
   },
-  closeBtn: { marginRight: 12 },
-  closeText: { fontSize: 16, fontWeight: '500' },
-  title: { fontSize: 17, fontWeight: '600', flex: 1 },
+  closeBtn: { marginRight: spacing.sm },
+  closeText: { fontSize: fontSize.base, fontWeight: '500' },
+  title: { fontSize: fontSize.lg, fontWeight: '600', flex: 1 },
   webview: { flex: 1 },
   loadingWrap: {
     position: 'absolute',

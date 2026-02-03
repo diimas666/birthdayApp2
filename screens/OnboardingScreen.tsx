@@ -13,8 +13,9 @@ import { useTranslation } from '../hooks/useTranslation';
 import { setOnboardingDone } from '../utils/settingsStorage';
 import { requestPermissions } from '../utils/notifications';
 import { getNotificationHour, setNotificationHour } from '../utils/settingsStorage';
+import { spacing, fontSize, borderRadius, moderateScale, verticalScale, dimensions } from '../utils/scale';
 
-const { width } = Dimensions.get('window');
+const { width } = dimensions;
 
 const HOURS = Array.from({ length: 24 }, (_, i) => i);
 
@@ -117,109 +118,109 @@ const styles = StyleSheet.create({
   },
   skipButton: {
     position: 'absolute',
-    top: 50,
-    right: 20,
+    top: verticalScale(50),
+    right: spacing.lg,
     zIndex: 10,
   },
   skipText: {
     color: '#a78bfa',
-    fontSize: 16,
+    fontSize: fontSize.base,
     fontWeight: '600',
   },
   scrollContent: {
     flexGrow: 1,
-    paddingTop: 80,
+    paddingTop: verticalScale(80),
   },
   slide: {
-    paddingHorizontal: 32,
+    paddingHorizontal: spacing.xl,
     alignItems: 'center',
     justifyContent: 'flex-start',
   },
   emoji: {
-    fontSize: 72,
-    marginBottom: 24,
+    fontSize: fontSize.huge,
+    marginBottom: spacing.lg,
   },
   title: {
-    fontSize: 26,
+    fontSize: fontSize.xxl,
     fontWeight: 'bold',
     color: '#fff',
     textAlign: 'center',
-    marginBottom: 16,
+    marginBottom: spacing.md,
   },
   text: {
-    fontSize: 17,
+    fontSize: fontSize.lg,
     color: '#c4b5fd',
     textAlign: 'center',
-    lineHeight: 24,
+    lineHeight: moderateScale(24),
   },
   allowButton: {
-    marginTop: 32,
-    paddingVertical: 14,
-    paddingHorizontal: 24,
-    borderRadius: 11,
+    marginTop: spacing.xl,
+    paddingVertical: moderateScale(14),
+    paddingHorizontal: spacing.lg,
+    borderRadius: borderRadius.sm,
     backgroundColor: 'rgba(139, 92, 246, 0.3)',
     borderWidth: 1,
     borderColor: '#8b5cf6',
   },
   allowButtonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: fontSize.base,
     fontWeight: '600',
   },
   timeLabel: {
-    marginTop: 24,
-    fontSize: 14,
+    marginTop: spacing.lg,
+    fontSize: fontSize.md,
     color: '#a78bfa',
-    marginBottom: 12,
+    marginBottom: spacing.md,
   },
   hoursRow: {
     flexDirection: 'row',
-    marginBottom: 16,
-    maxHeight: 50,
+    marginBottom: spacing.md,
+    maxHeight: verticalScale(50),
   },
   hourChip: {
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    borderRadius: 11,
+    paddingHorizontal: moderateScale(14),
+    paddingVertical: spacing.sm,
+    borderRadius: borderRadius.sm,
     backgroundColor: 'rgba(255,255,255,0.1)',
-    marginRight: 8,
+    marginRight: spacing.sm,
   },
   hourChipActive: {
     backgroundColor: '#8b5cf6',
   },
   hourChipText: {
-    fontSize: 14,
+    fontSize: fontSize.md,
     color: '#fff',
   },
   hourChipTextActive: {
     fontWeight: '600',
   },
   startButton: {
-    marginTop: 24,
-    paddingVertical: 18,
-    paddingHorizontal: 48,
-    borderRadius: 11,
+    marginTop: spacing.lg,
+    paddingVertical: moderateScale(18),
+    paddingHorizontal: spacing.xxl,
+    borderRadius: borderRadius.sm,
     backgroundColor: '#8b5cf6',
   },
   startButtonText: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: fontSize.lg,
     fontWeight: 'bold',
   },
   dots: {
     flexDirection: 'row',
     justifyContent: 'center',
-    gap: 8,
-    paddingBottom: 40,
+    gap: spacing.sm,
+    paddingBottom: spacing.xxl,
   },
   dot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
+    width: moderateScale(8),
+    height: moderateScale(8),
+    borderRadius: moderateScale(4),
     backgroundColor: 'rgba(255,255,255,0.3)',
   },
   dotActive: {
     backgroundColor: '#8b5cf6',
-    width: 24,
+    width: moderateScale(24),
   },
 });

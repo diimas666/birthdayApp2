@@ -15,13 +15,14 @@ import { getBirthdays } from '../utils/storage';
 import { getBirthdaysOnDate, enrichBirthday } from '../utils/dateHelpers';
 import { useTranslation } from '../hooks/useTranslation';
 import { useTheme } from '../contexts/ThemeContext';
+import { spacing, fontSize, borderRadius, moderateScale, verticalScale, dimensions } from '../utils/scale';
 
 const DAYS_IN_WEEK = 7;
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
-const GRID_PAD = 24;
-const CELL_GAP = 4;
+const { width: SCREEN_WIDTH } = dimensions;
+const GRID_PAD = spacing.lg * 2;
+const CELL_GAP = spacing.xs;
 const CELL_BASE = Math.floor((SCREEN_WIDTH - GRID_PAD - 6 * CELL_GAP) / 7);
-const CELL_SIZE = Math.max(32, CELL_BASE - CELL_GAP);
+const CELL_SIZE = Math.max(moderateScale(32), CELL_BASE - CELL_GAP);
 
 export const CalendarScreen: React.FC = () => {
   const { t, locale } = useTranslation();
@@ -219,33 +220,33 @@ export const CalendarScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: { flex: 1 },
   header: {
-    paddingHorizontal: 20,
-    paddingTop: 16,
-    paddingBottom: 12,
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.md,
+    paddingBottom: spacing.sm,
   },
-  title: { fontSize: 24, fontWeight: '700', marginBottom: 12 },
+  title: { fontSize: fontSize.xxl, fontWeight: '700', marginBottom: spacing.sm },
   monthRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 12,
+    marginBottom: spacing.sm,
   },
-  arrow: { padding: 8 },
-  arrowText: { fontSize: 28, fontWeight: '600' },
-  monthTitle: { fontSize: 18, fontWeight: '600' },
+  arrow: { padding: spacing.sm },
+  arrowText: { fontSize: fontSize.xxxl, fontWeight: '600' },
+  monthTitle: { fontSize: fontSize.lg, fontWeight: '600' },
   weekdayRow: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
-    marginBottom: 8,
-    paddingHorizontal: 12,
+    marginBottom: spacing.sm,
+    paddingHorizontal: spacing.md,
   },
   weekdayCell: {
-    fontSize: 12,
+    fontSize: fontSize.sm,
     width: CELL_SIZE + CELL_GAP,
     textAlign: 'center',
   },
   scroll: { flex: 1 },
-  gridWrap: { padding: 12 },
+  gridWrap: { padding: spacing.md },
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -256,41 +257,41 @@ const styles = StyleSheet.create({
     height: CELL_SIZE + CELL_GAP,
     marginRight: CELL_GAP,
     marginBottom: CELL_GAP,
-    borderRadius: 11,
+    borderRadius: borderRadius.sm,
     justifyContent: 'center',
     alignItems: 'center',
   },
   cellLastInRow: {
     marginRight: 0,
   },
-  cellDay: { fontSize: 14, fontWeight: '600' },
+  cellDay: { fontSize: fontSize.md, fontWeight: '600' },
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.5)',
     justifyContent: 'flex-end',
   },
   modalContent: {
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    padding: 24,
-    paddingBottom: 32,
+    borderTopLeftRadius: borderRadius.xl,
+    borderTopRightRadius: borderRadius.xl,
+    padding: spacing.lg,
+    paddingBottom: spacing.xl,
   },
-  modalTitle: { fontSize: 20, fontWeight: '700', marginBottom: 16 },
-  modalEmpty: { fontSize: 15, marginBottom: 20 },
-  modalList: { maxHeight: 320, marginBottom: 16 },
+  modalTitle: { fontSize: fontSize.xl, fontWeight: '700', marginBottom: spacing.md },
+  modalEmpty: { fontSize: fontSize.base, marginBottom: spacing.lg },
+  modalList: { maxHeight: verticalScale(320), marginBottom: spacing.md },
   modalCard: {
-    padding: 14,
-    borderRadius: 11,
+    padding: moderateScale(14),
+    borderRadius: borderRadius.sm,
     borderWidth: 1,
-    marginBottom: 12,
+    marginBottom: spacing.sm,
   },
-  modalName: { fontSize: 17, fontWeight: '700', marginBottom: 4 },
-  modalDetail: { fontSize: 14, marginBottom: 2 },
-  modalNote: { fontSize: 13, marginTop: 6, fontStyle: 'italic' },
+  modalName: { fontSize: fontSize.lg, fontWeight: '700', marginBottom: spacing.xs },
+  modalDetail: { fontSize: fontSize.md, marginBottom: moderateScale(2) },
+  modalNote: { fontSize: fontSize.sm, marginTop: spacing.sm, fontStyle: 'italic' },
   modalClose: {
-    paddingVertical: 14,
-    borderRadius: 11,
+    paddingVertical: moderateScale(14),
+    borderRadius: borderRadius.sm,
     alignItems: 'center',
   },
-  modalCloseText: { color: '#fff', fontWeight: '600', fontSize: 16 },
+  modalCloseText: { color: '#fff', fontWeight: '600', fontSize: fontSize.base },
 });

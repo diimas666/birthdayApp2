@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { spacing, fontSize, verticalScale, moderateScale } from '../utils/scale';
 
 interface EmptyStateProps {
   message: string;
@@ -20,16 +21,16 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 60,
+    paddingVertical: verticalScale(60),
   },
   emoji: {
-    fontSize: 64,
-    marginBottom: 16,
+    fontSize: fontSize.huge,
+    marginBottom: spacing.md,
   },
   message: {
-    fontSize: 18,
+    fontSize: fontSize.lg,
     color: '#999',
     textAlign: 'center',
-    paddingHorizontal: 40,
+    paddingHorizontal: spacing.xl,
   },
 });

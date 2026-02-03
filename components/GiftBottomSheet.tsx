@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import BottomSheet, { BottomSheetBackdrop, BottomSheetView } from '@gorhom/bottom-sheet';
 import { useTranslation } from '../hooks/useTranslation';
 import { useTheme } from '../contexts/ThemeContext';
+import { spacing, fontSize, borderRadius, moderateScale, verticalScale } from '../utils/scale';
 
 export interface GiftBottomSheetRef {
   present: (name: string) => void;
@@ -117,33 +118,33 @@ export const GiftBottomSheet = forwardRef<GiftBottomSheetRef, GiftBottomSheetPro
 const styles = StyleSheet.create({
   content: {
     flex: 1,
-    paddingHorizontal: 20,
-    paddingBottom: 24,
+    paddingHorizontal: spacing.lg,
+    paddingBottom: spacing.xl,
   },
   title: {
-    fontSize: 20,
+    fontSize: fontSize.xl,
     fontWeight: '700',
-    marginBottom: 20,
+    marginBottom: spacing.lg,
     textAlign: 'center',
   },
   label: {
-    fontSize: 14,
+    fontSize: fontSize.md,
     fontWeight: '600',
-    marginBottom: 10,
+    marginBottom: spacing.sm,
   },
   chipRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 10,
+    gap: spacing.sm,
   },
   chip: {
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderRadius: 11,
+    paddingHorizontal: spacing.md,
+    paddingVertical: moderateScale(12),
+    borderRadius: borderRadius.sm,
     borderWidth: 1,
   },
   chipText: {
-    fontSize: 14,
+    fontSize: fontSize.md,
     fontWeight: '500',
   },
 });

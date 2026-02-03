@@ -3,6 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import { BirthdayWithAge } from '../types';
 import { formatDateShort } from '../utils/dateHelpers';
 import { useTranslation } from '../hooks/useTranslation';
+import { spacing, fontSize, borderRadius, moderateScale, verticalScale } from '../utils/scale';
 
 interface BirthdayCardProps {
   birthday: BirthdayWithAge;
@@ -11,7 +12,7 @@ interface BirthdayCardProps {
 
 export const BirthdayCard: React.FC<BirthdayCardProps> = ({ birthday, isToday = false }) => {
   const { t } = useTranslation();
-  
+
   const getDaysText = () => {
     if (birthday.daysUntil === 0) return t('today');
     if (birthday.daysUntil === 1) return t('tomorrow');
@@ -35,17 +36,17 @@ export const BirthdayCard: React.FC<BirthdayCardProps> = ({ birthday, isToday = 
 const styles = StyleSheet.create({
   card: {
     backgroundColor: '#2a2a3e',
-    borderRadius: 20,
-    padding: 20,
-    marginHorizontal: 8,
-    width: 280,
-    minHeight: 180,
+    borderRadius: borderRadius.xl,
+    padding: spacing.lg,
+    marginHorizontal: spacing.sm,
+    width: moderateScale(280),
+    minHeight: verticalScale(180),
     borderWidth: 1,
     borderColor: '#3a3a4e',
     shadowColor: '#8b5cf6',
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: { width: 0, height: moderateScale(4) },
     shadowOpacity: 0.2,
-    shadowRadius: 8,
+    shadowRadius: moderateScale(8),
     elevation: 5,
   },
   cardToday: {
@@ -54,7 +55,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     shadowColor: '#8b5cf6',
     shadowOpacity: 0.5,
-    shadowRadius: 12,
+    shadowRadius: moderateScale(12),
     elevation: 10,
   },
   cardContent: {
@@ -62,31 +63,31 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   name: {
-    fontSize: 24,
+    fontSize: fontSize.xxl,
     fontWeight: 'bold',
     color: '#fff',
-    marginBottom: 8,
+    marginBottom: spacing.sm,
   },
   age: {
-    fontSize: 18,
+    fontSize: fontSize.lg,
     color: '#a78bfa',
-    marginBottom: 4,
+    marginBottom: spacing.xs,
   },
   date: {
-    fontSize: 16,
+    fontSize: fontSize.base,
     color: '#999',
-    marginBottom: 12,
+    marginBottom: spacing.md,
   },
   badge: {
     alignSelf: 'flex-start',
     backgroundColor: '#8b5cf6',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 11,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs,
+    borderRadius: borderRadius.sm,
   },
   badgeText: {
     color: '#fff',
-    fontSize: 14,
+    fontSize: fontSize.md,
     fontWeight: '600',
   },
 });

@@ -5,6 +5,7 @@ import { BirthdayWithAge } from '../types';
 import { formatDate } from '../utils/dateHelpers';
 import { useTranslation } from '../hooks/useTranslation';
 import { GreetingModal } from './GreetingModal';
+import { spacing, fontSize, borderRadius, moderateScale, verticalScale } from '../utils/scale';
 
 interface FestiveBirthdayCardProps {
   birthday: BirthdayWithAge;
@@ -26,7 +27,7 @@ const openCall = (phone: string, errorMsg: string) => {
 
 const openGiftSearch = (searchQuery: string) => {
   const q = encodeURIComponent(searchQuery);
-  Linking.openURL(`https://www.google.com/search?q=${q}`).catch(() => {});
+  Linking.openURL(`https://www.google.com/search?q=${q}`).catch(() => { });
 };
 
 const getCardGradientColor = (daysUntil: number): string => {
@@ -141,22 +142,22 @@ export const FestiveBirthdayCard: React.FC<FestiveBirthdayCardProps> = ({ birthd
 
 const styles = StyleSheet.create({
   card: {
-    borderRadius: 20,
-    marginHorizontal: 20,
-    marginBottom: 14,
+    borderRadius: borderRadius.xl,
+    marginHorizontal: spacing.lg,
+    marginBottom: spacing.md,
     overflow: 'hidden',
     shadowColor: '#5b21b6',
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: { width: 0, height: moderateScale(4) },
     shadowOpacity: 0.25,
-    shadowRadius: 10,
+    shadowRadius: moderateScale(10),
     elevation: 8,
-    minHeight: 172,
+    minHeight: verticalScale(172),
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.12)',
   },
   pinBadge: {
-    fontSize: 14,
-    marginBottom: 2,
+    fontSize: fontSize.md,
+    marginBottom: moderateScale(2),
   },
   backgroundPattern: {
     position: 'absolute',
@@ -168,33 +169,33 @@ const styles = StyleSheet.create({
   },
   patternCircle1: {
     position: 'absolute',
-    width: 140,
-    height: 140,
-    borderRadius: 70,
+    width: moderateScale(140),
+    height: moderateScale(140),
+    borderRadius: moderateScale(70),
     backgroundColor: '#fff',
-    top: -50,
-    right: -50,
+    top: moderateScale(-50),
+    right: moderateScale(-50),
   },
   patternCircle2: {
     position: 'absolute',
-    width: 90,
-    height: 90,
-    borderRadius: 45,
+    width: moderateScale(90),
+    height: moderateScale(90),
+    borderRadius: moderateScale(45),
     backgroundColor: '#fff',
-    bottom: -25,
-    left: -25,
+    bottom: moderateScale(-25),
+    left: moderateScale(-25),
   },
   patternCircle3: {
     position: 'absolute',
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+    width: moderateScale(50),
+    height: moderateScale(50),
+    borderRadius: moderateScale(25),
     backgroundColor: '#fff',
     top: '45%',
-    right: 24,
+    right: spacing.lg,
   },
   content: {
-    padding: 20,
+    padding: spacing.lg,
     position: 'relative',
     zIndex: 1,
   },
@@ -202,27 +203,27 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    marginBottom: 18,
+    marginBottom: moderateScale(18),
   },
   nameSection: {
     flex: 1,
     paddingRight: 12,
   },
   name: {
-    fontSize: 26,
+    fontSize: fontSize.xxl,
     fontWeight: 'bold',
     color: '#fff',
-    marginBottom: 6,
+    marginBottom: spacing.xs,
     letterSpacing: 0.3,
   },
   date: {
-    fontSize: 15,
+    fontSize: fontSize.base,
     color: '#fff',
     opacity: 0.92,
-    marginBottom: 2,
+    marginBottom: moderateScale(2),
   },
   age: {
-    fontSize: 13,
+    fontSize: fontSize.sm,
     color: '#fff',
     opacity: 0.82,
   },
@@ -230,29 +231,29 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'rgba(255, 255, 255, 0.22)',
-    borderRadius: 14,
-    paddingVertical: 12,
-    paddingHorizontal: 14,
-    minWidth: 76,
+    borderRadius: borderRadius.md,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.md,
+    minWidth: moderateScale(76),
   },
   daysNumber: {
-    fontSize: 30,
+    fontSize: fontSize.xxxl,
     fontWeight: 'bold',
     color: '#fff',
   },
   daysLabel: {
-    fontSize: 11,
+    fontSize: fontSize.xs,
     color: '#fff',
-    marginTop: 3,
+    marginTop: moderateScale(3),
     opacity: 0.95,
   },
   actions: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    gap: 8,
-    paddingTop: 16,
-    marginTop: 4,
+    gap: spacing.sm,
+    paddingTop: spacing.md,
+    marginTop: spacing.xs,
     borderTopWidth: 1,
     borderTopColor: 'rgba(255,255,255,0.25)',
   },
@@ -261,22 +262,22 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   actionIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 14,
+    width: moderateScale(48),
+    height: moderateScale(48),
+    borderRadius: borderRadius.md,
     backgroundColor: 'rgba(255,255,255,0.28)',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: spacing.sm,
   },
   actionIconDisabled: {
     opacity: 0.5,
   },
   actionIconText: {
-    fontSize: 22,
+    fontSize: fontSize.xxl,
   },
   actionLabel: {
-    fontSize: 11,
+    fontSize: fontSize.xs,
     fontWeight: '600',
     color: '#fff',
     textAlign: 'center',

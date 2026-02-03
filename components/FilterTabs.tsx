@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { useTranslation } from "../hooks/useTranslation";
 import { useTheme } from "../contexts/ThemeContext";
+import { spacing, fontSize, borderRadius, moderateScale } from "../utils/scale";
 
 type FilterType = "today" | "week" | "month" | "year";
 
@@ -50,16 +51,16 @@ export const FilterTabs: React.FC<FilterTabsProps> = ({
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    paddingHorizontal: 20,
-    marginBottom: 16,
-    gap: 8,
+    paddingHorizontal: spacing.lg,
+    marginBottom: spacing.md,
+    gap: spacing.sm,
   },
   tab: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 11,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    borderRadius: borderRadius.sm,
     backgroundColor: "#f3f3f3",
-    minWidth: 70,
+    minWidth: moderateScale(70),
     alignItems: "center",
     justifyContent: "center",
   },
@@ -67,7 +68,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#8b5cf6",
   },
   tabText: {
-    fontSize: 14,
+    fontSize: fontSize.md,
     color: "#000",
     fontWeight: "500",
   },

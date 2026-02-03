@@ -25,6 +25,7 @@ import { BirthdayModal } from '../components/BirthdayModal';
 import { EmptyState } from '../components/EmptyState';
 import { useTranslation } from '../hooks/useTranslation';
 import { useTheme } from '../contexts/ThemeContext';
+import { spacing, fontSize, borderRadius, moderateScale, verticalScale } from '../utils/scale';
 
 type SortType = 'date' | 'name' | 'age';
 
@@ -143,22 +144,22 @@ export const ListScreen: React.FC = () => {
             onPress={() => handleEdit(item)}
             activeOpacity={0.7}
           >
-          <View style={styles.listItemContent}>
-            <View style={styles.listItemLeft}>
-              <Text style={[styles.listItemName, { color: textColor }]}>{item.name}</Text>
-              <Text style={[styles.listItemDetails, { color: secondaryText }]}>
-                {t('turns', item.age + 1)} • {formatDate(item.nextBirthday)}
-              </Text>
-              {item.note && (
-                <Text style={styles.listItemNote}>{item.note}</Text>
-              )}
-            </View>
-            <View style={styles.listItemRight}>
-              <View style={[styles.daysBadge, { backgroundColor: item.daysUntil === 0 ? undefined : daysBadgeBg }, item.daysUntil === 0 && styles.daysBadgeToday]}>
-                <Text style={[styles.daysBadgeText, { color: item.daysUntil === 0 ? '#fff' : daysBadgeTextColor }, item.daysUntil === 0 && styles.daysBadgeTextToday]}>{getDaysText()}</Text>
+            <View style={styles.listItemContent}>
+              <View style={styles.listItemLeft}>
+                <Text style={[styles.listItemName, { color: textColor }]}>{item.name}</Text>
+                <Text style={[styles.listItemDetails, { color: secondaryText }]}>
+                  {t('turns', item.age + 1)} • {formatDate(item.nextBirthday)}
+                </Text>
+                {item.note && (
+                  <Text style={styles.listItemNote}>{item.note}</Text>
+                )}
+              </View>
+              <View style={styles.listItemRight}>
+                <View style={[styles.daysBadge, { backgroundColor: item.daysUntil === 0 ? undefined : daysBadgeBg }, item.daysUntil === 0 && styles.daysBadgeToday]}>
+                  <Text style={[styles.daysBadgeText, { color: item.daysUntil === 0 ? '#fff' : daysBadgeTextColor }, item.daysUntil === 0 && styles.daysBadgeTextToday]}>{getDaysText()}</Text>
+                </View>
               </View>
             </View>
-          </View>
           </TouchableOpacity>
         </Swipeable>
       </View>
@@ -236,101 +237,101 @@ const styles = StyleSheet.create({
   sortRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    gap: 8,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    gap: spacing.sm,
     backgroundColor: '#fff',
   },
-  sortLabel: { fontSize: 14, color: '#666' },
-  sortTabs: { flexDirection: 'row', gap: 8 },
+  sortLabel: { fontSize: fontSize.md, color: '#666' },
+  sortTabs: { flexDirection: 'row', gap: spacing.sm },
   sortTab: {
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    borderRadius: 11,
+    paddingHorizontal: moderateScale(14),
+    paddingVertical: spacing.sm,
+    borderRadius: borderRadius.sm,
     backgroundColor: '#eee',
   },
   sortTabActive: { backgroundColor: '#8b5cf6' },
-  sortTabText: { fontSize: 14, color: '#333' },
+  sortTabText: { fontSize: fontSize.md, color: '#333' },
   sortTabTextActive: { fontWeight: '600', color: '#fff' },
   list: {
-    padding: 16,
-    paddingBottom: 80,
+    padding: spacing.md,
+    paddingBottom: verticalScale(80),
   },
   fab: {
     position: 'absolute',
-    right: 20,
-    bottom: 30,
-    width: 64,
-    height: 64,
-    borderRadius: 32,
+    right: spacing.lg,
+    bottom: moderateScale(30),
+    width: moderateScale(64),
+    height: moderateScale(64),
+    borderRadius: moderateScale(32),
     backgroundColor: '#8b5cf6',
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: '#8b5cf6',
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: { width: 0, height: moderateScale(4) },
     shadowOpacity: 0.4,
-    shadowRadius: 12,
+    shadowRadius: moderateScale(12),
     elevation: 10,
   },
-  fabText: { fontSize: 32 },
+  fabText: { fontSize: fontSize.xxxl },
   listItem: {
     backgroundColor: '#fff',
-    borderRadius: 16,
+    borderRadius: borderRadius.lg,
     borderWidth: 1,
     borderColor: '#e8e8e8',
     overflow: 'hidden',
   },
   listItemContent: {
     flexDirection: 'row',
-    padding: 16,
+    padding: spacing.md,
     alignItems: 'center',
   },
   listItemLeft: {
     flex: 1,
   },
   listItemName: {
-    fontSize: 18,
+    fontSize: fontSize.lg,
     fontWeight: 'bold',
     color: '#000',
-    marginBottom: 4,
+    marginBottom: spacing.xxs,
   },
   listItemDetails: {
-    fontSize: 14,
+    fontSize: fontSize.md,
     color: '#8b5cf6',
-    marginBottom: 4,
+    marginBottom: spacing.xxs,
   },
   listItemNote: {
-    fontSize: 12,
+    fontSize: fontSize.sm,
     color: '#999',
-    marginTop: 4,
+    marginTop: spacing.xs,
     fontStyle: 'italic',
   },
   listItemRight: {
-    marginLeft: 16,
+    marginLeft: spacing.md,
   },
   daysBadge: {
     backgroundColor: '#f0e6ff',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 11,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs,
+    borderRadius: borderRadius.sm,
   },
   daysBadgeToday: {
     backgroundColor: '#8b5cf6',
   },
   daysBadgeText: {
     color: '#333',
-    fontSize: 12,
+    fontSize: fontSize.sm,
     fontWeight: '600',
   },
   daysBadgeTextToday: {
     color: '#fff',
   },
   listItemWrap: {
-    marginBottom: 12,
+    marginBottom: spacing.sm,
   },
   rightAction: {
-    width: 110,
-    borderRadius: 11,
+    width: moderateScale(110),
+    borderRadius: borderRadius.sm,
     overflow: 'hidden',
   },
   deleteButton: {
@@ -338,12 +339,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#ef4444',
     justifyContent: 'center',
     alignItems: 'center',
-    minHeight: 72,
-    paddingHorizontal: 14,
+    minHeight: verticalScale(72),
+    paddingHorizontal: moderateScale(14),
   },
   deleteButtonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: fontSize.base,
     fontWeight: 'bold',
     textAlign: 'center',
   },

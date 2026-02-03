@@ -11,6 +11,7 @@ import {
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useTranslation } from "../hooks/useTranslation";
 import { useTheme } from "../contexts/ThemeContext";
+import { spacing, fontSize, borderRadius, moderateScale, verticalScale } from "../utils/scale";
 
 if (Platform.OS === "android" && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -35,9 +36,9 @@ const grayBg = "#f3f3f3";
 const grayText = "#374151";
 const shadow = {
   shadowColor: "#000",
-  shadowOffset: { width: 0, height: 2 },
+  shadowOffset: { width: 0, height: moderateScale(2) },
   shadowOpacity: 0.1,
-  shadowRadius: 8,
+  shadowRadius: moderateScale(8),
   elevation: 4,
 };
 
@@ -337,15 +338,15 @@ export const FilterDropdowns: React.FC<FilterDropdownsProps> = ({
 
 const styles = StyleSheet.create({
   wrap: {
-    paddingHorizontal: 20,
-    marginBottom: 12,
+    paddingHorizontal: spacing.lg,
+    marginBottom: spacing.md,
     overflow: "visible",
     zIndex: 1000,
     elevation: 10,
   },
   row: {
     flexDirection: "row",
-    gap: 12,
+    gap: spacing.md,
     alignItems: "flex-start",
     overflow: "visible",
   },
@@ -357,18 +358,18 @@ const styles = StyleSheet.create({
   trigger: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-    borderRadius: 11,
-    gap: 8,
+    paddingVertical: moderateScale(10),
+    paddingHorizontal: spacing.sm,
+    borderRadius: borderRadius.sm,
+    gap: spacing.sm,
   },
   triggerText: {
-    fontSize: 14,
+    fontSize: fontSize.md,
     fontWeight: "500",
     flex: 1,
   },
   triggerTextActive: {
-    fontSize: 14,
+    fontSize: fontSize.md,
     fontWeight: "600",
     color: "#fff",
     flex: 1,
@@ -376,12 +377,12 @@ const styles = StyleSheet.create({
   threeDots: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 3,
+    gap: moderateScale(3),
   },
   dot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
+    width: moderateScale(6),
+    height: moderateScale(6),
+    borderRadius: moderateScale(3),
   },
   threeDotsSmall: {
     flexDirection: "row",
@@ -389,32 +390,32 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   dotSmall: {
-    width: 5,
-    height: 5,
-    borderRadius: 2.5,
+    width: moderateScale(5),
+    height: moderateScale(5),
+    borderRadius: moderateScale(2.5),
   },
   panel: {
     position: "absolute",
-    top: 50,
+    top: verticalScale(50),
     left: 0,
     right: 0,
     zIndex: 1000,
     elevation: 10,
-    borderRadius: 16,
-    padding: 8,
+    borderRadius: borderRadius.lg,
+    padding: spacing.xs,
     overflow: "hidden",
   },
   option: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-    borderRadius: 11,
-    marginBottom: 4,
-    gap: 10,
+    paddingVertical: moderateScale(10),
+    paddingHorizontal: spacing.sm,
+    borderRadius: borderRadius.sm,
+    marginBottom: spacing.xxs,
+    gap: spacing.md,
   },
   optionText: {
-    fontSize: 14,
+    fontSize: fontSize.md,
     flex: 1,
   },
   optionTextBold: {

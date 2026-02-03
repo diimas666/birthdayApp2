@@ -2,6 +2,7 @@ import React from "react";
 import { View, TextInput, StyleSheet } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useTheme } from "../contexts/ThemeContext";
+import { spacing, fontSize, borderRadius, moderateScale } from "../utils/scale";
 
 interface SearchBarProps {
   value: string;
@@ -42,17 +43,17 @@ export const SearchBar: React.FC<SearchBarProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    marginHorizontal: 20,
-    marginVertical: 16,
+    marginHorizontal: spacing.lg,
+    marginVertical: spacing.md,
     borderWidth: 1,
     borderColor: "#8b5cf6",
-    borderRadius: 11,
+    borderRadius: borderRadius.sm,
     backgroundColor: "#fff",
     position: "relative",
   },
   searchIconWrap: {
     position: "absolute",
-    right: 14,
+    right: spacing.sm,
     top: 0,
     bottom: 0,
     justifyContent: "center",
@@ -60,11 +61,11 @@ const styles = StyleSheet.create({
   },
   input: {
     backgroundColor: "transparent",
-    borderRadius: 11,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    paddingRight: 44,
-    fontSize: 16,
+    borderRadius: borderRadius.sm,
+    paddingHorizontal: spacing.md,
+    paddingVertical: moderateScale(12),
+    paddingRight: moderateScale(44),
+    fontSize: fontSize.base,
     color: "#000",
   },
 });
