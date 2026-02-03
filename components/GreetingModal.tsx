@@ -14,7 +14,13 @@ import {
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useTheme } from "../contexts/ThemeContext";
 import { useTranslation } from "../hooks/useTranslation";
-import { spacing, fontSize, borderRadius, moderateScale, verticalScale } from "../utils/scale";
+import {
+  spacing,
+  fontSize,
+  borderRadius,
+  moderateScale,
+  verticalScale,
+} from "../utils/scale";
 import {
   getRandomGreeting,
   GreetingStyle,
@@ -282,8 +288,18 @@ const styles = StyleSheet.create({
   title: { fontSize: fontSize.xl, fontWeight: "700" },
   closeBtn: { fontSize: fontSize.xxl, fontWeight: "600" },
   scroll: { paddingHorizontal: spacing.lg },
-  label: { fontSize: fontSize.md, fontWeight: "600", marginBottom: spacing.sm, marginTop: spacing.sm },
-  chipRow: { flexDirection: "row", flexWrap: "wrap", gap: spacing.sm, marginBottom: spacing.xxs },
+  label: {
+    fontSize: fontSize.md,
+    fontWeight: "600",
+    marginBottom: spacing.sm,
+    marginTop: spacing.sm,
+  },
+  chipRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: spacing.sm,
+    marginBottom: spacing.xxs,
+  },
   chip: {
     paddingHorizontal: moderateScale(14),
     paddingVertical: spacing.sm,
@@ -313,17 +329,15 @@ const styles = StyleSheet.create({
   refreshBtnText: { color: "#fff", fontWeight: "600", fontSize: fontSize.base },
   actions: {
     flexDirection: "row",
-    flexWrap: "wrap",
     gap: spacing.sm,
     marginTop: spacing.lg,
-    justifyContent: "space-between",
     width: "100%",
   },
   primaryBtn: {
+    flex: 1,
     paddingVertical: spacing.sm,
-    paddingHorizontal: spacing.lg,
+    paddingHorizontal: spacing.sm,
     borderRadius: borderRadius.sm,
-    minWidth: moderateScale(100),
     justifyContent: "center",
     alignItems: "center",
   },
