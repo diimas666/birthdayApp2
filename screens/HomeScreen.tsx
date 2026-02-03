@@ -11,10 +11,8 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  FlatList,
   Dimensions,
   StatusBar,
-  Linking,
   LayoutAnimation,
   Platform,
   UIManager,
@@ -348,8 +346,8 @@ export const HomeScreen: React.FC = () => {
                     {stats.nearest.daysUntil === 0
                       ? t("todayShort")
                       : stats.nearest.daysUntil === 1
-                      ? t("tomorrow")
-                      : t("inDays", stats.nearest.daysUntil)}
+                        ? t("tomorrow")
+                        : t("inDays", stats.nearest.daysUntil)}
                   </Text>
                 </View>
               )}
@@ -481,7 +479,7 @@ const styles = StyleSheet.create({
     color: "#666",
   },
   dateText: {
-    fontSize: fontSize.md,
+    fontSize: fontSize.lg,
     color: "#000",
     paddingHorizontal: spacing.lg,
     marginTop: spacing.xs,

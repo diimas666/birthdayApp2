@@ -301,6 +301,7 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 18,
     fontWeight: "bold",
+    bottom: Platform.OS === "ios" ? 0 : 2,
   },
   contentScroll: { flex: 1 },
   content: {
