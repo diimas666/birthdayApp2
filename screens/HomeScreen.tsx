@@ -16,6 +16,7 @@ import {
   LayoutAnimation,
   Platform,
   UIManager,
+  Image,
 } from "react-native";
 
 if (
@@ -137,6 +138,12 @@ export const HomeScreen: React.FC = () => {
       birthdays.map(enrichBirthday).sort((a, b) => a.daysUntil - b.daysUntil),
     [birthdays]
   );
+
+  const [todayEmptyTitle, todayEmptySub] = useMemo(() => {
+    const parts = (t("todayEmptyState") as string).split('\n');
+    return [parts[0] || "", parts[1] || ""];
+  }, [t]);
+
   const nearestBirthday = enrichedAll[0] ?? null;
 
   const stats = useMemo(() => {
@@ -385,15 +392,17 @@ export const HomeScreen: React.FC = () => {
         ) : (
           <View style={styles.section}>
             {activeFilter === "today" && !searchQuery ? (
-              <Text style={[styles.todayEmptyText, { color: secondaryText }]}>
-                {t("todayEmptyState")}
-              </Text>
+              <EmptyState
+                message={todayEmptyTitle}
+                subMessage={todayEmptySub}
+                image={require("../assets/images/cake.png")}
+              />
             ) : (
               <EmptyState
                 message={
                   searchQuery ? t("noResults") : t("noBirthdaysInPeriod")
                 }
-                emoji="🎂"
+                image={require("../assets/images/cake.png")}
                 textColor={secondaryText}
               />
             )}
@@ -405,7 +414,7 @@ export const HomeScreen: React.FC = () => {
         style={styles.fab}
         onPress={() => setModalVisible(true)}
       >
-        <Text style={styles.fabText}>🎂</Text>
+        <Ionicons name="add" size={moderateScale(32)} color="#fff" />
       </TouchableOpacity>
 
       <BirthdayModal
@@ -582,9 +591,9 @@ const styles = StyleSheet.create({
   fab: {
     position: "absolute",
     right: spacing.lg,
-    bottom: moderateScale(30),
-    width: moderateScale(64),
-    height: moderateScale(64),
+    bottom: moderateScale(20),
+    width: moderateScale(44),
+    height: moderateScale(44),
     borderRadius: moderateScale(32),
     backgroundColor: "#8b5cf6",
     justifyContent: "center",
@@ -595,7 +604,7 @@ const styles = StyleSheet.create({
     shadowRadius: moderateScale(12),
     elevation: 10,
   },
-  fabText: {
-    fontSize: fontSize.xxxl,
+  fabIconText: {
+    fontSize: moderateScale(32),
   },
 });

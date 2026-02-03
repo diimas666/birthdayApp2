@@ -7,6 +7,7 @@ import {
   ScrollView,
   Dimensions,
   StatusBar,
+  Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from '../hooks/useTranslation';
@@ -71,7 +72,11 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }
         }}
       >
         <View style={[styles.slide, { width }]}>
-          <Text style={styles.emoji}>🎂</Text>
+          <Image
+            source={require('../assets/images/cake.jpg')}
+            style={styles.heroImage}
+            resizeMode="contain"
+          />
           <Text style={styles.title}>{t('onboardingSlide1Title')}</Text>
           <Text style={styles.text}>{t('onboardingSlide1Text')}</Text>
         </View>
@@ -135,6 +140,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.xl,
     alignItems: 'center',
     justifyContent: 'flex-start',
+  },
+  heroImage: {
+    width: moderateScale(120),
+    height: moderateScale(120),
+    marginBottom: spacing.lg,
   },
   emoji: {
     fontSize: fontSize.huge,
