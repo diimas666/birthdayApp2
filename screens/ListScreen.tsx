@@ -20,6 +20,7 @@ import {
   saveBirthday,
 } from '../utils/storage';
 import { enrichBirthday, formatDate } from '../utils/dateHelpers';
+import { getZodiacSign } from '../utils/zodiac';
 import { rescheduleAllNotifications } from '../utils/notifications';
 import { BirthdayModal } from '../components/BirthdayModal';
 import { EmptyState } from '../components/EmptyState';
@@ -146,7 +147,10 @@ export const ListScreen: React.FC = () => {
           >
             <View style={styles.listItemContent}>
               <View style={styles.listItemLeft}>
-                <Text style={[styles.listItemName, { color: textColor }]}>{item.name}</Text>
+                <View style={styles.listItemNameRow}>
+                  <Text style={[styles.listItemName, { color: textColor }]}>{item.name}</Text>
+                  <Text style={[styles.listItemZodiac, { color: secondaryText }]}>{getZodiacSign(new Date(item.dateOfBirth)).symbol}</Text>
+                </View>
                 <Text style={[styles.listItemDetails, { color: secondaryText }]}>
                   {t('turns', item.age + 1)} • {formatDate(item.nextBirthday)}
                 </Text>
@@ -289,11 +293,19 @@ const styles = StyleSheet.create({
   listItemLeft: {
     flex: 1,
   },
+  listItemNameRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    marginBottom: spacing.xxs,
+  },
   listItemName: {
     fontSize: fontSize.lg,
     fontWeight: 'bold',
     color: '#000',
-    marginBottom: spacing.xxs,
+  },
+  listItemZodiac: {
+    fontSize: fontSize.lg,
   },
   listItemDetails: {
     fontSize: fontSize.md,

@@ -15,8 +15,9 @@ import DateTimePicker, {
 } from "@react-native-community/datetimepicker";
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 import { Birthday } from "../types";
-import { useTranslation } from "../hooks/useTranslation";
+import { useTranslation, type Locale } from "../hooks/useTranslation";
 import { useLanguage } from "../contexts/LanguageContext";
+import { getZodiacSign } from "../utils/zodiac";
 import { spacing, fontSize, borderRadius, moderateScale, verticalScale } from "../utils/scale";
 
 interface BirthdayModalProps {
@@ -229,6 +230,25 @@ export const BirthdayModal: React.FC<BirthdayModalProps> = ({
               )}
             </View>
 
+            <View style={styles.zodiacBlock}>
+              {(() => {
+                const sign = getZodiacSign(dateOfBirth);
+                const signNameKey = `zodiac_${sign.id}` as keyof Locale;
+                const factKey = `zodiacFact_${sign.id}` as keyof Locale;
+                return (
+                  <>
+                    <Text style={styles.zodiacLabel}>{t("zodiacLabel")}</Text>
+                    <View style={styles.zodiacSignRow}>
+                      <Text style={styles.zodiacSymbol}>{sign.symbol}</Text>
+                      <Text style={styles.zodiacName}>{t(signNameKey)}</Text>
+                    </View>
+                    <Text style={styles.zodiacFactLabel}>{t("zodiacFactLabel")}</Text>
+                    <Text style={styles.zodiacFactText}>{t(factKey)}</Text>
+                  </>
+                );
+              })()}
+            </View>
+
             <View style={styles.inputGroup}>
               <Text style={styles.label}>{t("note")}</Text>
               <TextInput
@@ -374,6 +394,45 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "#8b5cf6",
     minHeight: verticalScale(200),
+  },
+  zodiacBlock: {
+    backgroundColor: "#f5f0ff",
+    borderRadius: borderRadius.md,
+    padding: spacing.md,
+    borderWidth: 1,
+    borderColor: "#c4b5fd",
+  },
+  zodiacLabel: {
+    fontSize: fontSize.sm,
+    fontWeight: "600",
+    color: "#6d28d9",
+    marginBottom: spacing.xs,
+  },
+  zodiacSignRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.sm,
+    marginBottom: spacing.sm,
+  },
+  zodiacSymbol: {
+    fontSize: fontSize.xxl,
+    color: "#6d28d9",
+  },
+  zodiacName: {
+    fontSize: fontSize.lg,
+    fontWeight: "600",
+    color: "#5b21b6",
+  },
+  zodiacFactLabel: {
+    fontSize: fontSize.sm,
+    fontWeight: "600",
+    color: "#6d28d9",
+    marginBottom: spacing.xs,
+  },
+  zodiacFactText: {
+    fontSize: fontSize.md,
+    color: "#4c1d95",
+    lineHeight: 22,
   },
   saveButton: {
     backgroundColor: "#8b5cf6",

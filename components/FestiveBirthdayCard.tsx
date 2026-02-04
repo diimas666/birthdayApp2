@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Linking, Alert, Platform, Act
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { BirthdayWithAge } from '../types';
 import { formatDate } from '../utils/dateHelpers';
+import { getZodiacSign } from '../utils/zodiac';
 import { useTranslation } from '../hooks/useTranslation';
 import { GreetingModal } from './GreetingModal';
 import { spacing, fontSize, borderRadius, moderateScale, verticalScale } from '../utils/scale';
@@ -41,6 +42,7 @@ export const FestiveBirthdayCard: React.FC<FestiveBirthdayCardProps> = ({ birthd
   const [greetingVisible, setGreetingVisible] = useState(false);
   const hasPhone = Boolean(birthday.phone?.trim());
   const cardColor = getCardGradientColor(birthday.daysUntil);
+  const zodiac = getZodiacSign(new Date(birthday.dateOfBirth));
 
   const getDaysText = () => {
     if (birthday.daysUntil === 0) return { text: '0', label: t('todayShort') };
@@ -90,7 +92,10 @@ export const FestiveBirthdayCard: React.FC<FestiveBirthdayCardProps> = ({ birthd
             {birthday.isImportant && (
               <Text style={styles.pinBadge}>⭐</Text>
             )}
-            <Text style={styles.name}>{birthday.name}</Text>
+            <View style={styles.nameRow}>
+              <Text style={styles.name}>{birthday.name}</Text>
+              <Text style={styles.zodiacIcon}>{zodiac.symbol}</Text>
+            </View>
             <Text style={styles.date}>{formatDate(birthday.nextBirthday)}</Text>
             <Text style={styles.age}>{t('ageLabel')}: {birthday.age} {ageWord}</Text>
           </View>
@@ -209,12 +214,22 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingRight: 12,
   },
+  nameRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    marginBottom: spacing.xs,
+  },
   name: {
     fontSize: fontSize.xxl,
     fontWeight: 'bold',
     color: '#fff',
-    marginBottom: spacing.xs,
     letterSpacing: 0.3,
+  },
+  zodiacIcon: {
+    fontSize: fontSize.xl,
+    color: '#fff',
+    opacity: 0.95,
   },
   date: {
     fontSize: fontSize.base,
