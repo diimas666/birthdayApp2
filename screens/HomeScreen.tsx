@@ -95,7 +95,10 @@ export const HomeScreen: React.FC = () => {
 
   const toggleSearch = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    setSearchExpanded((v) => !v);
+    setSearchExpanded((v) => {
+      if (v) setSearchQuery("");
+      return !v;
+    });
   };
 
   const loadBirthdays = async () => {

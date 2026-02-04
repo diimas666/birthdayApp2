@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Birthday Reminder</string>
+    <string name="widget_description">Who celebrates a birthday today</string>
 </resources>

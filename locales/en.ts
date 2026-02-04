@@ -275,6 +275,9 @@ export const en = {
     "To get reminders when the app is closed, disable battery optimization for this app.",
   settingsBatteryOptimizationButton: "Open settings",
 
+  widgetTitle: "Birthdays today",
+  widgetEmpty: "No birthdays today",
+
   // Zodiac signs — names and short facts
   zodiacLabel: "Zodiac sign",
   zodiacFactLabel: "Interesting fact",

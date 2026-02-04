@@ -1,4 +1,4 @@
-import React, { useEffect, useState, Component, type ErrorInfo } from "react";
+import React, { useEffect, useState, useRef, Component, type ErrorInfo } from "react";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { StatusBar, StyleSheet, View, Platform, Text, AppState, type AppStateStatus } from "react-native";
@@ -18,7 +18,9 @@ import { SettingsScreen } from "./screens/SettingsScreen";
 import { OnboardingScreen } from "./screens/OnboardingScreen";
 import { requestPermissions } from "./utils/notifications";
 import { getBirthdays } from "./utils/storage";
+import { getBirthdaysByFilter } from "./utils/dateHelpers";
 import { rescheduleAllNotifications } from "./utils/notifications";
+import { updateBirthdayWidget } from "./utils/updateBirthdayWidget";
 import { getOnboardingDone } from "./utils/settingsStorage";
 import { useTranslation } from "./hooks/useTranslation";
 import { scaleFont } from "./utils/scale";
@@ -232,27 +234,6 @@ export default function App() {
     };
   }, []);
 
-  // Перепланировать уведомления при старте и при каждом возврате в приложение
-  // (Android может сбрасывать триггеры в фоне/после перезагрузки; при открытии приложения восстанавливаем расписание)
-  useEffect(() => {
-    if (onboardingDone !== true) return;
-    const runReschedule = async () => {
-      try {
-        await requestPermissions();
-        const birthdays = await getBirthdays();
-        await rescheduleAllNotifications(birthdays);
-      } catch (_) {}
-    };
-    const t = setTimeout(runReschedule, 500);
-    const subscription = AppState.addEventListener("change", (nextState: AppStateStatus) => {
-      if (nextState === "active") runReschedule();
-    });
-    return () => {
-      clearTimeout(t);
-      subscription.remove();
-    };
-  }, [onboardingDone]);
-
   if (onboardingDone === null) {
     return (
       <AppErrorBoundary>
@@ -287,26 +268,53 @@ export default function App() {
     <AppErrorBoundary>
       <ThemeProvider>
         <LanguageProvider>
-          <GestureHandlerRootView
-            style={[styles.root, { backgroundColor: TAB_BAR_BG }]}
-          >
-            <SafeAreaProvider>
-              <View style={[styles.root, { backgroundColor: TAB_BAR_BG }]}>
-                <BottomSheetModalProvider>
-                  <StatusBar
-                    barStyle="light-content"
-                    backgroundColor={TAB_BAR_BG}
-                  />
-                  <NavigationContainer theme={DarkNavTheme}>
-                    <AppTabs />
-                  </NavigationContainer>
-                </BottomSheetModalProvider>
-              </View>
-            </SafeAreaProvider>
-          </GestureHandlerRootView>
+          <MainContentWithEffects />
         </LanguageProvider>
       </ThemeProvider>
     </AppErrorBoundary>
+  );
+}
+
+function MainContentWithEffects() {
+  const { t } = useTranslation();
+  const lastRescheduleRef = useRef<number>(0);
+  const RESCHEDULE_THROTTLE_MS = 10000;
+  useEffect(() => {
+    const runReschedule = async () => {
+      const now = Date.now();
+      if (now - lastRescheduleRef.current < RESCHEDULE_THROTTLE_MS) return;
+      lastRescheduleRef.current = now;
+      try {
+        await requestPermissions();
+        const birthdays = await getBirthdays();
+        await rescheduleAllNotifications(birthdays);
+        const todayList = getBirthdaysByFilter(birthdays, "today");
+        const todayNames = todayList.map((b) => b.name);
+        await updateBirthdayWidget(todayNames, t("widgetEmpty"), t("widgetTitle"));
+      } catch (_) {}
+    };
+    const timeoutId = setTimeout(runReschedule, 500);
+    const subscription = AppState.addEventListener("change", (nextState: AppStateStatus) => {
+      if (nextState === "active") runReschedule();
+    });
+    return () => {
+      clearTimeout(timeoutId);
+      subscription.remove();
+    };
+  }, []);
+  return (
+    <GestureHandlerRootView style={[styles.root, { backgroundColor: TAB_BAR_BG }]}>
+      <SafeAreaProvider>
+        <View style={[styles.root, { backgroundColor: TAB_BAR_BG }]}>
+          <BottomSheetModalProvider>
+            <StatusBar barStyle="light-content" backgroundColor={TAB_BAR_BG} />
+            <NavigationContainer theme={DarkNavTheme}>
+              <AppTabs />
+            </NavigationContainer>
+          </BottomSheetModalProvider>
+        </View>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 }
 
