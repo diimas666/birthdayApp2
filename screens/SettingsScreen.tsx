@@ -12,6 +12,7 @@ import {
   Linking,
   Switch,
   ActivityIndicator,
+  Platform,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "../contexts/ThemeContext";
@@ -40,7 +41,11 @@ import {
   importBirthdaysFromCsv,
   getBirthdays,
 } from "../utils/storage";
-import { rescheduleAllNotifications } from "../utils/notifications";
+import {
+  rescheduleAllNotifications,
+  isBatteryOptimizationEnabled,
+  openBatteryOptimizationSettings,
+} from "../utils/notifications";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 const HOURS = Array.from({ length: 24 }, (_, i) => i);
@@ -58,6 +63,7 @@ export const SettingsScreen: React.FC = () => {
   const [importOnlyWithBirthday, setImportOnlyWithBirthdayState] = useState(true);
   const [importUpdateChanges, setImportUpdateChangesState] = useState(true);
   const [importingContacts, setImportingContacts] = useState(false);
+  const [batteryOptEnabled, setBatteryOptEnabled] = useState<boolean | null>(null);
 
   useEffect(() => {
     getNotificationHour().then(setNotificationHourState);
@@ -68,6 +74,9 @@ export const SettingsScreen: React.FC = () => {
     getNotifyOnBirthdayDay().then(setNotifyOnBirthdayDayState);
     getImportOnlyWithBirthday().then(setImportOnlyWithBirthdayState);
     getImportUpdateChanges().then(setImportUpdateChangesState);
+    if (Platform.OS === "android") {
+      isBatteryOptimizationEnabled().then(setBatteryOptEnabled);
+    }
   }, []);
 
   const handleThemeChange = async (mode: ThemeMode) => {
@@ -288,6 +297,21 @@ export const SettingsScreen: React.FC = () => {
               thumbColor="#fff"
             />
           </View>
+          {Platform.OS === "android" && (
+            <View style={styles.batteryOptBlock}>
+              <Text style={[styles.quietHint, { color: textColor }]}>
+                {t("settingsBatteryOptimizationHint")}
+              </Text>
+              <TouchableOpacity
+                style={[styles.batteryOptButton, { backgroundColor: secondaryColor }]}
+                onPress={() => openBatteryOptimizationSettings()}
+              >
+                <Text style={styles.batteryOptButtonText}>
+                  {t("settingsBatteryOptimizationButton")}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
 
         <View style={[styles.section, { backgroundColor: cardBg }]}>
@@ -598,4 +622,7 @@ const styles = StyleSheet.create({
     marginTop: spacing.sm,
   },
   importContactsButtonText: { fontSize: fontSize.base, fontWeight: "600", color: "#fff" },
+  batteryOptBlock: { marginTop: spacing.md, paddingTop: spacing.md, borderTopWidth: 1, borderTopColor: "rgba(255,255,255,0.1)" },
+  batteryOptButton: { paddingVertical: moderateScale(12), paddingHorizontal: spacing.lg, borderRadius: borderRadius.sm, alignItems: "center", marginTop: spacing.sm },
+  batteryOptButtonText: { fontSize: fontSize.base, fontWeight: "600", color: "#fff" },
 });

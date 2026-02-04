@@ -1,7 +1,7 @@
 import React, { useEffect, useState, Component, type ErrorInfo } from "react";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { StatusBar, StyleSheet, View, Platform, Text } from "react-native";
+import { StatusBar, StyleSheet, View, Platform, Text, AppState, type AppStateStatus } from "react-native";
 import {
   useSafeAreaInsets,
   SafeAreaProvider,
@@ -232,19 +232,25 @@ export default function App() {
     };
   }, []);
 
+  // Перепланировать уведомления при старте и при каждом возврате в приложение
+  // (Android может сбрасывать триггеры в фоне/после перезагрузки; при открытии приложения восстанавливаем расписание)
   useEffect(() => {
     if (onboardingDone !== true) return;
-    const t = setTimeout(() => {
-      requestPermissions();
-      const initializeNotifications = async () => {
-        try {
-          const birthdays = await getBirthdays();
-          await rescheduleAllNotifications(birthdays);
-        } catch (_) {}
-      };
-      initializeNotifications();
-    }, 500);
-    return () => clearTimeout(t);
+    const runReschedule = async () => {
+      try {
+        await requestPermissions();
+        const birthdays = await getBirthdays();
+        await rescheduleAllNotifications(birthdays);
+      } catch (_) {}
+    };
+    const t = setTimeout(runReschedule, 500);
+    const subscription = AppState.addEventListener("change", (nextState: AppStateStatus) => {
+      if (nextState === "active") runReschedule();
+    });
+    return () => {
+      clearTimeout(t);
+      subscription.remove();
+    };
   }, [onboardingDone]);
 
   if (onboardingDone === null) {

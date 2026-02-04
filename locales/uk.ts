@@ -291,4 +291,9 @@ export const uk = {
   notificationTitleToday: "День народження сьогодні! 🎈",
   notificationBodyToday: (name: string) =>
     `Сьогодні день народження ${name}! 🎈`,
+
+  // Battery optimization (Android) — для надійних сповіщень у фоні
+  settingsBatteryOptimizationHint:
+    "Щоб нагадування приходили, коли застосунок закрито, вимкніть оптимізацію батареї для цього застосунку.",
+  settingsBatteryOptimizationButton: "Відкрити налаштування",
 };

@@ -146,3 +146,21 @@ export const rescheduleAllNotifications = async (birthdays: Birthday[], hour?: n
     await scheduleBirthdayNotifications(birthday, h);
   }
 };
+
+/** Только Android: включена ли оптимизация батареи для приложения (мешает уведомлениям в фоне). */
+export const isBatteryOptimizationEnabled = async (): Promise<boolean> => {
+  if (Platform.OS !== 'android') return false;
+  try {
+    return await notifee.isBatteryOptimizationEnabled();
+  } catch {
+    return false;
+  }
+};
+
+/** Только Android: открыть экран настроек оптимизации батареи. */
+export const openBatteryOptimizationSettings = async (): Promise<void> => {
+  if (Platform.OS !== 'android') return;
+  try {
+    await notifee.openBatteryOptimizationSettings();
+  } catch (_) {}
+};

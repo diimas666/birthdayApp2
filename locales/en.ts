@@ -270,4 +270,8 @@ export const en = {
   notificationBody1Day: (name: string) => `Tomorrow is ${name}'s birthday! 🎂`,
   notificationTitleToday: "Birthday today! 🎈",
   notificationBodyToday: (name: string) => `Today is ${name}'s birthday! 🎈`,
+
+  settingsBatteryOptimizationHint:
+    "To get reminders when the app is closed, disable battery optimization for this app.",
+  settingsBatteryOptimizationButton: "Open settings",
 };
