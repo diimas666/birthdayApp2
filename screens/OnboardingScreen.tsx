@@ -5,10 +5,10 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  Dimensions,
   StatusBar,
   Image,
 } from 'react-native';
+import { ScrollView as GestureScrollView } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from '../hooks/useTranslation';
 import { setOnboardingDone } from '../utils/settingsStorage';
@@ -73,7 +73,7 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }
       >
         <View style={[styles.slide, { width }]}>
           <Image
-            source={require('../assets/images/cake.jpg')}
+            source={require('../assets/images/cake.png')}
             style={styles.heroImage}
             resizeMode="contain"
           />
@@ -89,7 +89,14 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }
             <Text style={styles.allowButtonText}>{t('onboardingAllowNotifications')}</Text>
           </TouchableOpacity>
           <Text style={styles.timeLabel}>{t('notificationTime')}</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.hoursRow}>
+          <GestureScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.hoursRow}
+            contentContainerStyle={styles.hoursRowContent}
+            nestedScrollEnabled
+            scrollEventThrottle={16}
+          >
             {HOURS.map((h) => (
               <TouchableOpacity
                 key={h}
@@ -101,7 +108,7 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }
                 </Text>
               </TouchableOpacity>
             ))}
-          </ScrollView>
+          </GestureScrollView>
           <TouchableOpacity style={styles.startButton} onPress={handleStart}>
             <Text style={styles.startButtonText}>{t('onboardingStart')}</Text>
           </TouchableOpacity>
@@ -184,9 +191,11 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
   },
   hoursRow: {
-    flexDirection: 'row',
     marginBottom: spacing.md,
     maxHeight: verticalScale(50),
+  },
+  hoursRowContent: {
+    paddingRight: spacing.md,
   },
   hourChip: {
     paddingHorizontal: moderateScale(14),
