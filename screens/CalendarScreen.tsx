@@ -13,6 +13,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { Birthday } from '../types';
 import { getBirthdays } from '../utils/storage';
 import { getBirthdaysOnDate, enrichBirthday } from '../utils/dateHelpers';
+import { getZodiacSign } from '../utils/zodiac';
 import { useTranslation } from '../hooks/useTranslation';
 import { useTheme } from '../contexts/ThemeContext';
 import { spacing, fontSize, borderRadius, moderateScale, verticalScale, dimensions } from '../utils/scale';
@@ -191,7 +192,10 @@ export const CalendarScreen: React.FC = () => {
                   const ageWord = (t('yearWord', b.age) as string);
                   return (
                     <View key={b.id} style={[styles.modalCard, { backgroundColor: isDark ? '#1e1e2e' : '#f5f0ff', borderColor: secondaryColor }]}>
-                      <Text style={[styles.modalName, { color: textColor }]}>🎂 {b.name}</Text>
+                      <View style={styles.modalNameRow}>
+                        <Text style={[styles.modalName, { color: textColor }]}>🎂 {b.name}</Text>
+                        <Text style={[styles.modalZodiac, { color: secondaryColor }]}>{getZodiacSign(b.dateOfBirth).symbol}</Text>
+                      </View>
                       <Text style={[styles.modalDetail, { color: mutedColor }]}>{dateStr}</Text>
                       <Text style={[styles.modalDetail, { color: textColor }]}>
                         {t('turns', b.age)} {ageWord}
@@ -285,7 +289,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: spacing.sm,
   },
-  modalName: { fontSize: fontSize.lg, fontWeight: '700', marginBottom: spacing.xs },
+  modalNameRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    marginBottom: spacing.xs,
+  },
+  modalName: { fontSize: fontSize.lg, fontWeight: '700' },
+  modalZodiac: { fontSize: fontSize.lg },
   modalDetail: { fontSize: fontSize.md, marginBottom: moderateScale(2) },
   modalNote: { fontSize: fontSize.sm, marginTop: spacing.sm, fontStyle: 'italic' },
   modalClose: {
