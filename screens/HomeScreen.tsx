@@ -418,14 +418,14 @@ export const HomeScreen: React.FC = () => {
               <EmptyState
                 message={todayEmptyTitle}
                 subMessage={todayEmptySub}
-                image={require("../assets/images/cake.png")}
+                image={require("../assets/images/birthday-cake.png")}
               />
             ) : (
               <EmptyState
                 message={
                   searchQuery ? t("noResults") : t("noBirthdaysInPeriod")
                 }
-                image={require("../assets/images/cake.png")}
+                image={require("../assets/images/birthday-cake.png")}
                 textColor={secondaryText}
               />
             )}

@@ -73,7 +73,7 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }
       >
         <View style={[styles.slide, { width }]}>
           <Image
-            source={require('../assets/images/cake.png')}
+            source={require('../assets/images/birthday-cake.png')}
             style={styles.heroImage}
             resizeMode="contain"
           />
@@ -149,8 +149,8 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   heroImage: {
-    width: moderateScale(120),
-    height: moderateScale(120),
+    width: moderateScale(100),
+    height: moderateScale(100),
     marginBottom: spacing.lg,
   },
   emoji: {
