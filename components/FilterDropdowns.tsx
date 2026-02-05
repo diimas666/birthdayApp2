@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   View,
   Text,
@@ -7,6 +7,8 @@ import {
   LayoutAnimation,
   Platform,
   UIManager,
+  Modal,
+  Pressable,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useTranslation } from "../hooks/useTranslation";
@@ -52,6 +54,36 @@ export const FilterDropdowns: React.FC<FilterDropdownsProps> = ({
   const { isDark } = useTheme();
   const [timeOpen, setTimeOpen] = useState(false);
   const [categoryOpen, setCategoryOpen] = useState(false);
+  const timeTriggerRef = useRef<View>(null);
+  const categoryTriggerRef = useRef<View>(null);
+  const [timePanelLayout, setTimePanelLayout] = useState<{
+    x: number;
+    y: number;
+    w: number;
+    h: number;
+  } | null>(null);
+  const [categoryPanelLayout, setCategoryPanelLayout] = useState<{
+    x: number;
+    y: number;
+    w: number;
+    h: number;
+  } | null>(null);
+
+  const measureTrigger = (ref: React.RefObject<View | null>, setLayout: (l: { x: number; y: number; w: number; h: number }) => void) => {
+    ref.current?.measureInWindow((x, y, w, h) => setLayout({ x, y, w, h }));
+  };
+
+  useEffect(() => {
+    if (Platform.OS !== "ios") return;
+    if (timeOpen) measureTrigger(timeTriggerRef, setTimePanelLayout);
+    else setTimePanelLayout(null);
+  }, [timeOpen]);
+
+  useEffect(() => {
+    if (Platform.OS !== "ios") return;
+    if (categoryOpen) measureTrigger(categoryTriggerRef, setCategoryPanelLayout);
+    else setCategoryPanelLayout(null);
+  }, [categoryOpen]);
 
   const timeLabel = t(
     activeFilter === "today"
@@ -114,7 +146,7 @@ export const FilterDropdowns: React.FC<FilterDropdownsProps> = ({
     <View style={styles.wrap}>
       <View style={styles.row}>
         {/* Time filter */}
-        <View style={styles.dropdownHalf}>
+        <View ref={timeTriggerRef} style={styles.dropdownHalf} collapsable={false}>
           <TouchableOpacity
             activeOpacity={0.8}
             onPress={toggleTime}
@@ -134,7 +166,7 @@ export const FilterDropdowns: React.FC<FilterDropdownsProps> = ({
               color="#fff"
             />
           </TouchableOpacity>
-          {timeOpen && (
+          {timeOpen && Platform.OS !== "ios" && (
             <View style={[styles.panel, { backgroundColor: panelBg }, shadow]}>
               {TIME_KEYS.map((key) => {
                 const selected = activeFilter === key;
@@ -185,7 +217,7 @@ export const FilterDropdowns: React.FC<FilterDropdownsProps> = ({
         </View>
 
         {/* Category filter */}
-        <View style={styles.dropdownHalf}>
+        <View ref={categoryTriggerRef} style={styles.dropdownHalf} collapsable={false}>
           <TouchableOpacity
             activeOpacity={0.8}
             onPress={toggleCategory}
@@ -233,7 +265,7 @@ export const FilterDropdowns: React.FC<FilterDropdownsProps> = ({
               color={selectedTag ? "#fff" : textInactive}
             />
           </TouchableOpacity>
-          {categoryOpen && (
+          {categoryOpen && Platform.OS !== "ios" && (
             <View style={[styles.panel, { backgroundColor: panelBg }, shadow]}>
               {TAG_KEYS.map((key) => {
                 const isAll = key === "all";
@@ -332,6 +364,186 @@ export const FilterDropdowns: React.FC<FilterDropdownsProps> = ({
           )}
         </View>
       </View>
+
+      {/* iOS: выпадающие панели в Modal, чтобы не перекрывались контентом */}
+      {Platform.OS === "ios" && timeOpen && timePanelLayout && (
+        <Modal transparent visible animationType="fade">
+          <Pressable
+            style={StyleSheet.absoluteFill}
+            onPress={toggleTime}
+          />
+          <View
+            style={[
+              styles.panel,
+              styles.panelModal,
+              {
+                backgroundColor: panelBg,
+                left: timePanelLayout.x,
+                top: timePanelLayout.y + timePanelLayout.h + 4,
+                width: timePanelLayout.w,
+              },
+              shadow,
+            ]}
+          >
+              {TIME_KEYS.map((key) => {
+                const selected = activeFilter === key;
+                const timeIcon =
+                  key === "today" ? "time-outline" : "calendar-outline";
+                return (
+                  <TouchableOpacity
+                    key={key}
+                    activeOpacity={0.7}
+                    onPress={() => selectTime(key)}
+                    style={[
+                      styles.option,
+                      { backgroundColor: selected ? selectedBgLight : bg },
+                    ]}
+                  >
+                    <Ionicons
+                      name={timeIcon}
+                      size={18}
+                      color={selected ? purple : textInactive}
+                    />
+                    <Text
+                      style={[
+                        styles.optionText,
+                        { color: selected ? purple : textInactive },
+                        selected && styles.optionTextBold,
+                      ]}
+                    >
+                      {t(
+                        key === "today"
+                          ? "filterToday"
+                          : key === "week"
+                            ? "filterWeek"
+                            : key === "month"
+                              ? "filterMonth"
+                              : "filterYear"
+                      )}
+                    </Text>
+                    {selected && (
+                      <Ionicons name="checkmark" size={20} color={purple} />
+                    )}
+                  </TouchableOpacity>
+                );
+              })}
+          </View>
+        </Modal>
+      )}
+
+      {Platform.OS === "ios" && categoryOpen && categoryPanelLayout && (
+        <Modal transparent visible animationType="fade">
+          <Pressable
+            style={StyleSheet.absoluteFill}
+            onPress={toggleCategory}
+          />
+          <View
+            style={[
+              styles.panel,
+              styles.panelModal,
+              {
+                backgroundColor: panelBg,
+                left: categoryPanelLayout.x,
+                top: categoryPanelLayout.y + categoryPanelLayout.h + 4,
+                width: categoryPanelLayout.w,
+              },
+              shadow,
+            ]}
+          >
+              {TAG_KEYS.map((key) => {
+                const isAll = key === "all";
+                const tagValue =
+                  key === "family"
+                    ? t("tagFamily")
+                    : key === "friends"
+                      ? t("tagFriends")
+                      : key === "work"
+                        ? t("tagWork")
+                        : key === "other"
+                          ? t("tagOther")
+                          : null;
+                const selected =
+                  isAll ? !selectedTag : selectedTag === tagValue;
+                return (
+                  <TouchableOpacity
+                    key={key}
+                    activeOpacity={0.7}
+                    onPress={() => selectTag(key)}
+                    style={[
+                      styles.option,
+                      { backgroundColor: selected ? purple : bg },
+                    ]}
+                  >
+                    {isAll ? (
+                      <Ionicons
+                        name="ellipse-outline"
+                        size={18}
+                        color={selected ? "#fff" : textInactive}
+                      />
+                    ) : key === "family" ? (
+                      <Ionicons
+                        name="heart"
+                        size={18}
+                        color={selected ? "#fff" : "#ec4899"}
+                      />
+                    ) : key === "friends" ? (
+                      <Ionicons
+                        name="person-outline"
+                        size={18}
+                        color={selected ? "#fff" : "#38bdf8"}
+                      />
+                    ) : key === "work" ? (
+                      <Ionicons
+                        name="briefcase-outline"
+                        size={18}
+                        color={selected ? "#fff" : "#f97316"}
+                      />
+                    ) : (
+                      <View style={styles.threeDotsSmall}>
+                        <View
+                          style={[
+                            styles.dotSmall,
+                            {
+                              backgroundColor: selected ? "#fff" : "#eab308",
+                            },
+                          ]}
+                        />
+                        <View
+                          style={[
+                            styles.dotSmall,
+                            {
+                              backgroundColor: selected ? "#fff" : "#22c55e",
+                            },
+                          ]}
+                        />
+                        <View
+                          style={[
+                            styles.dotSmall,
+                            {
+                              backgroundColor: selected ? "#fff" : purple,
+                            },
+                          ]}
+                        />
+                      </View>
+                    )}
+                    <Text
+                      style={[
+                        styles.optionText,
+                        { color: selected ? "#fff" : textInactive },
+                        selected && styles.optionTextBold,
+                      ]}
+                    >
+                      {isAll ? t("allTags") : tagValue}
+                    </Text>
+                    {selected && (
+                      <Ionicons name="checkmark" size={20} color="#fff" />
+                    )}
+                  </TouchableOpacity>
+                );
+              })}
+          </View>
+        </Modal>
+      )}
     </View>
   );
 };
@@ -404,6 +616,9 @@ const styles = StyleSheet.create({
     borderRadius: borderRadius.lg,
     padding: spacing.xs,
     overflow: "hidden",
+  },
+  panelModal: {
+    right: undefined,
   },
   option: {
     flexDirection: "row",
