@@ -128,7 +128,7 @@ export const HomeScreen: React.FC = () => {
       filtered = filtered.filter(
         (b) =>
           b.name.toLowerCase().includes(query) ||
-          (b.note && b.note.toLowerCase().includes(query))
+          (b.note && b.note.toLowerCase().includes(query)),
       );
     }
     return filtered;
@@ -140,11 +140,11 @@ export const HomeScreen: React.FC = () => {
   const enrichedAll = useMemo(
     () =>
       birthdays.map(enrichBirthday).sort((a, b) => a.daysUntil - b.daysUntil),
-    [birthdays]
+    [birthdays],
   );
 
   const [todayEmptyTitle, todayEmptySub] = useMemo(() => {
-    const parts = (t("todayEmptyState") as string).split('\n');
+    const parts = (t("todayEmptyState") as string).split("\n");
     return [parts[0] || "", parts[1] || ""];
   }, [t]);
 
@@ -162,11 +162,11 @@ export const HomeScreen: React.FC = () => {
   useFocusEffect(
     useCallback(() => {
       loadBirthdays();
-    }, [])
+    }, []),
   );
 
   const handleSave = async (
-    birthdayData: Omit<Birthday, "id" | "createdAt">
+    birthdayData: Omit<Birthday, "id" | "createdAt">,
   ) => {
     const newBirthday: Birthday = {
       ...birthdayData,
@@ -255,7 +255,6 @@ export const HomeScreen: React.FC = () => {
         >
           {todaysList.length > 0 ? (
             <>
-              <Text style={styles.heroEmoji}>🎉</Text>
               <Text style={styles.heroTitle}>{t("heroTodayTitle")}</Text>
               <Text style={styles.heroName}>
                 {todaysList[0].name} — {todaysList[0].age}{" "}
@@ -330,9 +329,19 @@ export const HomeScreen: React.FC = () => {
           activeOpacity={0.8}
         >
           <View style={styles.statsCollapsedRow}>
-            <Text style={[styles.statsCollapsedTitle, { color: statsBorder }]}>
-              📊 {t("statsCollapsed")}
-            </Text>
+            <View style={styles.statsCollapsedTitleRow}>
+              <Feather
+                name="bar-chart-2"
+                size={fontSize.xxl}
+                color={statsBorder}
+                style={{ marginRight: spacing.xs }}
+              />
+              <Text
+                style={[styles.statsCollapsedTitle, { color: statsBorder }]}
+              >
+                {t("statsCollapsed")}
+              </Text>
+            </View>
             <Ionicons
               name={statsExpanded ? "chevron-up" : "chevron-down"}
               size={20}
@@ -452,7 +461,7 @@ export const HomeScreen: React.FC = () => {
         ref={giftSheetRef}
         onSelect={(query) => {
           setGiftWebViewUrl(
-            `https://www.google.com/search?q=${encodeURIComponent(query)}`
+            `https://www.google.com/search?q=${encodeURIComponent(query)}`,
           );
         }}
       />
@@ -547,15 +556,26 @@ const styles = StyleSheet.create({
   heroButtonText: { fontSize: fontSize.md, fontWeight: "600", color: "#fff" },
   statsCollapsedBlock: {
     marginHorizontal: spacing.lg,
-    marginBottom: spacing.md,
-    padding: spacing.md,
-    borderRadius: borderRadius.sm,
+    marginBottom: spacing.sm,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.lg,
+    borderRadius: borderRadius.md,
     borderWidth: 1,
+    // лёгкая тень, чтобы блок выглядел «дороже», но без огромного «провала» снизу
+    shadowColor: "#8b5cf6",
+    shadowOffset: { width: 0, height: verticalScale(2) },
+    shadowOpacity: 0.14,
+    shadowRadius: moderateScale(8),
+    elevation: 2,
   },
   statsCollapsedRow: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+  },
+  statsCollapsedTitleRow: {
+    flexDirection: "row",
+    alignItems: "center",
   },
   statsCollapsedTitle: {
     fontSize: fontSize.md,
@@ -569,18 +589,26 @@ const styles = StyleSheet.create({
   },
   statsRow: {
     flexDirection: "row",
-    flexWrap: "wrap",
     alignItems: "center",
-    marginBottom: spacing.xs,
+    justifyContent: "space-between",
+    marginBottom: spacing.sm,
   },
-  statsLabel: { fontSize: fontSize.sm, color: "#666", marginRight: spacing.xs },
-  statsValue: { fontSize: fontSize.sm, color: "#000", fontWeight: "500" },
+  statsLabel: {
+    fontSize: fontSize.md,
+    color: "#666",
+    marginRight: spacing.xs,
+  },
+  statsValue: {
+    fontSize: fontSize.md,
+    color: "#000",
+    fontWeight: "600",
+  },
   content: {
     flex: 1,
     backgroundColor: "#F5F5F5",
   },
   section: {
-    paddingTop: spacing.md,
+    paddingTop: spacing.sm,
   },
   sectionTitle: {
     fontSize: fontSize.xl,
