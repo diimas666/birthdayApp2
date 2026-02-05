@@ -1,17 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Linking, Alert, Platform, ActionSheetIOS } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { BirthdayWithAge } from '../types';
-import { formatDate } from '../utils/dateHelpers';
+import { formatDate, formatDateShort } from '../utils/dateHelpers';
 import { getZodiacSign } from '../utils/zodiac';
 import { useTranslation } from '../hooks/useTranslation';
 import { GreetingModal } from './GreetingModal';
 import { spacing, fontSize, borderRadius, moderateScale, verticalScale } from '../utils/scale';
 
+const DOUBLE_TAP_DELAY_MS = 350;
+
 interface FestiveBirthdayCardProps {
   birthday: BirthdayWithAge;
   onPress?: () => void;
   onGiftPress?: (name: string) => void;
+  /** Два тапи — позначка «Привітав» (зелена рамка + галочка). */
+  onGreetedToggle?: (id: string) => void;
 }
 
 const openTelegram = (phone: string, errorMsg: string) => {
@@ -37,12 +41,37 @@ const getCardGradientColor = (daysUntil: number): string => {
   return '#8b5cf6';
 };
 
-export const FestiveBirthdayCard: React.FC<FestiveBirthdayCardProps> = ({ birthday, onPress, onGiftPress }) => {
+export const FestiveBirthdayCard: React.FC<FestiveBirthdayCardProps> = ({ birthday, onPress, onGiftPress, onGreetedToggle }) => {
   const { t } = useTranslation();
   const [greetingVisible, setGreetingVisible] = useState(false);
+  const lastTapRef = useRef<number>(0);
+  const singleTapTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const hasPhone = Boolean(birthday.phone?.trim());
-  const cardColor = getCardGradientColor(birthday.daysUntil);
+  const isGreeted = Boolean(birthday.greetedAt);
+  const cardColor = isGreeted ? '#15803d' : getCardGradientColor(birthday.daysUntil);
   const zodiac = getZodiacSign(new Date(birthday.dateOfBirth));
+
+  const handlePress = () => {
+    if (onGreetedToggle) {
+      const now = Date.now();
+      if (now - lastTapRef.current < DOUBLE_TAP_DELAY_MS) {
+        if (singleTapTimerRef.current) {
+          clearTimeout(singleTapTimerRef.current);
+          singleTapTimerRef.current = null;
+        }
+        onGreetedToggle(birthday.id);
+        lastTapRef.current = 0;
+        return;
+      }
+      lastTapRef.current = now;
+      singleTapTimerRef.current = setTimeout(() => {
+        singleTapTimerRef.current = null;
+        onPress?.();
+      }, DOUBLE_TAP_DELAY_MS);
+    } else {
+      onPress?.();
+    }
+  };
 
   const getDaysText = () => {
     if (birthday.daysUntil === 0) return { text: '0', label: t('todayShort') };
@@ -52,6 +81,8 @@ export const FestiveBirthdayCard: React.FC<FestiveBirthdayCardProps> = ({ birthd
 
   const ageWord = t('yearWord', birthday.age) as string;
   const daysInfo = getDaysText();
+  const showAge = !birthday.hideYear;
+  const dateDisplay = birthday.hideYear ? formatDateShort(birthday.nextBirthday) : formatDate(birthday.nextBirthday);
 
   const handleLongPress = () => {
     if (!hasPhone) return;
@@ -75,11 +106,20 @@ export const FestiveBirthdayCard: React.FC<FestiveBirthdayCardProps> = ({ birthd
 
   return (
     <TouchableOpacity
-      style={[styles.card, { backgroundColor: cardColor }]}
-      onPress={onPress}
+      style={[
+        styles.card,
+        { backgroundColor: cardColor },
+        isGreeted && styles.cardGreeted,
+      ]}
+      onPress={handlePress}
       onLongPress={handleLongPress}
       activeOpacity={0.92}
     >
+      {isGreeted && (
+        <View style={styles.greetedCheckmark}>
+          <Ionicons name="checkmark-circle" size={28} color="#fff" />
+        </View>
+      )}
       <View style={styles.backgroundPattern}>
         <View style={styles.patternCircle1} />
         <View style={styles.patternCircle2} />
@@ -96,8 +136,12 @@ export const FestiveBirthdayCard: React.FC<FestiveBirthdayCardProps> = ({ birthd
               <Text style={styles.name}>{birthday.name}</Text>
               <Text style={styles.zodiacIcon}>{zodiac.symbol}</Text>
             </View>
-            <Text style={styles.date}>{formatDate(birthday.nextBirthday)}</Text>
-            <Text style={styles.age}>{t('ageLabel')}: {birthday.age} {ageWord}</Text>
+            <Text style={styles.date}>{dateDisplay}</Text>
+            {showAge ? (
+              <Text style={styles.age}>{t('ageLabel')}: {birthday.age} {ageWord}</Text>
+            ) : (
+              <Text style={styles.age}>{t('birthdayLabel')}</Text>
+            )}
           </View>
           <View style={styles.daysBadge}>
             <Text style={styles.daysNumber}>{daysInfo.text}</Text>
@@ -159,6 +203,17 @@ const styles = StyleSheet.create({
     minHeight: verticalScale(172),
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.12)',
+  },
+  cardGreeted: {
+    borderWidth: 3,
+    borderColor: '#22c55e',
+    shadowColor: '#15803d',
+  },
+  greetedCheckmark: {
+    position: 'absolute',
+    top: spacing.md,
+    right: spacing.md,
+    zIndex: 2,
   },
   pinBadge: {
     fontSize: fontSize.md,

@@ -15,7 +15,7 @@ export const en = {
   // Home screen
   appName: "Birthday Reminder",
   subtitle: "Never forget a special day",
-  todaysBirthdays: "Today's Birthdays 🎉",
+  todaysBirthdays: "Today's Birthdays",
   upcomingBirthdays: "Upcoming (next 7 days)",
   noEventsToday: "No events today 🎈",
   todayEmptyState: "No birthdays today 🎈\nBut there will be soon 😉",

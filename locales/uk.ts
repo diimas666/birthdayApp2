@@ -29,7 +29,7 @@ export const uk = {
   // Home screen
   appName: "Нагадування про дні народження",
   subtitle: "Ніколи не забудь особливий день",
-  todaysBirthdays: "Сьогоднішні дні народження 🎉",
+  todaysBirthdays: "Сьогоднішні дні народження",
   upcomingBirthdays: "Найближчі (наступні 7 днів)",
   noEventsToday: "Сьогодні подій немає 🎈",
   todayEmptyState: "Сьогодні без свят 🎈\nАле скоро будуть 😉",

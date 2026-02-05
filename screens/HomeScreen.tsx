@@ -26,12 +26,11 @@ if (
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 import Ionicons from "react-native-vector-icons/Ionicons";
-import Feather from "react-native-vector-icons/Feather";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect } from "@react-navigation/native";
 import ConfettiCannon from "react-native-confetti-cannon";
 import { Birthday, BirthdayWithAge } from "../types";
-import { getBirthdays, saveBirthday } from "../utils/storage";
+import { getBirthdays, saveBirthday, updateBirthday } from "../utils/storage";
 import {
   getBirthdaysByFilter,
   getTodaysBirthdays,
@@ -117,6 +116,14 @@ export const HomeScreen: React.FC = () => {
       }
     }
   };
+
+  const handleGreetedToggle = useCallback(async (id: string) => {
+    const b = birthdays.find((x) => x.id === id);
+    if (!b) return;
+    const newGreetedAt = b.greetedAt ? undefined : new Date().toISOString();
+    await updateBirthday(id, { greetedAt: newGreetedAt });
+    await loadBirthdays();
+  }, [birthdays]);
 
   const filteredBirthdays = useMemo(() => {
     let filtered = getBirthdaysByFilter(birthdays, activeFilter);
@@ -257,8 +264,9 @@ export const HomeScreen: React.FC = () => {
             <>
               <Text style={styles.heroTitle}>{t("heroTodayTitle")}</Text>
               <Text style={styles.heroName}>
-                {todaysList[0].name} — {todaysList[0].age}{" "}
-                {t("yearWord", todaysList[0].age) as string}
+                {todaysList[0].hideYear
+                  ? todaysList[0].name
+                  : `${todaysList[0].name} — ${todaysList[0].age} ${t("yearWord", todaysList[0].age) as string}`}
               </Text>
               {todaysList[0].daysUntil > 0 && (
                 <Text style={styles.heroDays}>
@@ -291,8 +299,8 @@ export const HomeScreen: React.FC = () => {
             </>
           ) : nearestBirthday ? (
             <>
-              <Feather
-                name="calendar"
+              <Ionicons
+                name="calendar-outline"
                 size={fontSize.xxxl}
                 color="#fff"
                 style={styles.heroEmoji}
@@ -307,8 +315,8 @@ export const HomeScreen: React.FC = () => {
             </>
           ) : (
             <>
-              <Feather
-                name="calendar"
+              <Ionicons
+                name="calendar-outline"
                 size={fontSize.xxxl}
                 color="#fff"
                 style={styles.heroEmoji}
@@ -330,8 +338,8 @@ export const HomeScreen: React.FC = () => {
         >
           <View style={styles.statsCollapsedRow}>
             <View style={styles.statsCollapsedTitleRow}>
-              <Feather
-                name="bar-chart-2"
+              <Ionicons
+                name="bar-chart-outline"
                 size={fontSize.xxl}
                 color={statsBorder}
                 style={{ marginRight: spacing.xs }}
@@ -409,6 +417,7 @@ export const HomeScreen: React.FC = () => {
                 key={item.id}
                 birthday={item}
                 onGiftPress={(name) => giftSheetRef.current?.present(name)}
+                onGreetedToggle={handleGreetedToggle}
               />
             ))}
           </View>
