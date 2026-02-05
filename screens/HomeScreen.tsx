@@ -26,6 +26,7 @@ if (
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 import Ionicons from "react-native-vector-icons/Ionicons";
+import Feather from "react-native-vector-icons/Feather";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect } from "@react-navigation/native";
 import ConfettiCannon from "react-native-confetti-cannon";
@@ -291,7 +292,12 @@ export const HomeScreen: React.FC = () => {
             </>
           ) : nearestBirthday ? (
             <>
-              <Text style={styles.heroEmoji}>📅</Text>
+              <Feather
+                name="calendar"
+                size={fontSize.xxxl}
+                color="#fff"
+                style={styles.heroEmoji}
+              />
               <Text style={styles.heroTitle}>{t("heroNearestTitle")}</Text>
               <Text style={styles.heroName}>
                 {nearestBirthday.name} —{" "}
@@ -302,7 +308,12 @@ export const HomeScreen: React.FC = () => {
             </>
           ) : (
             <>
-              <Text style={styles.heroEmoji}>📅</Text>
+              <Feather
+                name="calendar"
+                size={fontSize.xxxl}
+                color="#fff"
+                style={styles.heroEmoji}
+              />
               <Text style={styles.heroTitle}>{t("heroNearestTitle")}</Text>
               <Text style={styles.heroName}>{t("noUpcomingBirthdays")}</Text>
             </>
