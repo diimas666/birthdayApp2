@@ -10,6 +10,8 @@ const KEY_LANGUAGE = '@birthday_app:language';
 const KEY_IMPORT_ONLY_WITH_BIRTHDAY = '@birthday_app:importOnlyWithBirthday';
 const KEY_IMPORT_UPDATE_CHANGES = '@birthday_app:importUpdateChanges';
 const KEY_NOTIFY_ON_BIRTHDAY_DAY = '@birthday_app:notifyOnBirthdayDay';
+const KEY_LAUNCH_COUNT = '@birthday_app:launchCount';
+const KEY_REVIEW_PROMPT_DONE = '@birthday_app:reviewPromptDone';
 
 export type ThemeMode = 'light' | 'dark';
 export type LanguageCode = 'uk' | 'en';
@@ -141,4 +143,34 @@ export const getNotifyOnBirthdayDay = async (): Promise<boolean> => {
 
 export const setNotifyOnBirthdayDay = async (value: boolean): Promise<void> => {
   await AsyncStorage.setItem(KEY_NOTIFY_ON_BIRTHDAY_DAY, value ? 'true' : 'false');
+};
+
+export const getLaunchCount = async (): Promise<number> => {
+  try {
+    const v = await AsyncStorage.getItem(KEY_LAUNCH_COUNT);
+    const n = v != null ? parseInt(v, 10) : 0;
+    return Number.isNaN(n) ? 0 : Math.max(0, n);
+  } catch {
+    return 0;
+  }
+};
+
+export const incrementLaunchCount = async (): Promise<number> => {
+  const count = await getLaunchCount();
+  const next = count + 1;
+  await AsyncStorage.setItem(KEY_LAUNCH_COUNT, String(next));
+  return next;
+};
+
+export const getReviewPromptDone = async (): Promise<boolean> => {
+  try {
+    const v = await AsyncStorage.getItem(KEY_REVIEW_PROMPT_DONE);
+    return v === 'true';
+  } catch {
+    return false;
+  }
+};
+
+export const setReviewPromptDone = async (): Promise<void> => {
+  await AsyncStorage.setItem(KEY_REVIEW_PROMPT_DONE, 'true');
 };

@@ -60,6 +60,8 @@ export const uk = {
   personName: "Ім'я людини *",
   enterName: "Введіть ім'я",
   dateOfBirth: "Дата народження *",
+  hideYear: "Рік народження невідомий",
+  birthdayLabel: "День народження",
   note: "Примітка (необов'язково)",
   addNote: "Додати примітку...",
   save: "Зберегти",
@@ -257,6 +259,12 @@ export const uk = {
   filterByTag: "Фільтр по тегу",
   categories: "Категорії",
   allTags: "Всі",
+
+  // Запит оцінки в застосунку
+  rateAppTitle: "Подобається застосунок?",
+  rateAppMessage: "Поставте оцінку в Store — це допоможе іншим знайти нас.",
+  rateAppRate: "Поставити оцінку",
+  rateAppLater: "Пізніше",
 
   // Onboarding
   onboardingSlide1Title: "Додай перший день народження",

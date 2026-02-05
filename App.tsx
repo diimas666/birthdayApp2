@@ -21,7 +21,11 @@ import { getBirthdays } from "./utils/storage";
 import { getBirthdaysByFilter } from "./utils/dateHelpers";
 import { rescheduleAllNotifications } from "./utils/notifications";
 import { updateBirthdayWidget } from "./utils/updateBirthdayWidget";
-import { getOnboardingDone } from "./utils/settingsStorage";
+import {
+  getOnboardingDone,
+  incrementLaunchCount,
+} from "./utils/settingsStorage";
+import { scheduleReviewPrompt } from "./utils/inAppReview";
 import { useTranslation } from "./hooks/useTranslation";
 import { scaleFont } from "./utils/scale";
 
@@ -302,6 +306,26 @@ function MainContentWithEffects() {
       subscription.remove();
     };
   }, []);
+
+  // Запит оцінки: після 2+ запусків або 3+ днів народження, один раз показати діалог
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        await incrementLaunchCount();
+        if (cancelled) return;
+        scheduleReviewPrompt(() => ({
+          title: t("rateAppTitle"),
+          message: t("rateAppMessage"),
+          rate: t("rateAppRate"),
+          later: t("rateAppLater"),
+        }));
+      } catch (_) {}
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [t]);
   return (
     <GestureHandlerRootView style={[styles.root, { backgroundColor: TAB_BAR_BG }]}>
       <SafeAreaProvider>

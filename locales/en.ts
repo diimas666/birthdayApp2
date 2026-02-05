@@ -45,6 +45,8 @@ export const en = {
   personName: "Person's name *",
   enterName: "Enter name",
   dateOfBirth: "Date of birth *",
+  hideYear: "Don't know birth year",
+  birthdayLabel: "Birthday",
   note: "Note (optional)",
   addNote: "Add note...",
   save: "Save",
@@ -238,6 +240,12 @@ export const en = {
   filterByTag: "Filter by tag",
   categories: "Categories",
   allTags: "All",
+
+  // In-app review
+  rateAppTitle: "Enjoying the app?",
+  rateAppMessage: "Leave a rating in the Store — it helps others find us.",
+  rateAppRate: "Rate",
+  rateAppLater: "Later",
 
   // Onboarding
   onboardingSlide1Title: "Add your first birthday",

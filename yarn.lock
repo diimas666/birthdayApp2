@@ -3039,6 +3039,7 @@ __metadata:
     react-native-contacts: "npm:^7.0.4"
     react-native-gesture-handler: "npm:~2.20.0"
     react-native-haptic-feedback: "npm:^2.3.2"
+    react-native-in-app-review: "npm:^4.4.2"
     react-native-reanimated: "npm:~3.16.1"
     react-native-safe-area-context: "npm:^4.10.0"
     react-native-screens: "npm:~3.34.0"
@@ -7153,6 +7154,13 @@ __metadata:
   peerDependencies:
     react-native: ">=0.60.0"
   checksum: 10c0/de65b6a0088cf8c14b6248eddb1275233c400a52f818eda640d1475ecaa38dc059b3c37fce7f0a0bd0c33c4e1fb7537bc31fed60e94d026638993dd5d916b35e
+  languageName: node
+  linkType: hard
+
+"react-native-in-app-review@npm:^4.4.2":
+  version: 4.4.2
+  resolution: "react-native-in-app-review@npm:4.4.2"
+  checksum: 10c0/723e3f8de622081dbf8f40c843d7404445b7db0541cbce14d21b13e4843b9662e5edfc4f871249630a7ecb83a521e4e17a6cffa8a4489dac9a3ea52f36846a4a
   languageName: node
   linkType: hard
 
