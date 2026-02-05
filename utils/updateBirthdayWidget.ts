@@ -1,7 +1,7 @@
 import { Platform, NativeModules } from 'react-native';
 
 /**
- * Оновлює дані для Android-віджета «Сьогодні святкують».
+ * Оновлює дані для віджета «Сьогодні святкують» (Android та iOS).
  * Викликати після getBirthdays() з списком імен та локалізованими рядками.
  */
 export async function updateBirthdayWidget(
@@ -9,7 +9,6 @@ export async function updateBirthdayWidget(
   emptyText: string,
   title: string
 ): Promise<void> {
-  if (Platform.OS !== 'android') return;
   try {
     const { BirthdayWidget } = NativeModules;
     if (BirthdayWidget?.updateWidget) {

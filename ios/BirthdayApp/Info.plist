@@ -47,6 +47,7 @@
 	<false/>
 	<key>UIAppFonts</key>
 	<array>
+		<string>Feather.ttf</string>
 		<string>Ionicons.ttf</string>
 	</array>
 </dict>
