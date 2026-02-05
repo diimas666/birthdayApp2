@@ -223,6 +223,9 @@ export const uk = {
   aboutText: "Дні народження — ніколи не забудь особливий день.",
   version: "Версія",
   writeToSupport: "Написати в підтримку",
+  donateToAuthor: "Підтримати автора (донат)",
+  donationLinkNotConfigured:
+    "Посилання на банку Monobank ще не налаштовано. Додайте його в налаштуваннях застосунку.",
   exportSuccess: "Дані експортовано",
   importSuccess: "Дані імпортовано",
   importError: "Не вдалося імпортувати файл",

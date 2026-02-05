@@ -204,6 +204,9 @@ export const en = {
   aboutText: "Birthdays — never forget a special day.",
   version: "Version",
   writeToSupport: "Contact support",
+  donateToAuthor: "Support the author (donate)",
+  donationLinkNotConfigured:
+    "Donation link is not configured yet. Please set the Monobank link in app settings.",
   exportSuccess: "Data exported",
   importSuccess: "Data imported",
   importError: "Failed to import",

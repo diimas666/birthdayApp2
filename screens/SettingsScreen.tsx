@@ -19,7 +19,13 @@ import { useTheme } from "../contexts/ThemeContext";
 import { useLanguage } from "../contexts/LanguageContext";
 import { useTranslation } from "../hooks/useTranslation";
 import { ThemeMode, LanguageCode } from "../utils/settingsStorage";
-import { spacing, fontSize, borderRadius, moderateScale, verticalScale } from "../utils/scale";
+import {
+  spacing,
+  fontSize,
+  borderRadius,
+  moderateScale,
+  verticalScale,
+} from "../utils/scale";
 import {
   getNotificationHour,
   setNotificationHour,
@@ -50,6 +56,9 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 
 const HOURS = Array.from({ length: 24 }, (_, i) => i);
 
+// Сюда можно подставить свою ссылку на банку Monobank
+const MONOBANK_DONATION_URL = "https://send.monobank.ua/jar/2VmwzxQnrW";
+
 export const SettingsScreen: React.FC = () => {
   const { t } = useTranslation();
   const { theme, setThemeMode, isDark } = useTheme();
@@ -60,10 +69,13 @@ export const SettingsScreen: React.FC = () => {
   const [importModalVisible, setImportModalVisible] = useState(false);
   const [importJson, setImportJson] = useState("");
   const [notifyOnBirthdayDay, setNotifyOnBirthdayDayState] = useState(true);
-  const [importOnlyWithBirthday, setImportOnlyWithBirthdayState] = useState(true);
+  const [importOnlyWithBirthday, setImportOnlyWithBirthdayState] =
+    useState(true);
   const [importUpdateChanges, setImportUpdateChangesState] = useState(true);
   const [importingContacts, setImportingContacts] = useState(false);
-  const [batteryOptEnabled, setBatteryOptEnabled] = useState<boolean | null>(null);
+  const [batteryOptEnabled, setBatteryOptEnabled] = useState<boolean | null>(
+    null,
+  );
 
   useEffect(() => {
     getNotificationHour().then(setNotificationHourState);
@@ -133,7 +145,20 @@ export const SettingsScreen: React.FC = () => {
 
   const handleWriteToSupport = () => {
     Linking.openURL("mailto:uu36548@gmail.com").catch(() =>
-      Alert.alert(t("error"), t("openEmailFailed"))
+      Alert.alert(t("error"), t("openEmailFailed")),
+    );
+  };
+
+  const handleDonateToAuthor = () => {
+    if (!MONOBANK_DONATION_URL || MONOBANK_DONATION_URL.includes("XXXX")) {
+      Alert.alert(
+        t("error"),
+        t("donationLinkNotConfigured"),
+      );
+      return;
+    }
+    Linking.openURL(MONOBANK_DONATION_URL).catch((e) =>
+      Alert.alert(t("error"), String(e)),
     );
   };
 
@@ -151,9 +176,12 @@ export const SettingsScreen: React.FC = () => {
             t("contactsPermissionDenied"),
             t("contactsPermissionDeniedHint"),
             [
-              { text: t("openSettings"), onPress: () => Linking.openSettings() },
+              {
+                text: t("openSettings"),
+                onPress: () => Linking.openSettings(),
+              },
               { text: "OK" },
-            ]
+            ],
           );
         } else {
           Alert.alert(t("error"), result.error);
@@ -167,7 +195,13 @@ export const SettingsScreen: React.FC = () => {
       } else {
         Alert.alert(
           t("importSuccess"),
-          t("importFromContactsSuccess", result.added, result.updated, result.skipped, result.totalWithBirthday)
+          t(
+            "importFromContactsSuccess",
+            result.added,
+            result.updated,
+            result.skipped,
+            result.totalWithBirthday,
+          ),
         );
       }
     } catch (e) {
@@ -202,10 +236,7 @@ export const SettingsScreen: React.FC = () => {
       setImportJson("");
       const birthdays = await getBirthdays();
       await rescheduleAllNotifications(birthdays);
-      Alert.alert(
-        t("importSuccess"),
-        t("importCount", imported, total)
-      );
+      Alert.alert(t("importSuccess"), t("importCount", imported, total));
     } catch (e) {
       Alert.alert(t("importError"), String(e));
     }
@@ -229,7 +260,8 @@ export const SettingsScreen: React.FC = () => {
         <View style={[styles.section, { backgroundColor: cardBg }]}>
           <View style={styles.switchRow}>
             <Text style={[styles.switchLabel, { color: textColor }]}>
-              {t("language")} — {language === "uk" ? t("languageUk") : t("languageEn")}
+              {t("language")} —{" "}
+              {language === "uk" ? t("languageUk") : t("languageEn")}
             </Text>
             <Switch
               value={language === "uk"}
@@ -243,7 +275,8 @@ export const SettingsScreen: React.FC = () => {
         <View style={[styles.section, { backgroundColor: cardBg }]}>
           <View style={styles.switchRow}>
             <Text style={[styles.switchLabel, { color: textColor }]}>
-              {t("theme")} — {theme === "dark" ? t("themeDark") : t("themeLight")}
+              {t("theme")} —{" "}
+              {theme === "dark" ? t("themeDark") : t("themeLight")}
             </Text>
             <Switch
               value={theme === "dark"}
@@ -303,7 +336,10 @@ export const SettingsScreen: React.FC = () => {
                 {t("settingsBatteryOptimizationHint")}
               </Text>
               <TouchableOpacity
-                style={[styles.batteryOptButton, { backgroundColor: secondaryColor }]}
+                style={[
+                  styles.batteryOptButton,
+                  { backgroundColor: secondaryColor },
+                ]}
                 onPress={() => openBatteryOptimizationSettings()}
               >
                 <Text style={styles.batteryOptButtonText}>
@@ -349,7 +385,9 @@ export const SettingsScreen: React.FC = () => {
               </TouchableOpacity>
             ))}
           </ScrollView>
-          <Text style={[styles.quietLabel, { color: textColor, marginTop: 12 }]}>
+          <Text
+            style={[styles.quietLabel, { color: textColor, marginTop: 12 }]}
+          >
             {t("quietHoursTo")}
           </Text>
           <ScrollView
@@ -406,7 +444,10 @@ export const SettingsScreen: React.FC = () => {
             />
           </View>
           <TouchableOpacity
-            style={[styles.importContactsButton, { backgroundColor: secondaryColor }]}
+            style={[
+              styles.importContactsButton,
+              { backgroundColor: secondaryColor },
+            ]}
             onPress={handleImportFromContacts}
             disabled={importingContacts}
           >
@@ -420,49 +461,157 @@ export const SettingsScreen: React.FC = () => {
           </TouchableOpacity>
         </View>
 
-        <View style={[styles.section, styles.telegramBlock, { backgroundColor: cardBg }]}>
+        <View
+          style={[
+            styles.section,
+            styles.telegramBlock,
+            { backgroundColor: cardBg },
+          ]}
+        >
           <TouchableOpacity
-            style={[styles.telegramRow, styles.telegramRowBorder, { borderBottomColor: isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.06)" }]}
+            style={[
+              styles.telegramRow,
+              styles.telegramRowBorder,
+              {
+                borderBottomColor: isDark
+                  ? "rgba(255,255,255,0.08)"
+                  : "rgba(0,0,0,0.06)",
+              },
+            ]}
             onPress={handleExportCsv}
             activeOpacity={0.7}
           >
-            <View style={[styles.telegramIconWrap, { backgroundColor: isDark ? "rgba(139,92,246,0.25)" : "#f0e6ff" }]}>
-              <Ionicons name="document-text-outline" size={22} color={secondaryColor} />
+            <View
+              style={[
+                styles.telegramIconWrap,
+                {
+                  backgroundColor: isDark ? "rgba(139,92,246,0.25)" : "#f0e6ff",
+                },
+              ]}
+            >
+              <Ionicons
+                name="document-text-outline"
+                size={22}
+                color={secondaryColor}
+              />
             </View>
-            <Text style={[styles.telegramRowText, { color: textColor }]}>{t("exportDataList")}</Text>
+            <Text style={[styles.telegramRowText, { color: textColor }]}>
+              {t("exportDataList")}
+            </Text>
             <Ionicons name="chevron-forward" size={20} color="#888" />
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.telegramRow, styles.telegramRowBorder, { borderBottomColor: isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.06)" }]}
+            style={[
+              styles.telegramRow,
+              styles.telegramRowBorder,
+              {
+                borderBottomColor: isDark
+                  ? "rgba(255,255,255,0.08)"
+                  : "rgba(0,0,0,0.06)",
+              },
+            ]}
             onPress={handleExportJson}
             activeOpacity={0.7}
           >
-            <View style={[styles.telegramIconWrap, { backgroundColor: isDark ? "rgba(139,92,246,0.25)" : "#f0e6ff" }]}>
-              <Ionicons name="document-outline" size={22} color={secondaryColor} />
+            <View
+              style={[
+                styles.telegramIconWrap,
+                {
+                  backgroundColor: isDark ? "rgba(139,92,246,0.25)" : "#f0e6ff",
+                },
+              ]}
+            >
+              <Ionicons
+                name="document-outline"
+                size={22}
+                color={secondaryColor}
+              />
             </View>
-            <Text style={[styles.telegramRowText, { color: textColor }]}>{t("exportDataFull")}</Text>
+            <Text style={[styles.telegramRowText, { color: textColor }]}>
+              {t("exportDataFull")}
+            </Text>
             <Ionicons name="chevron-forward" size={20} color="#888" />
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.telegramRow, styles.telegramRowBorder, { borderBottomColor: isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.06)" }]}
+            style={[
+              styles.telegramRow,
+              styles.telegramRowBorder,
+              {
+                borderBottomColor: isDark
+                  ? "rgba(255,255,255,0.08)"
+                  : "rgba(0,0,0,0.06)",
+              },
+            ]}
             onPress={() => setImportModalVisible(true)}
             activeOpacity={0.7}
           >
-            <View style={[styles.telegramIconWrap, { backgroundColor: isDark ? "rgba(139,92,246,0.25)" : "#f0e6ff" }]}>
-              <Ionicons name="cloud-upload-outline" size={22} color={secondaryColor} />
+            <View
+              style={[
+                styles.telegramIconWrap,
+                {
+                  backgroundColor: isDark ? "rgba(139,92,246,0.25)" : "#f0e6ff",
+                },
+              ]}
+            >
+              <Ionicons
+                name="cloud-upload-outline"
+                size={22}
+                color={secondaryColor}
+              />
             </View>
-            <Text style={[styles.telegramRowText, { color: textColor }]}>{t("importData")}</Text>
+            <Text style={[styles.telegramRowText, { color: textColor }]}>
+              {t("importData")}
+            </Text>
+            <Ionicons name="chevron-forward" size={20} color="#888" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.telegramRow,
+              styles.telegramRowBorder,
+              {
+                borderBottomColor: isDark
+                  ? "rgba(255,255,255,0.08)"
+                  : "rgba(0,0,0,0.06)",
+              },
+            ]}
+            onPress={handleWriteToSupport}
+            activeOpacity={0.7}
+          >
+            <View
+              style={[
+                styles.telegramIconWrap,
+                {
+                  backgroundColor: isDark ? "rgba(139,92,246,0.25)" : "#f0e6ff",
+                },
+              ]}
+            >
+              <Ionicons name="mail-outline" size={22} color={secondaryColor} />
+            </View>
+            <Text style={[styles.telegramRowText, { color: textColor }]}>
+              {t("writeToSupport")}
+            </Text>
             <Ionicons name="chevron-forward" size={20} color="#888" />
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.telegramRow}
-            onPress={handleWriteToSupport}
+            onPress={handleDonateToAuthor}
             activeOpacity={0.7}
           >
-            <View style={[styles.telegramIconWrap, { backgroundColor: isDark ? "rgba(139,92,246,0.25)" : "#f0e6ff" }]}>
-              <Ionicons name="mail-outline" size={22} color={secondaryColor} />
+            <View
+              style={[
+                styles.telegramIconWrap,
+                {
+                  backgroundColor: isDark
+                    ? "rgba(248,113,113,0.25)"
+                    : "#fee2e2",
+                },
+              ]}
+            >
+              <Ionicons name="heart-outline" size={22} color="#ef4444" />
             </View>
-            <Text style={[styles.telegramRowText, { color: textColor }]}>{t("writeToSupport")}</Text>
+            <Text style={[styles.telegramRowText, { color: textColor }]}>
+              {t("donateToAuthor")}
+            </Text>
             <Ionicons name="chevron-forward" size={20} color="#888" />
           </TouchableOpacity>
         </View>
@@ -528,7 +677,11 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
   scroll: { flex: 1 },
   content: { padding: spacing.lg, paddingBottom: verticalScale(40) },
-  title: { fontSize: fontSize.xxxl, fontWeight: "bold", marginBottom: spacing.xl },
+  title: {
+    fontSize: fontSize.xxxl,
+    fontWeight: "bold",
+    marginBottom: spacing.xl,
+  },
   section: {
     borderRadius: borderRadius.lg,
     padding: spacing.md,
@@ -557,7 +710,11 @@ const styles = StyleSheet.create({
     marginRight: spacing.md,
   },
   telegramRowText: { fontSize: fontSize.base, flex: 1 },
-  sectionTitle: { fontSize: fontSize.base, fontWeight: "600", marginBottom: spacing.sm },
+  sectionTitle: {
+    fontSize: fontSize.base,
+    fontWeight: "600",
+    marginBottom: spacing.sm,
+  },
   row: { flexDirection: "row", gap: spacing.md },
   hoursRow: { flexDirection: "row", marginHorizontal: -spacing.xxs },
   hourChip: {
@@ -571,7 +728,11 @@ const styles = StyleSheet.create({
   hourChipText: { fontSize: fontSize.md, color: "#333" },
   hourChipTextActive: { color: "#fff" },
   quietHint: { fontSize: fontSize.md, marginBottom: spacing.md, opacity: 0.9 },
-  quietLabel: { fontSize: fontSize.md, fontWeight: "600", marginBottom: spacing.xs },
+  quietLabel: {
+    fontSize: fontSize.md,
+    fontWeight: "600",
+    marginBottom: spacing.xs,
+  },
   aboutText: { fontSize: fontSize.md, marginBottom: spacing.sm },
   versionText: { fontSize: fontSize.sm },
   importOverlay: {
@@ -584,7 +745,11 @@ const styles = StyleSheet.create({
     borderTopRightRadius: borderRadius.xl,
     padding: spacing.lg,
   },
-  importTitle: { fontSize: fontSize.xl, fontWeight: "bold", marginBottom: spacing.md },
+  importTitle: {
+    fontSize: fontSize.xl,
+    fontWeight: "bold",
+    marginBottom: spacing.md,
+  },
   importInput: {
     borderWidth: 1,
     borderRadius: borderRadius.sm,
@@ -592,7 +757,11 @@ const styles = StyleSheet.create({
     minHeight: verticalScale(120),
     textAlignVertical: "top",
   },
-  importButtons: { flexDirection: "row", gap: spacing.md, marginTop: spacing.md },
+  importButtons: {
+    flexDirection: "row",
+    gap: spacing.md,
+    marginTop: spacing.md,
+  },
   importButtonCancel: {
     flex: 1,
     padding: moderateScale(14),
@@ -606,8 +775,16 @@ const styles = StyleSheet.create({
     borderRadius: borderRadius.sm,
     alignItems: "center",
   },
-  importButtonText: { fontSize: fontSize.base, fontWeight: "600", color: "#fff" },
-  importButtonTextCancel: { fontSize: fontSize.base, fontWeight: "600", color: "#333" },
+  importButtonText: {
+    fontSize: fontSize.base,
+    fontWeight: "600",
+    color: "#fff",
+  },
+  importButtonTextCancel: {
+    fontSize: fontSize.base,
+    fontWeight: "600",
+    color: "#333",
+  },
   switchRow: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -621,8 +798,27 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: spacing.sm,
   },
-  importContactsButtonText: { fontSize: fontSize.base, fontWeight: "600", color: "#fff" },
-  batteryOptBlock: { marginTop: spacing.md, paddingTop: spacing.md, borderTopWidth: 1, borderTopColor: "rgba(255,255,255,0.1)" },
-  batteryOptButton: { paddingVertical: moderateScale(12), paddingHorizontal: spacing.lg, borderRadius: borderRadius.sm, alignItems: "center", marginTop: spacing.sm },
-  batteryOptButtonText: { fontSize: fontSize.base, fontWeight: "600", color: "#fff" },
+  importContactsButtonText: {
+    fontSize: fontSize.base,
+    fontWeight: "600",
+    color: "#fff",
+  },
+  batteryOptBlock: {
+    marginTop: spacing.md,
+    paddingTop: spacing.md,
+    borderTopWidth: 1,
+    borderTopColor: "rgba(255,255,255,0.1)",
+  },
+  batteryOptButton: {
+    paddingVertical: moderateScale(12),
+    paddingHorizontal: spacing.lg,
+    borderRadius: borderRadius.sm,
+    alignItems: "center",
+    marginTop: spacing.sm,
+  },
+  batteryOptButtonText: {
+    fontSize: fontSize.base,
+    fontWeight: "600",
+    color: "#fff",
+  },
 });
