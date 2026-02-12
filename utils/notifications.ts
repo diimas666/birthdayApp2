@@ -3,11 +3,15 @@ import { Platform } from 'react-native';
 import { Birthday } from '../types';
 import { uk } from '../locales/uk';
 import { en } from '../locales/en';
+import { es } from '../locales/es';
+import { it } from '../locales/it';
+import { pt } from '../locales/pt';
+import { de } from '../locales/de';
 import { getNotificationHour, getQuietHoursFrom, getQuietHoursTo, getLanguage, getNotifyOnBirthdayDay } from './settingsStorage';
 
 const ANDROID_CHANNEL_ID = 'birthday-reminders';
 
-const locales = { uk, en };
+const locales = { uk, en, es, it, pt, de };
 
 /** Returns an hour that falls outside quiet time (e.g. 22–8 → use 8 if hour is in 22,23,0..7). */
 function getAllowedHour(hour: number, quietFrom: number, quietTo: number): number {
@@ -58,7 +62,7 @@ export const scheduleBirthdayNotifications = async (birthday: Birthday, hour?: n
   await cancelBirthdayNotifications(birthday.id);
 
   const lang = await getLanguage();
-  const locale = locales[lang];
+  const locale = locales[lang] ?? en;
 
   const baseNotification = {
     title: locale.notificationTitleToday,

@@ -43,7 +43,12 @@ export const BirthdayModal: React.FC<BirthdayModalProps> = ({
   const { t } = useTranslation();
   const { language } = useLanguage();
   const locale = language === "uk" ? "uk-UA" : "en-US";
-  const PRESET_TAGS = [t("tagFamily"), t("tagWork"), t("tagOther")];
+  const PRESET_TAGS = [
+    t("tagFamily"),
+    t("tagFriends"),
+    t("tagWork"),
+    t("tagOther"),
+  ];
   const [name, setName] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState(new Date());
   const [note, setNote] = useState("");
