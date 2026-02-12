@@ -1,7 +1,16 @@
 import React, { useEffect, useState, useRef, Component, type ErrorInfo } from "react";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { StatusBar, StyleSheet, View, Platform, Text, AppState, type AppStateStatus } from "react-native";
+import {
+  StatusBar,
+  StyleSheet,
+  View,
+  Platform,
+  Text,
+  AppState,
+  TouchableOpacity,
+  type AppStateStatus,
+} from "react-native";
 import {
   useSafeAreaInsets,
   SafeAreaProvider,
@@ -30,16 +39,26 @@ import { useTranslation } from "./hooks/useTranslation";
 import { scaleFont } from "./utils/scale";
 
 class AppErrorBoundary extends Component<
-  { children: React.ReactNode },
+  { children: React.ReactNode; onRetry?: () => void },
   { error: Error | null }
 > {
   state = { error: null as Error | null };
+
   static getDerivedStateFromError(error: Error) {
     return { error };
   }
+
   componentDidCatch(error: Error, _info: ErrorInfo) {
     console.error("AppErrorBoundary:", error.message);
   }
+
+  handleRetry = () => {
+    this.setState({ error: null });
+    if (this.props.onRetry) {
+      this.props.onRetry();
+    }
+  };
+
   render() {
     if (this.state.error) {
       return (
@@ -50,12 +69,17 @@ class AppErrorBoundary extends Component<
               backgroundColor: "#1a0a2e",
               padding: 20,
               justifyContent: "center",
+              alignItems: "center",
             },
           ]}
         >
-          <Text style={{ color: "#fff", fontSize: 14 }}>
+          <Text style={styles.errorTitle}>Щось пішло не так</Text>
+          <Text style={styles.errorMessage}>
             {this.state.error.message}
           </Text>
+          <TouchableOpacity style={styles.retryButton} onPress={this.handleRetry}>
+            <Text style={styles.retryButtonText}>Перезапустити</Text>
+          </TouchableOpacity>
         </View>
       );
     }
@@ -214,6 +238,11 @@ export default function App() {
   const [onboardingDone, setOnboardingDoneState] = useState<boolean | null>(
     null
   );
+  const [appKey, setAppKey] = useState(0);
+
+  const handleRetry = () => {
+    setAppKey((k) => k + 1);
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -240,8 +269,8 @@ export default function App() {
 
   if (onboardingDone === null) {
     return (
-      <AppErrorBoundary>
-        <ThemeProvider>
+      <AppErrorBoundary onRetry={handleRetry}>
+        <ThemeProvider key={appKey}>
           <LanguageProvider>
             <GestureHandlerRootView style={styles.root}>
               <View style={[styles.root, { backgroundColor: "#1a0a2e" }]} />
@@ -254,8 +283,8 @@ export default function App() {
 
   if (onboardingDone === false) {
     return (
-      <AppErrorBoundary>
-        <ThemeProvider>
+      <AppErrorBoundary onRetry={handleRetry}>
+        <ThemeProvider key={appKey}>
           <LanguageProvider>
             <GestureHandlerRootView style={styles.root}>
               <OnboardingScreen
@@ -269,8 +298,8 @@ export default function App() {
   }
 
   return (
-    <AppErrorBoundary>
-      <ThemeProvider>
+    <AppErrorBoundary onRetry={handleRetry}>
+      <ThemeProvider key={appKey}>
         <LanguageProvider>
           <MainContentWithEffects />
         </LanguageProvider>
@@ -344,6 +373,32 @@ function MainContentWithEffects() {
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
+  errorTitle: {
+    color: "#fff",
+    fontSize: scaleFont(18),
+    fontWeight: "700",
+    textAlign: "center",
+    marginBottom: 8,
+  },
+  errorMessage: {
+    color: "#ddd",
+    fontSize: scaleFont(14),
+    textAlign: "center",
+    marginBottom: 16,
+  },
+  retryButton: {
+    marginTop: 8,
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 999,
+    backgroundColor: "#8b5cf6",
+  },
+  retryButtonText: {
+    color: "#fff",
+    fontSize: scaleFont(16),
+    fontWeight: "600",
+    textAlign: "center",
+  },
   tabBar: {
     borderTopWidth: 0,
     borderTopLeftRadius: 24,
