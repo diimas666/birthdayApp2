@@ -169,11 +169,13 @@ export const it: typeof uk = {
 
   // Modale extra
   phone: "Telefono (facoltativo)",
-  phonePlaceholder: "+39...",
+  phonePlaceholder: "Numero di telefono",
   tags: "Tag",
   addPhoto: "Aggiungi foto",
   changePhoto: "Cambia foto",
   removePhoto: "Rimuovi foto",
+  giftIdeasLabel: "Idee regalo (facoltativo)",
+  giftIdeasPlaceholder: "Scrivi idee regalo (una per riga)",
 
   // Impostazioni
   settings: "Impostazioni",

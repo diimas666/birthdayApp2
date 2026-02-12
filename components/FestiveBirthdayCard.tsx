@@ -50,6 +50,7 @@ export const FestiveBirthdayCard: React.FC<FestiveBirthdayCardProps> = ({ birthd
   const isGreeted = Boolean(birthday.greetedAt);
   const cardColor = isGreeted ? '#15803d' : getCardGradientColor(birthday.daysUntil);
   const zodiac = getZodiacSign(new Date(birthday.dateOfBirth));
+  const giftIdeas = birthday.giftIdeas || [];
 
   const handlePress = () => {
     if (onGreetedToggle) {
@@ -148,6 +149,26 @@ export const FestiveBirthdayCard: React.FC<FestiveBirthdayCardProps> = ({ birthd
             <Text style={styles.daysLabel}>{daysInfo.label}</Text>
           </View>
         </View>
+
+        {giftIdeas.length > 0 && (
+          <View style={styles.giftIdeasBlock}>
+            <Text style={styles.giftIdeasTitle}>
+              {t('savedGiftIdeas')} ({giftIdeas.length})
+            </Text>
+            {giftIdeas.slice(0, 2).map((idea, idx) => (
+              <View key={idx} style={styles.giftIdeaPill}>
+                <Text style={styles.giftIdeaText} numberOfLines={2}>
+                  {idea}
+                </Text>
+              </View>
+            ))}
+            {giftIdeas.length > 2 && (
+              <Text style={styles.giftIdeasMore}>
+                {t('giftIdeasMore', giftIdeas.length - 2)}
+              </Text>
+            )}
+          </View>
+        )}
 
         <View style={styles.actions}>
           <TouchableOpacity style={styles.actionButton} onPress={() => setGreetingVisible(true)}>
@@ -352,5 +373,36 @@ const styles = StyleSheet.create({
     color: '#fff',
     textAlign: 'center',
     opacity: 0.95,
+  },
+  giftIdeasBlock: {
+    marginTop: spacing.sm,
+    marginBottom: spacing.sm,
+    backgroundColor: 'rgba(255,255,255,0.16)',
+    borderRadius: borderRadius.md,
+    padding: spacing.sm,
+  },
+  giftIdeasTitle: {
+    fontSize: fontSize.xs,
+    fontWeight: '600',
+    color: '#fefce8',
+    marginBottom: spacing.xs,
+    opacity: 0.9,
+  },
+  giftIdeaPill: {
+    borderRadius: borderRadius.sm,
+    backgroundColor: 'rgba(255,255,255,0.18)',
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs,
+    marginBottom: spacing.xs,
+  },
+  giftIdeaText: {
+    fontSize: fontSize.xs,
+    color: '#fefefe',
+  },
+  giftIdeasMore: {
+    fontSize: fontSize.xs,
+    color: '#e5e7eb',
+    marginTop: spacing.xs,
+    opacity: 0.9,
   },
 });

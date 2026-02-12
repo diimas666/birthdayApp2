@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Modal,
-  Dimensions,
+  useWindowDimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
@@ -16,16 +16,21 @@ import { getBirthdaysOnDate, enrichBirthday } from '../utils/dateHelpers';
 import { getZodiacSign } from '../utils/zodiac';
 import { useTranslation } from '../hooks/useTranslation';
 import { useTheme } from '../contexts/ThemeContext';
-import { spacing, fontSize, borderRadius, moderateScale, verticalScale, dimensions } from '../utils/scale';
+import { spacing, fontSize, borderRadius, moderateScale, verticalScale } from '../utils/scale';
 
 const DAYS_IN_WEEK = 7;
-const { width: SCREEN_WIDTH } = dimensions;
+const FALLBACK_WIDTH = 390;
 const GRID_PAD = spacing.lg * 2;
 const CELL_GAP = spacing.xs;
-const CELL_BASE = Math.floor((SCREEN_WIDTH - GRID_PAD - 6 * CELL_GAP) / 7);
-const CELL_SIZE = Math.max(moderateScale(32), CELL_BASE - CELL_GAP);
 
 export const CalendarScreen: React.FC = () => {
+  const { width: windowWidth } = useWindowDimensions();
+  const screenWidth = Math.max(windowWidth, FALLBACK_WIDTH);
+  const cellBase = Math.floor((screenWidth - GRID_PAD - 6 * CELL_GAP) / 7);
+  const cellSize = Math.max(moderateScale(32), cellBase - CELL_GAP);
+  const gridWidth = screenWidth - GRID_PAD;
+  const cellTotal = cellSize + CELL_GAP;
+
   const { t, locale } = useTranslation();
   const { isDark } = useTheme();
   const [birthdays, setBirthdays] = useState<Birthday[]>([]);
@@ -118,7 +123,7 @@ export const CalendarScreen: React.FC = () => {
         </View>
         <View style={styles.weekdayRow}>
           {locale.dayNamesShort.map((name) => (
-            <Text key={name} style={[styles.weekdayCell, { color: mutedColor }]}>
+            <Text key={name} style={[styles.weekdayCell, { color: mutedColor, width: cellTotal }]}>
               {name}
             </Text>
           ))}
@@ -126,14 +131,14 @@ export const CalendarScreen: React.FC = () => {
       </View>
 
       <ScrollView style={styles.scroll} contentContainerStyle={styles.gridWrap}>
-        <View style={styles.grid}>
+        <View style={[styles.grid, { width: gridWidth }]}>
           {grid.map((day, index) => {
             const isLastInRow = index % DAYS_IN_WEEK === 6;
             if (day === null) {
               return (
                 <View
                   key={`empty-${index}`}
-                  style={[styles.cell, isLastInRow && styles.cellLastInRow]}
+                  style={[styles.cell, { width: cellTotal, height: cellTotal }, isLastInRow && styles.cellLastInRow]}
                 />
               );
             }
@@ -145,6 +150,7 @@ export const CalendarScreen: React.FC = () => {
                 key={day}
                 style={[
                   styles.cell,
+                  { width: cellTotal, height: cellTotal },
                   isLastInRow && styles.cellLastInRow,
                   isPurple && { backgroundColor: secondaryColor },
                 ]}
@@ -198,7 +204,7 @@ export const CalendarScreen: React.FC = () => {
                       </View>
                       <Text style={[styles.modalDetail, { color: mutedColor }]}>{dateStr}</Text>
                       <Text style={[styles.modalDetail, { color: textColor }]}>
-                        {t('turns', b.age)} {ageWord}
+                        {b.hideYear ? t('birthdayLabel') : `${t('turns', b.age)} ${ageWord}`}
                       </Text>
                       {b.note?.trim() ? (
                         <Text style={[styles.modalNote, { color: mutedColor }]}>{b.note}</Text>
@@ -246,7 +252,6 @@ const styles = StyleSheet.create({
   },
   weekdayCell: {
     fontSize: fontSize.sm,
-    width: CELL_SIZE + CELL_GAP,
     textAlign: 'center',
   },
   scroll: { flex: 1 },
@@ -254,11 +259,8 @@ const styles = StyleSheet.create({
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    width: SCREEN_WIDTH - GRID_PAD,
   },
   cell: {
-    width: CELL_SIZE + CELL_GAP,
-    height: CELL_SIZE + CELL_GAP,
     marginRight: CELL_GAP,
     marginBottom: CELL_GAP,
     borderRadius: borderRadius.sm,

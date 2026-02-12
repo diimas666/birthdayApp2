@@ -188,11 +188,13 @@ export const uk = {
 
   // Modal extra
   phone: "Телефон (необов'язково)",
-  phonePlaceholder: "+380...",
+  phonePlaceholder: "Номер телефону",
   tags: "Теги",
   addPhoto: "Додати фото",
   changePhoto: "Змінити фото",
   removePhoto: "Прибрати фото",
+  giftIdeasLabel: "Ідеї подарунків (необов'язково)",
+  giftIdeasPlaceholder: "Запишіть ідеї подарунків (по одній в рядок)",
 
   // Settings
   settings: "Налаштування",

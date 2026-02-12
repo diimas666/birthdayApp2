@@ -169,11 +169,13 @@ export const en = {
 
   // Modal extra
   phone: "Phone (optional)",
-  phonePlaceholder: "+1...",
+  phonePlaceholder: "Phone number",
   tags: "Tags",
   addPhoto: "Add photo",
   changePhoto: "Change photo",
   removePhoto: "Remove photo",
+  giftIdeasLabel: "Gift ideas (optional)",
+  giftIdeasPlaceholder: "Write gift ideas (one per line)",
 
   // Settings
   settings: "Settings",

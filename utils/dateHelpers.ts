@@ -42,7 +42,7 @@ export const getDaysUntil = (date: Date): number => {
 
 export const enrichBirthday = (birthday: Birthday): BirthdayWithAge => {
   const nextBirthday = getNextBirthday(birthday.dateOfBirth);
-  const age = calculateAge(birthday.dateOfBirth);
+  const age = birthday.hideYear ? 0 : calculateAge(birthday.dateOfBirth);
   const daysUntil = getDaysUntil(nextBirthday);
   
   return {

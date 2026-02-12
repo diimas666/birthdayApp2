@@ -11,6 +11,8 @@ export interface Birthday {
   isImportant?: boolean;
   /** Позначка «Привітав»: якщо задано (ISO-дата), картка зелёная з галочкою. */
   greetedAt?: string;
+  /** Збережені ідеї подарунків для людини (текст або посилання). */
+  giftIdeas?: string[];
   createdAt: Date;
 }
 

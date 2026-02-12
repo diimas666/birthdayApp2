@@ -168,11 +168,13 @@ export const es: typeof uk = {
 
   // Modal extra
   phone: "Teléfono (opcional)",
-  phonePlaceholder: "+34...",
+  phonePlaceholder: "Número de teléfono",
   tags: "Etiquetas",
   addPhoto: "Añadir foto",
   changePhoto: "Cambiar foto",
   removePhoto: "Eliminar foto",
+  giftIdeasLabel: "Ideas de regalo (opcional)",
+  giftIdeasPlaceholder: "Escribe ideas de regalo (una por línea)",
 
   // Ajustes
   settings: "Ajustes",

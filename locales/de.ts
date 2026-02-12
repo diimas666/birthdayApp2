@@ -170,11 +170,13 @@ export const de: typeof uk = {
 
   // Modal extra
   phone: "Telefon (optional)",
-  phonePlaceholder: "+49...",
+  phonePlaceholder: "Telefonnummer",
   tags: "Tags",
   addPhoto: "Foto hinzufügen",
   changePhoto: "Foto ändern",
   removePhoto: "Foto entfernen",
+  giftIdeasLabel: "Geschenkideen (optional)",
+  giftIdeasPlaceholder: "Schreibe Geschenkideen (eine pro Zeile)",
 
   // Einstellungen
   settings: "Einstellungen",

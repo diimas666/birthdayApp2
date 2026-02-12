@@ -9,6 +9,7 @@ import {
   Platform,
   Alert,
   ScrollView,
+  Switch,
 } from "react-native";
 import DateTimePicker, {
   DateTimePickerEvent,
@@ -18,7 +19,13 @@ import { Birthday } from "../types";
 import { useTranslation, type Locale } from "../hooks/useTranslation";
 import { useLanguage } from "../contexts/LanguageContext";
 import { getZodiacSign } from "../utils/zodiac";
-import { spacing, fontSize, borderRadius, moderateScale, verticalScale } from "../utils/scale";
+import {
+  spacing,
+  fontSize,
+  borderRadius,
+  moderateScale,
+  verticalScale,
+} from "../utils/scale";
 
 interface BirthdayModalProps {
   visible: boolean;
@@ -43,8 +50,10 @@ export const BirthdayModal: React.FC<BirthdayModalProps> = ({
   const [phone, setPhone] = useState("");
   const [photoUri, setPhotoUri] = useState<string | undefined>();
   const [tags, setTags] = useState<string[]>([]);
+  // const [giftIdeasText, setGiftIdeasText] = useState("");
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [hideYear, setHideYear] = useState(false);
 
   const resetForm = () => {
     setName("");
@@ -53,12 +62,14 @@ export const BirthdayModal: React.FC<BirthdayModalProps> = ({
     setPhone("");
     setPhotoUri(undefined);
     setTags([]);
+    // setGiftIdeasText("");
     setShowDatePicker(false);
+    setHideYear(false);
   };
 
   const toggleTag = (tag: string) => {
     setTags((prev) =>
-      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag],
     );
   };
 
@@ -70,6 +81,8 @@ export const BirthdayModal: React.FC<BirthdayModalProps> = ({
       setPhone(editingBirthday.phone || "");
       setPhotoUri(editingBirthday.photoUri);
       setTags(editingBirthday.tags || []);
+      setHideYear(editingBirthday.hideYear ?? false);
+      // setGiftIdeasText((editingBirthday.giftIdeas || []).join("\n"));
     } else {
       resetForm();
     }
@@ -81,10 +94,14 @@ export const BirthdayModal: React.FC<BirthdayModalProps> = ({
       return;
     }
 
-    if (dateOfBirth > new Date()) {
+    if (!hideYear && dateOfBirth > new Date()) {
       Alert.alert(t("validationError"), t("dateCannotBeFuture"));
       return;
     }
+
+    const dateToSave = hideYear
+      ? new Date(2000, dateOfBirth.getMonth(), dateOfBirth.getDate())
+      : dateOfBirth;
 
     setIsSaving(true);
     try {
@@ -93,11 +110,13 @@ export const BirthdayModal: React.FC<BirthdayModalProps> = ({
       });
       await onSave({
         name: name.trim(),
-        dateOfBirth,
+        dateOfBirth: dateToSave,
+        hideYear: hideYear || undefined,
         note: note.trim() || undefined,
         phone: phone.trim() || undefined,
         photoUri,
         tags: tags.length > 0 ? tags : undefined,
+        // giftIdeas: giftIdeas.length > 0 ? giftIdeas : undefined,
       });
       resetForm();
       setTimeout(() => onClose(), 0);
@@ -197,13 +216,27 @@ export const BirthdayModal: React.FC<BirthdayModalProps> = ({
                 onPress={() => setShowDatePicker(true)}
               >
                 <Text style={styles.dateButtonText}>
-                  {dateOfBirth.toLocaleDateString(locale, {
-                    month: "long",
-                    day: "numeric",
-                    year: "numeric",
-                  })}
+                  {hideYear
+                    ? dateOfBirth.toLocaleDateString(locale, {
+                        month: "long",
+                        day: "numeric",
+                      })
+                    : dateOfBirth.toLocaleDateString(locale, {
+                        month: "long",
+                        day: "numeric",
+                        year: "numeric",
+                      })}
                 </Text>
               </TouchableOpacity>
+              <View style={styles.hideYearRow}>
+                <Text style={styles.hideYearLabel}>{t("hideYear")}</Text>
+                <Switch
+                  value={hideYear}
+                  onValueChange={setHideYear}
+                  trackColor={{ false: "#ccc", true: "#8b5cf6" }}
+                  thumbColor="#fff"
+                />
+              </View>
               {showDatePicker && (
                 <View style={styles.datePickerContainer}>
                   <DateTimePicker
@@ -213,7 +246,7 @@ export const BirthdayModal: React.FC<BirthdayModalProps> = ({
                     locale={locale}
                     onChange={(
                       event: DateTimePickerEvent,
-                      selectedDate?: Date
+                      selectedDate?: Date,
                     ) => {
                       setShowDatePicker(Platform.OS === "ios");
                       if (selectedDate) {
@@ -242,7 +275,9 @@ export const BirthdayModal: React.FC<BirthdayModalProps> = ({
                       <Text style={styles.zodiacSymbol}>{sign.symbol}</Text>
                       <Text style={styles.zodiacName}>{t(signNameKey)}</Text>
                     </View>
-                    <Text style={styles.zodiacFactLabel}>{t("zodiacFactLabel")}</Text>
+                    <Text style={styles.zodiacFactLabel}>
+                      {t("zodiacFactLabel")}
+                    </Text>
                     <Text style={styles.zodiacFactText}>{t(factKey)}</Text>
                   </>
                 );
@@ -262,6 +297,23 @@ export const BirthdayModal: React.FC<BirthdayModalProps> = ({
                 textAlignVertical="top"
               />
             </View>
+
+            {/* Поле «идеи подарков» временно отключено. */}
+            {/*
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>{t("giftIdeasLabel")}</Text>
+              <TextInput
+                style={[styles.input, styles.noteInput]}
+                value={giftIdeasText}
+                onChangeText={setGiftIdeasText}
+                placeholder={t("giftIdeasPlaceholder")}
+                placeholderTextColor="#666"
+                multiline
+                numberOfLines={3}
+                textAlignVertical="top"
+              />
+            </View>
+            */}
 
             <TouchableOpacity
               style={[styles.saveButton, isSaving && styles.saveButtonDisabled]}
@@ -291,7 +343,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: borderRadius.xl,
     paddingTop: spacing.md,
     paddingBottom: spacing.xxl,
-    paddingHorizontal: spacing.lg,
+    paddingHorizontal: spacing.xl,
     height: "85%",
     borderWidth: 1,
     borderColor: "#8b5cf6",
@@ -385,6 +437,19 @@ const styles = StyleSheet.create({
   dateButtonText: {
     color: "#000",
     fontSize: fontSize.base,
+  },
+  hideYearRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginTop: spacing.sm,
+    paddingRight: Platform.OS === "ios" ? spacing.md : 0,
+  },
+  hideYearLabel: {
+    fontSize: fontSize.md,
+    color: "#8b5cf6",
+    flex: 1,
+    marginRight: spacing.sm,
   },
   datePickerContainer: {
     backgroundColor: "#fff",

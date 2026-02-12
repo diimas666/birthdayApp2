@@ -10,6 +10,7 @@ import {
   StatusBar,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Ionicons from "react-native-vector-icons/Ionicons";
 import { useFocusEffect } from "@react-navigation/native";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 import { Birthday, BirthdayWithAge } from "../types";
@@ -238,7 +239,7 @@ export const ListScreen: React.FC = () => {
           style={styles.fab}
           onPress={() => setModalVisible(true)}
         >
-          <Text style={styles.fabText}>🎂</Text>
+          <Ionicons name="add" size={moderateScale(32)} color="#fff" />
         </TouchableOpacity>
         <BirthdayModal
           visible={modalVisible}
@@ -309,7 +310,7 @@ export const ListScreen: React.FC = () => {
           setModalVisible(true);
         }}
       >
-        <Text style={styles.fabText}>🎂</Text>
+        <Ionicons name="add" size={moderateScale(32)} color="#fff" />
       </TouchableOpacity>
       <BirthdayModal
         visible={modalVisible}
@@ -355,9 +356,9 @@ const styles = StyleSheet.create({
   fab: {
     position: "absolute",
     right: spacing.lg,
-    bottom: moderateScale(30),
-    width: moderateScale(64),
-    height: moderateScale(64),
+    bottom: moderateScale(20),
+    width: moderateScale(44),
+    height: moderateScale(44),
     borderRadius: moderateScale(32),
     backgroundColor: "#8b5cf6",
     justifyContent: "center",
