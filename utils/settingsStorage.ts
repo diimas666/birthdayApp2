@@ -14,12 +14,15 @@ const KEY_LAUNCH_COUNT = '@birthday_app:launchCount';
 const KEY_REVIEW_PROMPT_DONE = '@birthday_app:reviewPromptDone';
 
 export type ThemeMode = 'light' | 'dark';
-export type LanguageCode = 'uk' | 'en';
+export type LanguageCode = 'uk' | 'en' | 'es' | 'it' | 'pt' | 'de';
 
 export const getLanguage = async (): Promise<LanguageCode> => {
   try {
     const v = await AsyncStorage.getItem(KEY_LANGUAGE);
-    return (v === 'en' ? 'en' : 'uk') as LanguageCode;
+    if (v === 'en' || v === 'es' || v === 'it' || v === 'pt' || v === 'de') {
+      return v as LanguageCode;
+    }
+    return 'uk';
   } catch {
     return 'uk';
   }

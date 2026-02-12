@@ -76,6 +76,7 @@ export const SettingsScreen: React.FC = () => {
   const [batteryOptEnabled, setBatteryOptEnabled] = useState<boolean | null>(
     null,
   );
+  const [languageModalVisible, setLanguageModalVisible] = useState(false);
 
   useEffect(() => {
     getNotificationHour().then(setNotificationHourState);
@@ -151,10 +152,7 @@ export const SettingsScreen: React.FC = () => {
 
   const handleDonateToAuthor = () => {
     if (!MONOBANK_DONATION_URL || MONOBANK_DONATION_URL.includes("XXXX")) {
-      Alert.alert(
-        t("error"),
-        t("donationLinkNotConfigured"),
-      );
+      Alert.alert(t("error"), t("donationLinkNotConfigured"));
       return;
     }
     Linking.openURL(MONOBANK_DONATION_URL).catch((e) =>
@@ -164,6 +162,7 @@ export const SettingsScreen: React.FC = () => {
 
   const handleLanguageChange = async (code: LanguageCode) => {
     await setLanguageCode(code);
+    setLanguageModalVisible(false);
   };
 
   const handleImportFromContacts = async () => {
@@ -258,18 +257,31 @@ export const SettingsScreen: React.FC = () => {
         </Text>
 
         <View style={[styles.section, { backgroundColor: cardBg }]}>
-          <View style={styles.switchRow}>
+          <TouchableOpacity
+            style={styles.switchRow}
+            activeOpacity={0.7}
+            onPress={() => setLanguageModalVisible(true)}
+          >
             <Text style={[styles.switchLabel, { color: textColor }]}>
-              {t("language")} —{" "}
-              {language === "uk" ? t("languageUk") : t("languageEn")}
+              {t("language")}
             </Text>
-            <Switch
-              value={language === "uk"}
-              onValueChange={(v) => handleLanguageChange(v ? "uk" : "en")}
-              trackColor={{ false: "#ccc", true: secondaryColor }}
-              thumbColor="#fff"
-            />
-          </View>
+            <View style={styles.languagePicker}>
+              <Text style={[styles.languagePickerText, { color: textColor }]}>
+                {language === "uk"
+                  ? t("languageUk")
+                  : language === "en"
+                    ? t("languageEn")
+                    : language === "es"
+                      ? t("languageEs")
+                      : language === "it"
+                        ? t("languageIt")
+                        : language === "pt"
+                          ? t("languagePt")
+                          : t("languageDe")}
+              </Text>
+              <Ionicons name="chevron-down" size={18} color={secondaryColor} />
+            </View>
+          </TouchableOpacity>
         </View>
 
         <View style={[styles.section, { backgroundColor: cardBg }]}>
@@ -669,6 +681,60 @@ export const SettingsScreen: React.FC = () => {
           </View>
         </View>
       </Modal>
+
+      {/* Выбор языка */}
+      <Modal
+        visible={languageModalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setLanguageModalVisible(false)}
+      >
+        <View style={styles.languageOverlay}>
+          <TouchableOpacity
+            style={StyleSheet.absoluteFill}
+            activeOpacity={1}
+            onPress={() => setLanguageModalVisible(false)}
+          />
+          <View style={[styles.languageModal, { backgroundColor: cardBg }]}>
+            {(["uk", "en", "es", "it", "pt", "de"] as LanguageCode[]).map(
+              (code) => (
+                <TouchableOpacity
+                  key={code}
+                  style={[
+                    styles.languageOption,
+                    language === code && styles.languageOptionActive,
+                  ]}
+                  activeOpacity={0.7}
+                  onPress={() => handleLanguageChange(code)}
+                >
+                  <Text
+                    style={[styles.languageOptionText, { color: textColor }]}
+                  >
+                    {code === "uk"
+                      ? t("languageUk")
+                      : code === "en"
+                        ? t("languageEn")
+                        : code === "es"
+                          ? t("languageEs")
+                          : code === "it"
+                            ? t("languageIt")
+                            : code === "pt"
+                              ? t("languagePt")
+                              : t("languageDe")}
+                  </Text>
+                  {language === code && (
+                    <Ionicons
+                      name="checkmark"
+                      size={18}
+                      color={secondaryColor}
+                    />
+                  )}
+                </TouchableOpacity>
+              ),
+            )}
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -820,5 +886,46 @@ const styles = StyleSheet.create({
     fontSize: fontSize.base,
     fontWeight: "600",
     color: "#fff",
+  },
+  languagePicker: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs,
+    borderRadius: borderRadius.sm,
+    backgroundColor: "rgba(139,92,246,0.08)",
+    gap: spacing.xs,
+  },
+  languagePickerText: {
+    fontSize: fontSize.md,
+    fontWeight: "500",
+  },
+  languageOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.4)",
+    justifyContent: "center",
+  },
+  languageModal: {
+    marginHorizontal: spacing.lg,
+    borderRadius: borderRadius.lg,
+    paddingVertical: spacing.xs,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 10,
+    elevation: 8,
+  },
+  languageOption: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.sm,
+  },
+  languageOptionText: {
+    fontSize: fontSize.md,
+  },
+  languageOptionActive: {
+    backgroundColor: "rgba(139,92,246,0.06)",
   },
 });

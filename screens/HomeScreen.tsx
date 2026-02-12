@@ -81,7 +81,7 @@ export const HomeScreen: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState<
     "today" | "week" | "month" | "year"
-  >("today");
+  >("year");
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);

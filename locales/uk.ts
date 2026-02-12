@@ -292,6 +292,10 @@ export const uk = {
   language: "Мова",
   languageUk: "Українська",
   languageEn: "English",
+  languageEs: "Іспанська",
+  languageIt: "Італійська",
+  languagePt: "Португальська",
+  languageDe: "Німецька",
 
   // Notifications
   notificationTitle3Days: "Нагадування про день народження 🎉",

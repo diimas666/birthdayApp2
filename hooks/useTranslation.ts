@@ -1,10 +1,22 @@
 import { useLanguage } from '../contexts/LanguageContext';
 import { uk } from '../locales/uk';
 import { en } from '../locales/en';
+import { es } from '../locales/es';
+import { it } from '../locales/it';
+import { pt } from '../locales/pt';
+import { de } from '../locales/de';
+import type { LanguageCode } from '../utils/settingsStorage';
 
 export type Locale = typeof uk;
 
-const locales: Record<'uk' | 'en', Locale> = { uk, en };
+const locales: Record<LanguageCode, Locale> = {
+  uk,
+  en,
+  es,
+  it,
+  pt,
+  de,
+};
 
 type TranslationKey = keyof typeof uk;
 

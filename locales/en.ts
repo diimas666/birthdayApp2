@@ -273,6 +273,10 @@ export const en = {
   language: "Language",
   languageUk: "Українська",
   languageEn: "English",
+  languageEs: "Spanish",
+  languageIt: "Italian",
+  languagePt: "Portuguese",
+  languageDe: "German",
 
   // Notifications
   notificationTitle3Days: "Birthday reminder 🎉",
