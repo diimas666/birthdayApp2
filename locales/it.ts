@@ -183,6 +183,11 @@ export const it: typeof uk = {
   themeLight: "Chiaro",
   themeDark: "Scuro",
   notificationTime: "Ora del promemoria",
+  csvName: "Nome",
+  csvDate: "Data",
+  csvPhone: "Telefono",
+  csvNote: "Nota",
+  csvTags: "Tag",
   exportData: "Esporta dati",
   exportDataList: "Esporta come lista (CSV)",
   exportDataFull: "Esporta completo (JSON)",
@@ -200,6 +205,10 @@ export const it: typeof uk = {
   contactsPermissionDenied: "Accesso ai contatti negato",
   contactsPermissionDeniedHint:
     "Abilita l'accesso ai Contatti per l'app nelle Impostazioni.",
+  contactsPermissionTitle: "Contatti",
+  contactsPermissionMessage: "L'app ha bisogno dell'accesso ai contatti per importare i compleanni.",
+  contactsPermissionButtonOK: "OK",
+  ok: "OK",
   openSettings: "Apri impostazioni",
   noContactsWithBirthday:
     "Nessun contatto con data di compleanno trovata. Aggiungi le date nell'app Contatti.",
@@ -214,6 +223,9 @@ export const it: typeof uk = {
   exportSuccess: "Dati esportati",
   importSuccess: "Dati importati",
   importError: "Impossibile importare",
+  csvErrorEmpty: "Il file CSV è vuoto",
+  csvErrorInvalidFormat:
+    "Formato CSV non valido: la prima riga deve contenere le intestazioni delle colonne (nome, data, telefono, nota, tag).",
   importCount: (imported: number, total: number) =>
     `Importati: ${imported}, totale: ${total}`,
   openEmailFailed: "Impossibile aprire l'e-mail",

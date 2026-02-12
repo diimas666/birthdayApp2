@@ -183,6 +183,11 @@ export const pt: typeof uk = {
   themeLight: "Claro",
   themeDark: "Escuro",
   notificationTime: "Hora do lembrete",
+  csvName: "Nome",
+  csvDate: "Data",
+  csvPhone: "Telefone",
+  csvNote: "Nota",
+  csvTags: "Etiquetas",
   exportData: "Exportar dados",
   exportDataList: "Exportar como lista (CSV)",
   exportDataFull: "Exportar completo (JSON)",
@@ -200,6 +205,10 @@ export const pt: typeof uk = {
   contactsPermissionDenied: "Acesso aos contatos negado",
   contactsPermissionDeniedHint:
     "Ative o acesso aos Contatos para o aplicativo nas Configurações.",
+  contactsPermissionTitle: "Contatos",
+  contactsPermissionMessage: "O app precisa de acesso aos contatos para importar aniversários.",
+  contactsPermissionButtonOK: "OK",
+  ok: "OK",
   openSettings: "Abrir configurações",
   noContactsWithBirthday:
     "Nenhum contato com data de aniversário encontrada. Adicione as datas no app Contatos.",
@@ -214,6 +223,9 @@ export const pt: typeof uk = {
   exportSuccess: "Dados exportados",
   importSuccess: "Dados importados",
   importError: "Falha ao importar",
+  csvErrorEmpty: "O arquivo CSV está vazio",
+  csvErrorInvalidFormat:
+    "Formato de CSV inválido: a primeira linha deve conter os cabeçalhos das colunas (nome, data, telefone, nota, etiquetas).",
   importCount: (imported: number, total: number) =>
     `Importados: ${imported}, total: ${total}`,
   openEmailFailed: "Não foi possível abrir o e-mail",

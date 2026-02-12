@@ -183,6 +183,11 @@ export const en = {
   themeLight: "Light",
   themeDark: "Dark",
   notificationTime: "Reminder time",
+  csvName: "Name",
+  csvDate: "Date",
+  csvPhone: "Phone",
+  csvNote: "Note",
+  csvTags: "Tags",
   exportData: "Export data",
   exportDataList: "Export as list (CSV)",
   exportDataFull: "Export full (JSON)",
@@ -200,6 +205,10 @@ export const en = {
   contactsPermissionDenied: "Contacts access denied",
   contactsPermissionDeniedHint:
     "Enable Contacts for Birthday Reminder in Settings.",
+  contactsPermissionTitle: "Contacts",
+  contactsPermissionMessage: "App needs access to contacts to import birthdays.",
+  contactsPermissionButtonOK: "OK",
+  ok: "OK",
   openSettings: "Open Settings",
   noContactsWithBirthday:
     "No contacts with birthday found. Add birth dates in the Contacts app.",
@@ -214,6 +223,9 @@ export const en = {
   exportSuccess: "Data exported",
   importSuccess: "Data imported",
   importError: "Failed to import",
+  csvErrorEmpty: "CSV file is empty",
+  csvErrorInvalidFormat:
+    "Invalid CSV format: first row must contain column headers (name, date, phone, note, tags).",
   importCount: (imported: number, total: number) =>
     `Imported: ${imported}, total: ${total}`,
   openEmailFailed: "Could not open email",

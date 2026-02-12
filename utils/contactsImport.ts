@@ -44,11 +44,26 @@ function getFirstPhone(contact: { phoneNumbers?: { number?: string }[] }): strin
   return numbers[0]?.number?.trim();
 }
 
-export async function requestContactsPermission(): Promise<boolean> {
+export type ContactsPermissionRationale = {
+  title: string;
+  message: string;
+  buttonPositive: string;
+};
+
+const DEFAULT_RATIONALE: ContactsPermissionRationale = {
+  title: 'Contacts',
+  message: 'App needs access to contacts to import birthdays.',
+  buttonPositive: 'OK',
+};
+
+export async function requestContactsPermission(
+  rationale?: ContactsPermissionRationale
+): Promise<boolean> {
   if (Platform.OS === 'android') {
+    const r = rationale ?? DEFAULT_RATIONALE;
     const result = await PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.READ_CONTACTS,
-      { title: 'Contacts', message: 'App needs access to contacts to import birthdays.', buttonPositive: 'OK' }
+      { title: r.title, message: r.message, buttonPositive: r.buttonPositive }
     );
     return result === PermissionsAndroid.RESULTS.GRANTED;
   }
@@ -58,8 +73,10 @@ export async function requestContactsPermission(): Promise<boolean> {
   return requested === 'authorized';
 }
 
-export async function importFromContacts(): Promise<ImportFromContactsResult> {
-  const hasPermission = await requestContactsPermission();
+export async function importFromContacts(options?: {
+  permissionRationale?: ContactsPermissionRationale;
+}): Promise<ImportFromContactsResult> {
+  const hasPermission = await requestContactsPermission(options?.permissionRationale);
   if (!hasPermission) {
     return { added: 0, updated: 0, skipped: 0, totalWithBirthday: 0, error: 'Permission denied' };
   }

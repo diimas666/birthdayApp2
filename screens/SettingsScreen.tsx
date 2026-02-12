@@ -168,7 +168,13 @@ export const SettingsScreen: React.FC = () => {
   const handleImportFromContacts = async () => {
     setImportingContacts(true);
     try {
-      const result = await importFromContacts();
+      const result = await importFromContacts({
+        permissionRationale: {
+          title: t("contactsPermissionTitle"),
+          message: t("contactsPermissionMessage"),
+          buttonPositive: t("contactsPermissionButtonOK"),
+        },
+      });
       if (result.error) {
         if (result.error === "Permission denied") {
           Alert.alert(
@@ -179,7 +185,7 @@ export const SettingsScreen: React.FC = () => {
                 text: t("openSettings"),
                 onPress: () => Linking.openSettings(),
               },
-              { text: "OK" },
+              { text: t("ok") },
             ],
           );
         } else {

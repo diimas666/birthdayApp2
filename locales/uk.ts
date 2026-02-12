@@ -202,6 +202,11 @@ export const uk = {
   themeLight: "Світла",
   themeDark: "Темна",
   notificationTime: "Час нагадувань",
+  csvName: "Ім'я",
+  csvDate: "Дата",
+  csvPhone: "Телефон",
+  csvNote: "Примітка",
+  csvTags: "Теги",
   exportData: "Експорт даних",
   exportDataList: "Експорт як список (CSV)",
   exportDataFull: "Експорт повний (JSON)",
@@ -219,6 +224,10 @@ export const uk = {
   contactsPermissionDenied: "Доступ до контактів заборонено",
   contactsPermissionDeniedHint:
     "Увімкніть доступ до контактів для Birthday Reminder в Налаштуваннях.",
+  contactsPermissionTitle: "Контакти",
+  contactsPermissionMessage: "Додатку потрібен доступ до контактів для імпорту днів народження.",
+  contactsPermissionButtonOK: "OK",
+  ok: "OK",
   openSettings: "Відкрити налаштування",
   noContactsWithBirthday:
     "Немає контактів з датою народження. Додайте дати в додатку Контакти.",
@@ -233,6 +242,9 @@ export const uk = {
   exportSuccess: "Дані експортовано",
   importSuccess: "Дані імпортовано",
   importError: "Не вдалося імпортувати файл",
+  csvErrorEmpty: "CSV-файл порожній",
+  csvErrorInvalidFormat:
+    "Невірний формат CSV: очікується перший рядок із заголовками (ім'я, дата, телефон, примітка, теги).",
   importCount: (imported: number, total: number) =>
     `Імпортовано: ${imported}, всього: ${total}`,
   openEmailFailed: "Не вдалося відкрити пошту",

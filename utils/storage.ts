@@ -1,5 +1,32 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Birthday } from '../types';
+import { getLanguage, type LanguageCode } from '../utils/settingsStorage';
+import { uk } from '../locales/uk';
+import { en } from '../locales/en';
+import { es } from '../locales/es';
+import { it } from '../locales/it';
+import { pt } from '../locales/pt';
+import { de } from '../locales/de';
+
+type Locale = typeof uk;
+
+const LOCALES: Record<LanguageCode, Locale> = {
+  uk,
+  en,
+  es,
+  it,
+  pt,
+  de,
+};
+
+const getCurrentLocale = async (): Promise<Locale> => {
+  try {
+    const code = await getLanguage();
+    return LOCALES[code] ?? uk;
+  } catch {
+    return uk;
+  }
+};
 
 const STORAGE_KEY = '@birthday_app:birthdays';
 
@@ -102,7 +129,17 @@ export const importBirthdaysFromJson = async (jsonString: string): Promise<{ imp
 };
 
 const CSV_SEP = ';';
-const CSV_HEADER = 'Ім\'я;Дата;Телефон;Примітка;Теги';
+
+const getCsvHeader = async (): Promise<string> => {
+  const locale = await getCurrentLocale();
+  return [
+    locale.csvName,
+    locale.csvDate,
+    locale.csvPhone,
+    locale.csvNote,
+    locale.csvTags,
+  ].join(CSV_SEP);
+};
 
 /** Обернути значення в CSV-поле з екрануванням, якщо потрібно. */
 function toCsvField(value: string): string {
@@ -168,7 +205,8 @@ function parseCsvRecords(csv: string): string[][] {
 export const exportBirthdaysCsv = async (): Promise<string> => {
   const birthdays = await getBirthdays();
   const rows: string[] = [];
-  rows.push(CSV_HEADER);
+  const header = await getCsvHeader();
+  rows.push(header);
 
   for (const b of birthdays) {
     const d = new Date(b.dateOfBirth);
@@ -189,22 +227,20 @@ export const exportBirthdaysCsv = async (): Promise<string> => {
 export const importBirthdaysFromCsv = async (
   csvString: string,
 ): Promise<{ imported: number; total: number }> => {
+  const locale = await getCurrentLocale();
   const trimmed = csvString.trim();
   if (!trimmed) {
-    throw new Error('Порожній CSV');
+    throw new Error(locale.csvErrorEmpty);
   }
 
   const records = parseCsvRecords(trimmed);
-  if (records.length < 1) {
-    throw new Error('CSV має містити заголовок (Ім\'я;Дата;...)');
+  if (records.length < 2) {
+    throw new Error(locale.csvErrorInvalidFormat);
   }
 
   const headerRow = records[0];
-  const header = headerRow.join(CSV_SEP).toLowerCase();
-  if (!header.includes('дата')) {
-    throw new Error(
-      'Невірний формат CSV: очікується заголовок Ім\'я;Дата;Телефон;Примітка;Теги',
-    );
+  if (headerRow.length < 2) {
+    throw new Error(locale.csvErrorInvalidFormat);
   }
 
   const existing = await getBirthdays();
