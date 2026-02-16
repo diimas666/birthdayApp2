@@ -49,6 +49,7 @@ import { SearchBar } from "../components/SearchBar";
 import { FilterDropdowns } from "../components/FilterDropdowns";
 import { BirthdayModal } from "../components/BirthdayModal";
 import { EmptyState } from "../components/EmptyState";
+import AdBanner from "../components/AdBanner";
 import {
   GiftBottomSheet,
   type GiftBottomSheetRef,
@@ -479,6 +480,7 @@ export const HomeScreen: React.FC = () => {
         url={giftWebViewUrl}
         onClose={() => setGiftWebViewUrl(null)}
       />
+      <AdBanner />
     </SafeAreaView>
   );
 };

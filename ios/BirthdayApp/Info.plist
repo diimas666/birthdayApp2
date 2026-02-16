@@ -50,5 +50,7 @@
 		<string>Feather.ttf</string>
 		<string>Ionicons.ttf</string>
 	</array>
+	<key>GADApplicationIdentifier</key>
+	<string>ca-app-pub-5809956184473213~2886620692</string>
 </dict>
 </plist>

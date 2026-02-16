@@ -29,6 +29,7 @@ import { getZodiacSign } from "../utils/zodiac";
 import { rescheduleAllNotifications } from "../utils/notifications";
 import { BirthdayModal } from "../components/BirthdayModal";
 import { EmptyState } from "../components/EmptyState";
+import AdBanner from "../components/AdBanner";
 import { useTranslation } from "../hooks/useTranslation";
 import { useTheme } from "../contexts/ThemeContext";
 import {
@@ -321,6 +322,7 @@ export const ListScreen: React.FC = () => {
         onSave={handleSave}
         editingBirthday={editingBirthday}
       />
+      <AdBanner />
     </SafeAreaView>
   );
 };

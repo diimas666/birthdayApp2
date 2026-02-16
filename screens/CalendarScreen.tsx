@@ -16,6 +16,7 @@ import { getBirthdaysOnDate, enrichBirthday } from '../utils/dateHelpers';
 import { getZodiacSign } from '../utils/zodiac';
 import { useTranslation } from '../hooks/useTranslation';
 import { useTheme } from '../contexts/ThemeContext';
+import AdBanner from '../components/AdBanner';
 import { spacing, fontSize, borderRadius, moderateScale, verticalScale } from '../utils/scale';
 
 const DAYS_IN_WEEK = 7;
@@ -223,6 +224,7 @@ export const CalendarScreen: React.FC = () => {
           </View>
         </TouchableOpacity>
       </Modal>
+      <AdBanner />
     </SafeAreaView>
   );
 };

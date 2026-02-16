@@ -53,6 +53,7 @@ import {
   openBatteryOptimizationSettings,
   openAlarmPermissionSettings,
 } from "../utils/notifications";
+import AdBanner from "../components/AdBanner";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 const HOURS = Array.from({ length: 24 }, (_, i) => i);
@@ -760,6 +761,7 @@ export const SettingsScreen: React.FC = () => {
           </View>
         </View>
       </Modal>
+      <AdBanner />
     </SafeAreaView>
   );
 };
