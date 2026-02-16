@@ -1,4 +1,4 @@
-import notifee, { AndroidImportance, TriggerType, TimestampTrigger } from '@notifee/react-native';
+import notifee, { AndroidImportance, TriggerType, TimestampTrigger, AlarmType } from '@notifee/react-native';
 import { Platform } from 'react-native';
 import { Birthday } from '../types';
 import { uk } from '../locales/uk';
@@ -35,7 +35,10 @@ export const requestPermissions = async (): Promise<boolean> => {
       sound: 'default',
     });
   }
-  const settings = await notifee.requestPermission();
+  const permissionOptions = Platform.OS === 'ios'
+    ? { alert: true, sound: true, badge: true }
+    : undefined;
+  const settings = await notifee.requestPermission(permissionOptions);
   return settings.authorizationStatus >= 1;
 };
 
@@ -72,6 +75,9 @@ export const scheduleBirthdayNotifications = async (birthday: Birthday, hour?: n
       channelId: ANDROID_CHANNEL_ID,
       smallIcon: 'ic_launcher',
     },
+    ...(Platform.OS === 'ios' && {
+      ios: { sound: 'default' },
+    }),
   };
 
   const threeDaysBefore = new Date(nextBirthday);
@@ -81,6 +87,9 @@ export const scheduleBirthdayNotifications = async (birthday: Birthday, hour?: n
     const trigger: TimestampTrigger = {
       type: TriggerType.TIMESTAMP,
       timestamp: threeDaysBefore.getTime(),
+      ...(Platform.OS === 'android' && {
+        alarmManager: { type: AlarmType.SET_EXACT_AND_ALLOW_WHILE_IDLE },
+      }),
     };
     await notifee.createTriggerNotification(
       {
@@ -100,6 +109,9 @@ export const scheduleBirthdayNotifications = async (birthday: Birthday, hour?: n
     const trigger: TimestampTrigger = {
       type: TriggerType.TIMESTAMP,
       timestamp: oneDayBefore.getTime(),
+      ...(Platform.OS === 'android' && {
+        alarmManager: { type: AlarmType.SET_EXACT_AND_ALLOW_WHILE_IDLE },
+      }),
     };
     await notifee.createTriggerNotification(
       {
@@ -120,6 +132,9 @@ export const scheduleBirthdayNotifications = async (birthday: Birthday, hour?: n
       const trigger: TimestampTrigger = {
         type: TriggerType.TIMESTAMP,
         timestamp: dayOf.getTime(),
+        ...(Platform.OS === 'android' && {
+          alarmManager: { type: AlarmType.SET_EXACT_AND_ALLOW_WHILE_IDLE },
+        }),
       };
       await notifee.createTriggerNotification(
         {
@@ -166,5 +181,13 @@ export const openBatteryOptimizationSettings = async (): Promise<void> => {
   if (Platform.OS !== 'android') return;
   try {
     await notifee.openBatteryOptimizationSettings();
+  } catch (_) {}
+};
+
+/** Только Android: открыть настройки «Будильники и напоминания» (нужно для точных уведомлений на Android 12+). */
+export const openAlarmPermissionSettings = async (): Promise<void> => {
+  if (Platform.OS !== 'android') return;
+  try {
+    await notifee.openAlarmPermissionSettings();
   } catch (_) {}
 };

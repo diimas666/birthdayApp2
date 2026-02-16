@@ -51,6 +51,7 @@ import {
   rescheduleAllNotifications,
   isBatteryOptimizationEnabled,
   openBatteryOptimizationSettings,
+  openAlarmPermissionSettings,
 } from "../utils/notifications";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
@@ -349,22 +350,40 @@ export const SettingsScreen: React.FC = () => {
             />
           </View>
           {Platform.OS === "android" && (
-            <View style={styles.batteryOptBlock}>
-              <Text style={[styles.quietHint, { color: textColor }]}>
-                {t("settingsBatteryOptimizationHint")}
-              </Text>
-              <TouchableOpacity
-                style={[
-                  styles.batteryOptButton,
-                  { backgroundColor: secondaryColor },
-                ]}
-                onPress={() => openBatteryOptimizationSettings()}
-              >
-                <Text style={styles.batteryOptButtonText}>
-                  {t("settingsBatteryOptimizationButton")}
+            <>
+              <View style={styles.batteryOptBlock}>
+                <Text style={[styles.quietHint, { color: textColor }]}>
+                  {t("settingsBatteryOptimizationHint")}
                 </Text>
-              </TouchableOpacity>
-            </View>
+                <TouchableOpacity
+                  style={[
+                    styles.batteryOptButton,
+                    { backgroundColor: secondaryColor },
+                  ]}
+                  onPress={() => openBatteryOptimizationSettings()}
+                >
+                  <Text style={styles.batteryOptButtonText}>
+                    {t("settingsBatteryOptimizationButton")}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              <View style={styles.batteryOptBlock}>
+                <Text style={[styles.quietHint, { color: textColor }]}>
+                  {t("settingsAlarmPermissionHint")}
+                </Text>
+                <TouchableOpacity
+                  style={[
+                    styles.batteryOptButton,
+                    { backgroundColor: secondaryColor },
+                  ]}
+                  onPress={() => openAlarmPermissionSettings()}
+                >
+                  <Text style={styles.batteryOptButtonText}>
+                    {t("settingsAlarmPermissionButton")}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </>
           )}
         </View>
 

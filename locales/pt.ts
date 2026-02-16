@@ -308,6 +308,9 @@ export const pt: typeof uk = {
   settingsBatteryOptimizationHint:
     "Para receber lembretes quando o app estiver fechado, desative a otimização de bateria para este app.",
   settingsBatteryOptimizationButton: "Abrir configurações",
+  settingsAlarmPermissionHint:
+    "No Android 12+, ative \"Alarmes e lembretes\" para este app para notificações confiáveis.",
+  settingsAlarmPermissionButton: "Abrir configurações de alarme",
 
   widgetTitle: "Aniversários de hoje",
   widgetEmpty: "Ninguém faz aniversário hoje",

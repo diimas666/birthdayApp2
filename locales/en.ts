@@ -303,6 +303,9 @@ export const en = {
   settingsBatteryOptimizationHint:
     "To get reminders when the app is closed, disable battery optimization for this app.",
   settingsBatteryOptimizationButton: "Open settings",
+  settingsAlarmPermissionHint:
+    "On Android 12+, enable \"Alarms & reminders\" for this app for reliable notifications.",
+  settingsAlarmPermissionButton: "Open alarm settings",
 
   widgetTitle: "Birthdays today",
   widgetEmpty: "No birthdays today",

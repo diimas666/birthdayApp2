@@ -325,6 +325,9 @@ export const uk = {
   settingsBatteryOptimizationHint:
     "Щоб нагадування приходили, коли застосунок закрито, вимкніть оптимізацію батареї для цього застосунку.",
   settingsBatteryOptimizationButton: "Відкрити налаштування",
+  settingsAlarmPermissionHint:
+    "На Android 12+ для точних нагадувань увімкніть «Будильники та нагадування» для застосунку.",
+  settingsAlarmPermissionButton: "Відкрити налаштування будильників",
 
   // Віджет на головний екран (Android)
   widgetTitle: "Сьогодні святкують",

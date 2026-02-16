@@ -309,6 +309,9 @@ export const de: typeof uk = {
   settingsBatteryOptimizationHint:
     "Damit Erinnerungen auch bei geschlossener App ankommen, deaktiviere die Akkuoptimierung für diese App.",
   settingsBatteryOptimizationButton: "Einstellungen öffnen",
+  settingsAlarmPermissionHint:
+    "Unter Android 12+ „Alarme & Erinnerungen“ für diese App aktivieren für zuverlässige Benachrichtigungen.",
+  settingsAlarmPermissionButton: "Alarmeinstellungen öffnen",
 
   widgetTitle: "Geburtstage heute",
   widgetEmpty: "Heute hat niemand Geburtstag",

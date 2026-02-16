@@ -308,6 +308,9 @@ export const it: typeof uk = {
   settingsBatteryOptimizationHint:
     "Per ricevere promemoria quando l'app è chiusa, disattiva l'ottimizzazione batteria per questa app.",
   settingsBatteryOptimizationButton: "Apri impostazioni",
+  settingsAlarmPermissionHint:
+    "Su Android 12+, abilita \"Sveglie e promemoria\" per questa app per notifiche affidabili.",
+  settingsAlarmPermissionButton: "Apri impostazioni sveglie",
 
   widgetTitle: "Compleanni di oggi",
   widgetEmpty: "Nessuno compie gli anni oggi",
