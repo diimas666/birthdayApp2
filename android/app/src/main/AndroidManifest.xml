@@ -1,10 +1,13 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+
     <application
         android:name=".MainApplication"
         android:label="@string/app_name"
@@ -14,6 +17,13 @@
         android:usesCleartextTraffic="true"
         android:theme="@style/AppTheme"
         android:supportsRtl="true">
+
+        <!-- ✅ AdMob APP ID -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-5809956184473213~2886620692"
+            tools:replace="android:value"/>
+
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
@@ -21,25 +31,28 @@
             android:launchMode="singleTask"
             android:windowSoftInputMode="adjustResize"
             android:exported="true">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
+
         <receiver
             android:name=".BirthdayWidgetProvider"
             android:exported="true"
             android:label="@string/app_name">
+
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
+
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/birthday_widget_info" />
+
         </receiver>
 
-        <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-5809956184473213~2886620692"/>
     </application>
 </manifest>

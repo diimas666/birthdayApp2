@@ -4,8 +4,19 @@
     "strict": true,
     "baseUrl": ".",
     "paths": {},
-    "types": ["react-native"]
+    "types": [
+      "react-native",
+      "node"
+    ]
   },
-  "include": ["**/*.ts", "**/*.tsx", "index.js"],
-  "exclude": ["node_modules", "babel.config.js", "metro.config.js"]
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "index.js"
+  ],
+  "exclude": [
+    "node_modules",
+    "babel.config.js",
+    "metro.config.js"
+  ]
 }

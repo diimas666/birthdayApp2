@@ -1,4 +1,8 @@
 {
   "name": "BirthdayApp",
-  "displayName": "Birthday Reminder"
+  "displayName": "Birthday Reminder",
+  "react-native-google-mobile-ads": {
+    "android_app_id": "ca-app-pub-5809956184473213~2886620692",
+    "ios_app_id": "ca-app-pub-5809956184473213~8769189332"
+  }
 }
