@@ -151,6 +151,7 @@ export const GreetingModal: React.FC<GreetingModalProps> = ({
           <ScrollView
             style={styles.scroll}
             showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
           >
             <Text style={[styles.label, { color: textColor }]}>
               {t("greetingStyleLabel")}
@@ -244,7 +245,7 @@ export const GreetingModal: React.FC<GreetingModalProps> = ({
                   { backgroundColor: "#0088cc", opacity: hasPhone ? 1 : 0.6 },
                 ]}
                 onPress={handleTelegram}
-                disabled={!hasPhone}
+                activeOpacity={0.7}
               >
                 <Text style={styles.primaryBtnText}>{t("telegram")}</Text>
               </TouchableOpacity>
@@ -254,7 +255,7 @@ export const GreetingModal: React.FC<GreetingModalProps> = ({
                   { backgroundColor: "#34C759", opacity: hasPhone ? 1 : 0.6 },
                 ]}
                 onPress={handleSms}
-                disabled={!hasPhone}
+                activeOpacity={0.7}
               >
                 <Text style={styles.primaryBtnText}>{t("sendViaSms")}</Text>
               </TouchableOpacity>

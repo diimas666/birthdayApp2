@@ -59,7 +59,7 @@
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		W1D00129A45674006654E1 /* BirthdayWidgetModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BirthdayWidgetModule.h; sourceTree = "<group>"; };
 		W1D0012BA45674006654E1 /* BirthdayWidgetModule.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BirthdayWidgetModule.m; sourceTree = "<group>"; };
-		W1D0012DA45674006654E1 /* WidgetReloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetReloader.swift; sourceTree = "<group>"; };
+		W1D0012DA45674006654E1 /* WidgetReloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BirthdayApp/WidgetReloader.swift; sourceTree = "<group>"; };
 		W1D00138A45674006654E1 /* BirthdayApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BirthdayApp.entitlements; sourceTree = "<group>"; };
 		W1D00139A45674006654E1 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		W1D00202A45674006654E1 /* BirthdayWidgetExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BirthdayWidgetExtension.swift; sourceTree = "<group>"; };
@@ -372,6 +372,7 @@
 			baseConfigurationReference = 9979A3F007097969197F7D81 /* Pods-BirthdayApp.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
+				SWIFT_VERSION = 5.0;
 				CODE_SIGN_ENTITLEMENTS = BirthdayApp/BirthdayApp.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 8467HTC6V4;
@@ -399,6 +400,7 @@
 			baseConfigurationReference = 84B01D0596753D4CCE310C76 /* Pods-BirthdayApp.release.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
+				SWIFT_VERSION = 5.0;
 				CODE_SIGN_ENTITLEMENTS = BirthdayApp/BirthdayApp.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 8467HTC6V4;
