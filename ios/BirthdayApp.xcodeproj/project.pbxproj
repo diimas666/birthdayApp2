@@ -57,8 +57,8 @@
 		A1B2C3D52CA45674006654E2 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = BirthdayApp/Images.xcassets; sourceTree = "<group>"; };
 		C1277BE0649A52A598281F11 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = BirthdayApp/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		W1D00129A45674006654E1 /* BirthdayWidgetModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BirthdayWidgetModule.h; sourceTree = "<group>"; };
-		W1D0012BA45674006654E1 /* BirthdayWidgetModule.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BirthdayWidgetModule.m; sourceTree = "<group>"; };
+		W1D00129A45674006654E1 /* BirthdayWidgetModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BirthdayApp/BirthdayWidgetModule.h; sourceTree = "<group>"; };
+		W1D0012BA45674006654E1 /* BirthdayWidgetModule.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BirthdayApp/BirthdayWidgetModule.m; sourceTree = "<group>"; };
 		W1D0012DA45674006654E1 /* WidgetReloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BirthdayApp/WidgetReloader.swift; sourceTree = "<group>"; };
 		W1D00138A45674006654E1 /* BirthdayApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BirthdayApp.entitlements; sourceTree = "<group>"; };
 		W1D00139A45674006654E1 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
